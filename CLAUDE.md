@@ -97,9 +97,7 @@ Dependency injection is central: `NetworkClient` interface is provided by the co
 - The `QUERY_KEYS` factory must be kept in sync with API route changes -- if a route path changes, update the corresponding key
 - This is a published npm package (`@sudobility/testomniac_client`) -- breaking changes require version bumps and coordination with consumers
 
-## Testing
+## Testing Notes
 
-- Run tests: `bun test`
 - Tests are in files alongside source (e.g., `TestomniacClient.test.ts`)
 - Tests cover `TestomniacClient` HTTP methods and hook behavior
-- Uses Vitest as the test runner

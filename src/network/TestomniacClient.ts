@@ -1,5 +1,23 @@
 import type { NetworkClient } from '@sudobility/types';
-import type { BaseResponse, User } from '@sudobility/testomniac_types';
+import type {
+  ActionableItemResponse,
+  ActionResponse,
+  AppResponse,
+  BaseResponse,
+  CreateScanRequest,
+  CreateScanResponse,
+  InputValueResponse,
+  IssueResponse,
+  PageResponse,
+  PageStateResponse,
+  PersonaResponse,
+  ProjectSummaryResponse,
+  RunDetailResponse,
+  TestCaseResponse,
+  TestRunResponse,
+  UseCaseResponse,
+  User,
+} from '@sudobility/testomniac_types';
 import type { FirebaseIdToken } from '../types';
 import { buildUrl, createAuthHeaders } from '../utils/starter-helpers';
 
@@ -95,5 +113,238 @@ export class TestomniacClient {
       headers: createAuthHeaders(token),
     });
     return validateResponse<User>(response.data, 'getUser');
+  }
+
+  // --- Scan ---
+
+  async submitScan(
+    data: CreateScanRequest
+  ): Promise<BaseResponse<CreateScanResponse>> {
+    const url = buildUrl(this.baseUrl, '/api/v1/scan');
+    const response = await this.networkClient.post(url, { body: data });
+    return validateResponse<CreateScanResponse>(response.data, 'submitScan');
+  }
+
+  async submitScanAuthenticated(
+    data: CreateScanRequest,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<CreateScanResponse>> {
+    const url = buildUrl(this.baseUrl, '/api/v1/scan');
+    const response = await this.networkClient.post(url, {
+      headers: createAuthHeaders(token),
+      body: data,
+    });
+    return validateResponse<CreateScanResponse>(
+      response.data,
+      'submitScanAuthenticated'
+    );
+  }
+
+  // --- Projects ---
+
+  async getEntityProjects(
+    entitySlug: string,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<ProjectSummaryResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/entities/${entitySlug}/projects`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<ProjectSummaryResponse[]>(
+      response.data,
+      'getEntityProjects'
+    );
+  }
+
+  async getProject(
+    projectId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<AppResponse>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/projects/${projectId}`);
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<AppResponse>(response.data, 'getProject');
+  }
+
+  // --- Runs ---
+
+  async getProjectRuns(
+    projectId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<RunDetailResponse[]>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/projects/${projectId}/runs`);
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<RunDetailResponse[]>(
+      response.data,
+      'getProjectRuns'
+    );
+  }
+
+  async getRun(
+    runId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<RunDetailResponse>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/runs/${runId}`);
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<RunDetailResponse>(response.data, 'getRun');
+  }
+
+  // --- Run sub-resources ---
+
+  async getRunPages(
+    runId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<PageResponse[]>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/runs/${runId}/pages`);
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<PageResponse[]>(response.data, 'getRunPages');
+  }
+
+  async getRunActions(
+    runId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<ActionResponse[]>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/runs/${runId}/actions`);
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<ActionResponse[]>(response.data, 'getRunActions');
+  }
+
+  async getRunTestCases(
+    runId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestCaseResponse[]>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/runs/${runId}/test-cases`);
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestCaseResponse[]>(
+      response.data,
+      'getRunTestCases'
+    );
+  }
+
+  async getRunTestRuns(
+    runId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestRunResponse[]>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/runs/${runId}/test-runs`);
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestRunResponse[]>(response.data, 'getRunTestRuns');
+  }
+
+  async getRunIssues(
+    runId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<IssueResponse[]>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/runs/${runId}/issues`);
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<IssueResponse[]>(response.data, 'getRunIssues');
+  }
+
+  async getRunPersonas(
+    runId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<PersonaResponse[]>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/runs/${runId}/personas`);
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<PersonaResponse[]>(response.data, 'getRunPersonas');
+  }
+
+  async getRunComponents(
+    runId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<unknown[]>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/runs/${runId}/components`);
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<unknown[]>(response.data, 'getRunComponents');
+  }
+
+  // --- Page sub-resources ---
+
+  async getPageStates(
+    pageId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<PageStateResponse[]>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/pages/${pageId}/states`);
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<PageStateResponse[]>(
+      response.data,
+      'getPageStates'
+    );
+  }
+
+  async getPageStateItems(
+    pageStateId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<ActionableItemResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/page-states/${pageStateId}/items`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<ActionableItemResponse[]>(
+      response.data,
+      'getPageStateItems'
+    );
+  }
+
+  // --- Personas sub-resources ---
+
+  async getPersonaUseCases(
+    personaId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<UseCaseResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/personas/${personaId}/use-cases`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<UseCaseResponse[]>(
+      response.data,
+      'getPersonaUseCases'
+    );
+  }
+
+  async getUseCaseInputValues(
+    useCaseId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<InputValueResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/use-cases/${useCaseId}/input-values`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<InputValueResponse[]>(
+      response.data,
+      'getUseCaseInputValues'
+    );
   }
 }

@@ -39,6 +39,31 @@ export const DEFAULT_GC_TIME = 30 * 60 * 1000;
  * ```
  */
 export const QUERY_KEYS = {
-  /** Cache key for a user profile. */
-  user: (userId: string) => ['starter', 'user', userId] as const,
+  user: (userId: string) => ['testomniac', 'user', userId] as const,
+  entityProjects: (entitySlug: string) =>
+    ['testomniac', 'projects', entitySlug] as const,
+  project: (projectId: number) => ['testomniac', 'project', projectId] as const,
+  projectRuns: (projectId: number) =>
+    ['testomniac', 'project', projectId, 'runs'] as const,
+  run: (runId: number) => ['testomniac', 'run', runId] as const,
+  runPages: (runId: number) => ['testomniac', 'run', runId, 'pages'] as const,
+  runActions: (runId: number) =>
+    ['testomniac', 'run', runId, 'actions'] as const,
+  runTestCases: (runId: number) =>
+    ['testomniac', 'run', runId, 'test-cases'] as const,
+  runTestRuns: (runId: number) =>
+    ['testomniac', 'run', runId, 'test-runs'] as const,
+  runIssues: (runId: number) => ['testomniac', 'run', runId, 'issues'] as const,
+  runPersonas: (runId: number) =>
+    ['testomniac', 'run', runId, 'personas'] as const,
+  runComponents: (runId: number) =>
+    ['testomniac', 'run', runId, 'components'] as const,
+  pageStates: (pageId: number) =>
+    ['testomniac', 'page', pageId, 'states'] as const,
+  pageStateItems: (pageStateId: number) =>
+    ['testomniac', 'page-state', pageStateId, 'items'] as const,
+  personaUseCases: (personaId: number) =>
+    ['testomniac', 'persona', personaId, 'use-cases'] as const,
+  useCaseInputValues: (useCaseId: number) =>
+    ['testomniac', 'use-case', useCaseId, 'input-values'] as const,
 } as const;

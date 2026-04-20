@@ -20,15 +20,29 @@ src/
 ├── index.ts                          # Main exports
 ├── types.ts                          # QUERY_KEYS factory, config types
 ├── network/
-│   ├── TestomniacClient.ts              # HTTP client class (DI-based)
-│   └── TestomniacClient.test.ts
+│   ├── TestomniacClient.ts           # HTTP client class (DI-based)
+│   └── index.ts                      # Network exports
 ├── hooks/
 │   ├── index.ts                      # Hook exports
-│   ├── useHistories.ts               # Query + mutation hook for user histories
-│   └── useHistoriesTotal.ts          # Query hook for global total
+│   ├── useEntityProjects.ts          # Query projects by entity slug
+│   ├── useProject.ts                 # Query single project
+│   ├── useProjectRuns.ts             # Query runs for a project
+│   ├── useRun.ts                     # Query single run
+│   ├── useRunPages.ts                # Query pages for a run
+│   ├── useRunActions.ts              # Query actions for a run
+│   ├── useRunTestCases.ts            # Query test cases for a run
+│   ├── useRunTestRuns.ts             # Query test runs for a run
+│   ├── useRunIssues.ts               # Query issues for a run
+│   ├── useRunPersonas.ts             # Query personas for a run
+│   ├── useRunComponents.ts           # Query components for a run
+│   ├── usePageStates.ts              # Query states for a page
+│   ├── usePageStateItems.ts          # Query actionable items for a state
+│   ├── usePersonaUseCases.ts         # Query use cases for a persona
+│   ├── useUseCaseInputValues.ts      # Query input values for a use case
+│   └── useSubmitScan.ts              # Mutation: submit a new scan
 └── utils/
     ├── index.ts                      # Utility exports
-    └── testomniac-helpers.ts            # createAuthHeaders, buildUrl, handleApiError
+    └── starter-helpers.ts            # createAuthHeaders, buildUrl, handleApiError
 ```
 
 ## Commands
@@ -49,14 +63,31 @@ bun run prepublishOnly # Clean + build (runs on publish)
 
 HTTP client class constructed with `{ baseUrl, networkClient }`. Uses dependency injection via the `NetworkClient` interface from `@sudobility/types` — no direct fetch calls.
 
-### Hooks
+### Hooks (16 query + 1 mutation)
 
-- `useHistories(config)` — fetches user history list and provides `createHistory`, `updateHistory`, `deleteHistory` mutations with automatic query invalidation
-- `useHistoriesTotal(config)` — fetches global total (public endpoint)
+**Query hooks:**
+- `useEntityProjects(config)` — projects for an entity/workspace
+- `useProject(config)` — single project details
+- `useProjectRuns(config)` — runs for a project
+- `useRun(config)` — single run details
+- `useRunPages(config)` — pages discovered in a run
+- `useRunActions(config)` — actions performed in a run
+- `useRunTestCases(config)` — generated test cases for a run
+- `useRunTestRuns(config)` — test execution results for a run
+- `useRunIssues(config)` — issues detected in a run
+- `useRunPersonas(config)` — AI-generated personas for a run
+- `useRunComponents(config)` — reusable components found in a run
+- `usePageStates(config)` — states captured for a page
+- `usePageStateItems(config)` — actionable items in a page state
+- `usePersonaUseCases(config)` — use cases for a persona
+- `useUseCaseInputValues(config)` — input values for a use case
+
+**Mutation hook:**
+- `useSubmitScan(config)` — submit a new scan (public endpoint)
 
 ### QUERY_KEYS
 
-Type-safe cache key factory for TanStack Query. Used internally by hooks and available for manual invalidation.
+Type-safe cache key factory for TanStack Query. Used internally by hooks and available for manual invalidation. Keys are namespaced under `'testomniac'` and structured hierarchically (e.g., `['testomniac', 'run', runId, 'pages']`).
 
 ### Cache Settings
 
@@ -83,16 +114,16 @@ Dependency injection is central: `NetworkClient` interface is provided by the co
 
 - `QUERY_KEYS` factory in `src/types.ts` provides type-safe cache keys for TanStack Query -- always use it for query keys
 - `TestomniacClient` class accepts `{ baseUrl, networkClient }` via constructor -- never use `fetch` directly inside this package
-- Hooks (`useHistories`, `useHistoriesTotal`) wrap TanStack Query and use `TestomniacClient` internally
-- `useHistories` combines query and mutations in a single hook — mutations automatically invalidate related queries after success
+- Query hooks wrap TanStack Query's `useQuery` and use `TestomniacClient` internally
+- `useSubmitScan` is the only mutation hook — it submits scans to the public endpoint
 - Default `staleTime` is 5 minutes and `gcTime` is 30 minutes -- respect these defaults unless there is a specific reason to override
-- Utility functions in `src/utils/testomniac-helpers.ts` handle auth headers (`createAuthHeaders`), URL construction (`buildUrl`), and API error handling (`handleApiError`)
+- Utility functions in `src/utils/starter-helpers.ts` handle auth headers (`createAuthHeaders`), URL construction (`buildUrl`), and API error handling (`handleApiError`)
 - `FirebaseIdToken` must be passed to all protected endpoint calls for authentication
 
 ## Gotchas
 
 - `NetworkClient` is dependency-injected -- never import or use `fetch` directly; all HTTP calls go through the injected `networkClient`
-- Mutations auto-invalidate related queries -- adding a new mutation must include proper `onSuccess` invalidation to keep caches consistent
 - `FirebaseIdToken` is required for all authenticated endpoints; omitting it will result in 401/403 errors from the API
 - The `QUERY_KEYS` factory must be kept in sync with API route changes -- if a route path changes, update the corresponding key
+- `useSubmitScan` hits a public endpoint (no auth) -- all other hooks require Firebase auth
 - This is a published npm package (`@sudobility/entitytestomniac_client`) -- breaking changes require version bumps and coordination with consumers

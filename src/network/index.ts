@@ -1,1 +1,1 @@
-export { StarterClient } from './StarterClient';
+export { TestomniacClient } from './TestomniacClient';

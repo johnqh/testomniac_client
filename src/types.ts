@@ -35,18 +35,10 @@ export const DEFAULT_GC_TIME = 30 * 60 * 1000;
  * import { QUERY_KEYS } from '@sudobility/testomniac_client';
  *
  * // Manual invalidation
- * queryClient.invalidateQueries({ queryKey: QUERY_KEYS.histories(userId) });
- *
- * // Prefetching
- * queryClient.prefetchQuery({ queryKey: QUERY_KEYS.historiesTotal() });
+ * queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user(userId) });
  * ```
  */
 export const QUERY_KEYS = {
-  /** Cache key for an entity's history list. */
-  histories: (entitySlug: string) =>
-    ['starter', 'histories', entitySlug] as const,
-  /** Cache key for the global histories total (public endpoint). */
-  historiesTotal: () => ['starter', 'histories', 'total'] as const,
   /** Cache key for a user profile. */
   user: (userId: string) => ['starter', 'user', userId] as const,
 } as const;

@@ -6,6 +6,8 @@ import type {
   ActionResponse,
   AppResponse,
   BaseResponse,
+  CreateAppRequest,
+  CreateProjectRequest,
   CreateScanRequest,
   CreateScanResponse,
   HtmlElementResponse,
@@ -15,6 +17,7 @@ import type {
   PageStateResponse,
   PageStateReusableElementResponse,
   PersonaResponse,
+  ProjectResponse,
   ProjectSummaryResponse,
   ReusableHtmlElementResponse,
   RunDetailResponse,
@@ -163,6 +166,31 @@ export class TestomniacClient {
       response.data,
       'getEntityProjects'
     );
+  }
+
+  async createProject(
+    data: CreateProjectRequest,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<ProjectResponse>> {
+    const url = buildUrl(this.baseUrl, '/api/v1/projects');
+    const response = await this.networkClient.post(url, {
+      headers: createAuthHeaders(token),
+      body: data,
+    });
+    return validateResponse<ProjectResponse>(response.data, 'createProject');
+  }
+
+  async createApp(
+    projectId: number,
+    data: CreateAppRequest,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<AppResponse>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/projects/${projectId}/apps`);
+    const response = await this.networkClient.post(url, {
+      headers: createAuthHeaders(token),
+      body: data,
+    });
+    return validateResponse<AppResponse>(response.data, 'createApp');
   }
 
   async getProject(

@@ -66,4 +66,29 @@ export const QUERY_KEYS = {
     ['testomniac', 'persona', personaId, 'use-cases'] as const,
   useCaseInputValues: (useCaseId: number) =>
     ['testomniac', 'use-case', useCaseId, 'input-values'] as const,
+  app: (appId: number) => ['testomniac', 'app', appId] as const,
+  projectApps: (projectId: number) =>
+    ['testomniac', 'project', projectId, 'apps'] as const,
+  appPages: (appId: number) => ['testomniac', 'app', appId, 'pages'] as const,
+  appPageStates: (appId: number) =>
+    ['testomniac', 'app', appId, 'page-states'] as const,
+  appActions: (appId: number) =>
+    ['testomniac', 'app', appId, 'actions'] as const,
+  appActionExecutions: (appId: number) =>
+    ['testomniac', 'app', appId, 'action-executions'] as const,
+  appScans: (appId: number) => ['testomniac', 'app', appId, 'scans'] as const,
+  appTestCases: (appId: number) =>
+    ['testomniac', 'app', appId, 'test-cases'] as const,
+  appTestRuns: (appId: number) =>
+    ['testomniac', 'app', appId, 'test-runs'] as const,
+  appIssues: (appId: number) => ['testomniac', 'app', appId, 'issues'] as const,
+  appComponents: (appId: number) =>
+    ['testomniac', 'app', appId, 'components'] as const,
+  appPersonas: (appId: number) =>
+    ['testomniac', 'app', appId, 'personas'] as const,
+  pageActions: (pageId: number) =>
+    ['testomniac', 'page', pageId, 'actions'] as const,
+  pageStateReusableElements: (pageStateId: number) =>
+    ['testomniac', 'page-state', pageStateId, 'reusable-elements'] as const,
+  htmlElement: (id: number) => ['testomniac', 'html-element', id] as const,
 } as const;

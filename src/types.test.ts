@@ -24,8 +24,8 @@ describe('QUERY_KEYS', () => {
     expect(key).toEqual(['testomniac', 'run', 42]);
   });
 
-  it('runIssues key includes runId', () => {
-    const key = QUERY_KEYS.runIssues(7);
-    expect(key).toEqual(['testomniac', 'run', 7, 'issues']);
+  it('appFindings key includes appId', () => {
+    const key = QUERY_KEYS.appFindings(7);
+    expect(key).toEqual(['testomniac', 'app', 7, 'findings']);
   });
 });

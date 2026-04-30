@@ -47,13 +47,10 @@ export const QUERY_KEYS = {
     ['testomniac', 'project', projectId, 'runs'] as const,
   run: (runId: number) => ['testomniac', 'run', runId] as const,
   runPages: (runId: number) => ['testomniac', 'run', runId, 'pages'] as const,
-  runActions: (runId: number) =>
-    ['testomniac', 'run', runId, 'actions'] as const,
   runTestCases: (runId: number) =>
     ['testomniac', 'run', runId, 'test-cases'] as const,
   runTestRuns: (runId: number) =>
     ['testomniac', 'run', runId, 'test-runs'] as const,
-  runIssues: (runId: number) => ['testomniac', 'run', runId, 'issues'] as const,
   runPersonas: (runId: number) =>
     ['testomniac', 'run', runId, 'personas'] as const,
   runComponents: (runId: number) =>
@@ -72,22 +69,15 @@ export const QUERY_KEYS = {
   appPages: (appId: number) => ['testomniac', 'app', appId, 'pages'] as const,
   appPageStates: (appId: number) =>
     ['testomniac', 'app', appId, 'page-states'] as const,
-  appActions: (appId: number) =>
-    ['testomniac', 'app', appId, 'actions'] as const,
-  appActionExecutions: (appId: number) =>
-    ['testomniac', 'app', appId, 'action-executions'] as const,
   appScans: (appId: number) => ['testomniac', 'app', appId, 'scans'] as const,
   appTestCases: (appId: number) =>
     ['testomniac', 'app', appId, 'test-cases'] as const,
   appTestRuns: (appId: number) =>
     ['testomniac', 'app', appId, 'test-runs'] as const,
-  appIssues: (appId: number) => ['testomniac', 'app', appId, 'issues'] as const,
   appComponents: (appId: number) =>
     ['testomniac', 'app', appId, 'components'] as const,
   appPersonas: (appId: number) =>
     ['testomniac', 'app', appId, 'personas'] as const,
-  pageActions: (pageId: number) =>
-    ['testomniac', 'page', pageId, 'actions'] as const,
   pageStateReusableElements: (pageStateId: number) =>
     ['testomniac', 'page-state', pageStateId, 'reusable-elements'] as const,
   htmlElement: (id: number) => ['testomniac', 'html-element', id] as const,

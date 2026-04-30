@@ -22,8 +22,11 @@ import type {
   ReusableHtmlElementResponse,
   RunDetailResponse,
   ScanDetailResponse,
+  TestActionResponse,
   TestCaseResponse,
+  TestRunFindingResponse,
   TestRunResponse,
+  TestSuiteResponse,
   UseCaseResponse,
   User,
 } from '@sudobility/testomniac_types';
@@ -586,6 +589,108 @@ export class TestomniacClient {
     return validateResponse<InputValueResponse[]>(
       response.data,
       'getUseCaseInputValues'
+    );
+  }
+
+  // --- Test Suites ---
+
+  async getAppTestSuites(
+    appId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestSuiteResponse[]>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/apps/${appId}/test-suites`);
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestSuiteResponse[]>(
+      response.data,
+      'getAppTestSuites'
+    );
+  }
+
+  async getTestSuiteChildSuites(
+    testSuiteId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestSuiteResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/test-suites/${testSuiteId}/suites`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestSuiteResponse[]>(
+      response.data,
+      'getTestSuiteChildSuites'
+    );
+  }
+
+  async getTestSuiteTestCases(
+    testSuiteId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestCaseResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/test-suites/${testSuiteId}/cases`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestCaseResponse[]>(
+      response.data,
+      'getTestSuiteTestCases'
+    );
+  }
+
+  // --- Test Case Actions ---
+
+  async getTestCaseActions(
+    testCaseId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestActionResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/test-cases/${testCaseId}/actions`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestActionResponse[]>(
+      response.data,
+      'getTestCaseActions'
+    );
+  }
+
+  // --- Test Run Findings ---
+
+  async getTestRunFindings(
+    testRunId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestRunFindingResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/test-runs/${testRunId}/findings`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestRunFindingResponse[]>(
+      response.data,
+      'getTestRunFindings'
+    );
+  }
+
+  async getAppFindings(
+    appId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestRunFindingResponse[]>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/apps/${appId}/findings`);
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestRunFindingResponse[]>(
+      response.data,
+      'getAppFindings'
     );
   }
 }

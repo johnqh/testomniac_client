@@ -91,4 +91,16 @@ export const QUERY_KEYS = {
   pageStateReusableElements: (pageStateId: number) =>
     ['testomniac', 'page-state', pageStateId, 'reusable-elements'] as const,
   htmlElement: (id: number) => ['testomniac', 'html-element', id] as const,
+  appTestSuites: (appId: number) =>
+    ['testomniac', 'app', appId, 'test-suites'] as const,
+  testSuiteChildSuites: (testSuiteId: number) =>
+    ['testomniac', 'test-suite', testSuiteId, 'suites'] as const,
+  testSuiteTestCases: (testSuiteId: number) =>
+    ['testomniac', 'test-suite', testSuiteId, 'cases'] as const,
+  testCaseActions: (testCaseId: number) =>
+    ['testomniac', 'test-case', testCaseId, 'actions'] as const,
+  testRunFindings: (testRunId: number) =>
+    ['testomniac', 'test-run', testRunId, 'findings'] as const,
+  appFindings: (appId: number) =>
+    ['testomniac', 'app', appId, 'findings'] as const,
 } as const;

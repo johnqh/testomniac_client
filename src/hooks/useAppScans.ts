@@ -3,7 +3,7 @@ import type { NetworkClient } from '@sudobility/types';
 import { TestomniacClient } from '../network/TestomniacClient';
 import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
 
-interface UseAppScansConfig {
+interface UseAppTestRunsConfig {
   networkClient: NetworkClient;
   baseUrl: string;
   appId: number;
@@ -11,13 +11,13 @@ interface UseAppScansConfig {
   enabled?: boolean;
 }
 
-export function useAppScans(config: UseAppScansConfig) {
+export function useAppScans(config: UseAppTestRunsConfig) {
   const { networkClient, baseUrl, appId, token, enabled = true } = config;
   const client = new TestomniacClient({ baseUrl, networkClient });
 
   const query = useQuery({
-    queryKey: QUERY_KEYS.appScans(appId),
-    queryFn: () => client.getAppScans(appId, token),
+    queryKey: QUERY_KEYS.appTestRuns(appId),
+    queryFn: () => client.getAppTestRuns(appId, token),
     enabled: enabled && !!appId && !!token,
     staleTime: DEFAULT_STALE_TIME,
   });

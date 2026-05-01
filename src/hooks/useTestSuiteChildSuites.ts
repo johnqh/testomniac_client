@@ -1,7 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
-import { TestomniacClient } from '../network/TestomniacClient';
-import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
+import type { FirebaseIdToken } from '../types';
 
 interface UseTestSuiteChildSuitesConfig {
   networkClient: NetworkClient;
@@ -11,21 +9,12 @@ interface UseTestSuiteChildSuitesConfig {
   enabled?: boolean;
 }
 
-export function useTestSuiteChildSuites(config: UseTestSuiteChildSuitesConfig) {
-  const { networkClient, baseUrl, testSuiteId, token, enabled = true } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
-
-  const query = useQuery({
-    queryKey: QUERY_KEYS.testSuiteChildSuites(testSuiteId),
-    queryFn: () => client.getTestSuiteChildSuites(testSuiteId, token),
-    enabled: enabled && !!testSuiteId && !!token,
-    staleTime: DEFAULT_STALE_TIME,
-  });
-
+/** @deprecated Test suites no longer nest. This hook always returns an empty array. */
+export function useTestSuiteChildSuites(_config: UseTestSuiteChildSuitesConfig) {
   return {
-    childSuites: query.data?.data ?? [],
-    isLoading: query.isLoading,
-    error: query.error?.message ?? query.data?.error ?? null,
-    refetch: query.refetch,
+    childSuites: [] as never[],
+    isLoading: false,
+    error: null,
+    refetch: () => Promise.resolve(),
   };
 }

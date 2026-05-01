@@ -1,19 +1,20 @@
 import { useMutation } from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
-import type { CreateScanRequest } from '@sudobility/testomniac_types';
+import type { CreateDiscoveryRunRequest } from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
 
-interface UseSubmitScanConfig {
+interface UseSubmitDiscoveryRunConfig {
   networkClient: NetworkClient;
   baseUrl: string;
 }
 
-export function useSubmitScan(config: UseSubmitScanConfig) {
+export function useSubmitScan(config: UseSubmitDiscoveryRunConfig) {
   const { networkClient, baseUrl } = config;
   const client = new TestomniacClient({ baseUrl, networkClient });
 
   const mutation = useMutation({
-    mutationFn: (data: CreateScanRequest) => client.submitScan(data),
+    mutationFn: (data: CreateDiscoveryRunRequest) =>
+      client.submitDiscoveryRun(data),
   });
 
   return {

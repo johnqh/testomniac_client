@@ -17,7 +17,7 @@ export function useRun(config: UseRunConfig) {
 
   const query = useQuery({
     queryKey: QUERY_KEYS.run(runId),
-    queryFn: () => client.getRun(runId, token),
+    queryFn: () => client.getTestRun(runId, token),
     enabled: enabled && !!runId && !!token,
     staleTime: DEFAULT_STALE_TIME,
   });

@@ -4,9 +4,9 @@ import type {
   AppResponse,
   BaseResponse,
   CreateAppRequest,
+  CreateDiscoveryRunRequest,
+  CreateDiscoveryRunResponse,
   CreateProjectRequest,
-  CreateScanRequest,
-  CreateScanResponse,
   HtmlElementResponse,
   InputValueResponse,
   PageResponse,
@@ -16,8 +16,6 @@ import type {
   ProjectResponse,
   ProjectSummaryResponse,
   ReusableHtmlElementResponse,
-  RunDetailResponse,
-  ScanDetailResponse,
   TestActionResponse,
   TestCaseResponse,
   TestRunFindingResponse,
@@ -123,28 +121,31 @@ export class TestomniacClient {
     return validateResponse<User>(response.data, 'getUser');
   }
 
-  // --- Scan ---
+  // --- Discovery Run ---
 
-  async submitScan(
-    data: CreateScanRequest
-  ): Promise<BaseResponse<CreateScanResponse>> {
+  async submitDiscoveryRun(
+    data: CreateDiscoveryRunRequest
+  ): Promise<BaseResponse<CreateDiscoveryRunResponse>> {
     const url = buildUrl(this.baseUrl, '/api/v1/scan');
     const response = await this.networkClient.post(url, { body: data });
-    return validateResponse<CreateScanResponse>(response.data, 'submitScan');
+    return validateResponse<CreateDiscoveryRunResponse>(
+      response.data,
+      'submitDiscoveryRun'
+    );
   }
 
-  async submitScanAuthenticated(
-    data: CreateScanRequest,
+  async submitDiscoveryRunAuthenticated(
+    data: CreateDiscoveryRunRequest,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<CreateScanResponse>> {
+  ): Promise<BaseResponse<CreateDiscoveryRunResponse>> {
     const url = buildUrl(this.baseUrl, '/api/v1/scan');
     const response = await this.networkClient.post(url, {
       headers: createAuthHeaders(token),
       body: data,
     });
-    return validateResponse<CreateScanResponse>(
+    return validateResponse<CreateDiscoveryRunResponse>(
       response.data,
-      'submitScanAuthenticated'
+      'submitDiscoveryRunAuthenticated'
     );
   }
 
@@ -203,31 +204,31 @@ export class TestomniacClient {
     return validateResponse<AppResponse>(response.data, 'getProject');
   }
 
-  // --- Runs ---
+  // --- Test Runs ---
 
   async getProjectRuns(
     projectId: number,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<RunDetailResponse[]>> {
+  ): Promise<BaseResponse<TestRunResponse[]>> {
     const url = buildUrl(this.baseUrl, `/api/v1/projects/${projectId}/runs`);
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<RunDetailResponse[]>(
+    return validateResponse<TestRunResponse[]>(
       response.data,
       'getProjectRuns'
     );
   }
 
-  async getRun(
-    runId: number,
+  async getTestRun(
+    testRunId: number,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<RunDetailResponse>> {
-    const url = buildUrl(this.baseUrl, `/api/v1/runs/${runId}`);
+  ): Promise<BaseResponse<TestRunResponse>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/runs/${testRunId}`);
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<RunDetailResponse>(response.data, 'getRun');
+    return validateResponse<TestRunResponse>(response.data, 'getTestRun');
   }
 
   // --- Run sub-resources ---
@@ -257,15 +258,21 @@ export class TestomniacClient {
     );
   }
 
-  async getRunTestRuns(
-    runId: number,
+  async getTestRunChildRuns(
+    testRunId: number,
     token: FirebaseIdToken
   ): Promise<BaseResponse<TestRunResponse[]>> {
-    const url = buildUrl(this.baseUrl, `/api/v1/runs/${runId}/test-runs`);
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runs/${testRunId}/child-runs`
+    );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<TestRunResponse[]>(response.data, 'getRunTestRuns');
+    return validateResponse<TestRunResponse[]>(
+      response.data,
+      'getTestRunChildRuns'
+    );
   }
 
   async getRunPersonas(
@@ -341,16 +348,6 @@ export class TestomniacClient {
     );
   }
 
-  async getAppScans(
-    appId: number,
-    token: FirebaseIdToken
-  ): Promise<BaseResponse<ScanDetailResponse[]>> {
-    const url = buildUrl(this.baseUrl, `/api/v1/apps/${appId}/scans`);
-    const response = await this.networkClient.get(url, {
-      headers: createAuthHeaders(token),
-    });
-    return validateResponse<ScanDetailResponse[]>(response.data, 'getAppScans');
-  }
 
   async getAppTestCases(
     appId: number,
@@ -521,22 +518,6 @@ export class TestomniacClient {
     );
   }
 
-  async getTestSuiteChildSuites(
-    testSuiteId: number,
-    token: FirebaseIdToken
-  ): Promise<BaseResponse<TestSuiteResponse[]>> {
-    const url = buildUrl(
-      this.baseUrl,
-      `/api/v1/test-suites/${testSuiteId}/suites`
-    );
-    const response = await this.networkClient.get(url, {
-      headers: createAuthHeaders(token),
-    });
-    return validateResponse<TestSuiteResponse[]>(
-      response.data,
-      'getTestSuiteChildSuites'
-    );
-  }
 
   async getTestSuiteTestCases(
     testSuiteId: number,
@@ -574,22 +555,22 @@ export class TestomniacClient {
     );
   }
 
-  // --- Test Run Findings ---
+  // --- Test Case Run Findings ---
 
-  async getTestRunFindings(
-    testRunId: number,
+  async getTestCaseRunFindings(
+    testCaseRunId: number,
     token: FirebaseIdToken
   ): Promise<BaseResponse<TestRunFindingResponse[]>> {
     const url = buildUrl(
       this.baseUrl,
-      `/api/v1/test-runs/${testRunId}/findings`
+      `/api/v1/test-case-runs/${testCaseRunId}/findings`
     );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
     return validateResponse<TestRunFindingResponse[]>(
       response.data,
-      'getTestRunFindings'
+      'getTestCaseRunFindings'
     );
   }
 

@@ -10,7 +10,9 @@ interface UseTestSuiteChildSuitesConfig {
 }
 
 /** @deprecated Test suites no longer nest. This hook always returns an empty array. */
-export function useTestSuiteChildSuites(_config: UseTestSuiteChildSuitesConfig) {
+export function useTestSuiteChildSuites(
+  _config: UseTestSuiteChildSuitesConfig
+) {
   return {
     childSuites: [] as never[],
     isLoading: false,

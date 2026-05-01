@@ -12,8 +12,13 @@ interface UseTestRunFindingsConfig {
 }
 
 export function useTestRunFindings(config: UseTestRunFindingsConfig) {
-  const { networkClient, baseUrl, testCaseRunId, token, enabled = true } =
-    config;
+  const {
+    networkClient,
+    baseUrl,
+    testCaseRunId,
+    token,
+    enabled = true,
+  } = config;
   const client = new TestomniacClient({ baseUrl, networkClient });
 
   const query = useQuery({

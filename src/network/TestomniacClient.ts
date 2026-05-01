@@ -214,10 +214,7 @@ export class TestomniacClient {
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<TestRunResponse[]>(
-      response.data,
-      'getProjectRuns'
-    );
+    return validateResponse<TestRunResponse[]>(response.data, 'getProjectRuns');
   }
 
   async getTestRun(
@@ -262,10 +259,7 @@ export class TestomniacClient {
     testRunId: number,
     token: FirebaseIdToken
   ): Promise<BaseResponse<TestRunResponse[]>> {
-    const url = buildUrl(
-      this.baseUrl,
-      `/api/v1/runs/${testRunId}/child-runs`
-    );
+    const url = buildUrl(this.baseUrl, `/api/v1/runs/${testRunId}/child-runs`);
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
@@ -347,7 +341,6 @@ export class TestomniacClient {
       'getAppPageStates'
     );
   }
-
 
   async getAppTestCases(
     appId: number,
@@ -517,7 +510,6 @@ export class TestomniacClient {
       'getAppTestSuites'
     );
   }
-
 
   async getTestSuiteTestCases(
     testSuiteId: number,

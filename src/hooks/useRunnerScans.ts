@@ -16,7 +16,7 @@ export function useRunnerScans(config: UseRunnerScansConfig) {
   const client = new TestomniacClient({ baseUrl, networkClient });
 
   const query = useQuery({
-    queryKey: QUERY_KEYS.runnerTestRuns(runnerId),
+    queryKey: QUERY_KEYS.runnerDiscoveryRuns(runnerId),
     queryFn: () => client.getRunnerTestRuns(runnerId, token),
     enabled: enabled && !!runnerId && !!token,
     staleTime: DEFAULT_STALE_TIME,

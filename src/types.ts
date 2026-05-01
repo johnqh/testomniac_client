@@ -70,8 +70,11 @@ export const QUERY_KEYS = {
     ['testomniac', 'runner', runnerId, 'pages'] as const,
   runnerPageStates: (runnerId: number) =>
     ['testomniac', 'runner', runnerId, 'page-states'] as const,
+  runnerDiscoveryRuns: (runnerId: number) =>
+    ['testomniac', 'runner', runnerId, 'test-runs'] as const,
+  /** @deprecated Use `runnerDiscoveryRuns` or `runnerTestRuns`. */
   runnerScans: (runnerId: number) =>
-    ['testomniac', 'runner', runnerId, 'scans'] as const,
+    ['testomniac', 'runner', runnerId, 'test-runs'] as const,
   runnerTestCases: (runnerId: number) =>
     ['testomniac', 'runner', runnerId, 'test-cases'] as const,
   runnerTestRuns: (runnerId: number) =>

@@ -14,9 +14,9 @@ describe('QUERY_KEYS', () => {
     });
   });
 
-  it('entityProjects key includes slug', () => {
-    const key = QUERY_KEYS.entityProjects('my-org');
-    expect(key).toEqual(['testomniac', 'projects', 'my-org']);
+  it('entityProducts key includes slug', () => {
+    const key = QUERY_KEYS.entityProducts('my-org');
+    expect(key).toEqual(['testomniac', 'products', 'my-org']);
   });
 
   it('run key includes runId', () => {
@@ -24,8 +24,8 @@ describe('QUERY_KEYS', () => {
     expect(key).toEqual(['testomniac', 'run', 42]);
   });
 
-  it('appFindings key includes appId', () => {
-    const key = QUERY_KEYS.appFindings(7);
-    expect(key).toEqual(['testomniac', 'app', 7, 'findings']);
+  it('runnerFindings key includes runnerId', () => {
+    const key = QUERY_KEYS.runnerFindings(7);
+    expect(key).toEqual(['testomniac', 'runner', 7, 'findings']);
   });
 });

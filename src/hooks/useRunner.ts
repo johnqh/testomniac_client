@@ -3,27 +3,27 @@ import type { NetworkClient } from '@sudobility/types';
 import { TestomniacClient } from '../network/TestomniacClient';
 import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
 
-interface UseProjectAppsConfig {
+interface UseRunnerConfig {
   networkClient: NetworkClient;
   baseUrl: string;
-  projectId: number;
+  runnerId: number;
   token: FirebaseIdToken;
   enabled?: boolean;
 }
 
-export function useProjectApps(config: UseProjectAppsConfig) {
-  const { networkClient, baseUrl, projectId, token, enabled = true } = config;
+export function useRunner(config: UseRunnerConfig) {
+  const { networkClient, baseUrl, runnerId, token, enabled = true } = config;
   const client = new TestomniacClient({ baseUrl, networkClient });
 
   const query = useQuery({
-    queryKey: QUERY_KEYS.projectApps(projectId),
-    queryFn: () => client.getProjectApps(projectId, token),
-    enabled: enabled && !!projectId && !!token,
+    queryKey: QUERY_KEYS.runner(runnerId),
+    queryFn: () => client.getRunner(runnerId, token),
+    enabled: enabled && !!runnerId && !!token,
     staleTime: DEFAULT_STALE_TIME,
   });
 
   return {
-    apps: query.data?.data ?? [],
+    runner: query.data?.data ?? null,
     isLoading: query.isLoading,
     error: query.error?.message ?? query.data?.error ?? null,
     refetch: query.refetch,

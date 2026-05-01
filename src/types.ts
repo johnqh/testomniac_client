@@ -40,11 +40,11 @@ export const DEFAULT_GC_TIME = 30 * 60 * 1000;
  */
 export const QUERY_KEYS = {
   user: (userId: string) => ['testomniac', 'user', userId] as const,
-  entityProjects: (entitySlug: string) =>
-    ['testomniac', 'projects', entitySlug] as const,
-  project: (projectId: number) => ['testomniac', 'project', projectId] as const,
-  projectRuns: (projectId: number) =>
-    ['testomniac', 'project', projectId, 'runs'] as const,
+  entityProducts: (entitySlug: string) =>
+    ['testomniac', 'products', entitySlug] as const,
+  product: (productId: number) => ['testomniac', 'product', productId] as const,
+  productRuns: (productId: number) =>
+    ['testomniac', 'product', productId, 'runs'] as const,
   run: (runId: number) => ['testomniac', 'run', runId] as const,
   runPages: (runId: number) => ['testomniac', 'run', runId, 'pages'] as const,
   runTestCases: (runId: number) =>
@@ -63,26 +63,28 @@ export const QUERY_KEYS = {
     ['testomniac', 'persona', personaId, 'use-cases'] as const,
   useCaseInputValues: (useCaseId: number) =>
     ['testomniac', 'use-case', useCaseId, 'input-values'] as const,
-  app: (appId: number) => ['testomniac', 'app', appId] as const,
-  projectApps: (projectId: number) =>
-    ['testomniac', 'project', projectId, 'apps'] as const,
-  appPages: (appId: number) => ['testomniac', 'app', appId, 'pages'] as const,
-  appPageStates: (appId: number) =>
-    ['testomniac', 'app', appId, 'page-states'] as const,
-  appScans: (appId: number) => ['testomniac', 'app', appId, 'scans'] as const,
-  appTestCases: (appId: number) =>
-    ['testomniac', 'app', appId, 'test-cases'] as const,
-  appTestRuns: (appId: number) =>
-    ['testomniac', 'app', appId, 'test-runs'] as const,
-  appComponents: (appId: number) =>
-    ['testomniac', 'app', appId, 'components'] as const,
-  appPersonas: (appId: number) =>
-    ['testomniac', 'app', appId, 'personas'] as const,
+  runner: (runnerId: number) => ['testomniac', 'runner', runnerId] as const,
+  productRunners: (productId: number) =>
+    ['testomniac', 'product', productId, 'runners'] as const,
+  runnerPages: (runnerId: number) =>
+    ['testomniac', 'runner', runnerId, 'pages'] as const,
+  runnerPageStates: (runnerId: number) =>
+    ['testomniac', 'runner', runnerId, 'page-states'] as const,
+  runnerScans: (runnerId: number) =>
+    ['testomniac', 'runner', runnerId, 'scans'] as const,
+  runnerTestCases: (runnerId: number) =>
+    ['testomniac', 'runner', runnerId, 'test-cases'] as const,
+  runnerTestRuns: (runnerId: number) =>
+    ['testomniac', 'runner', runnerId, 'test-runs'] as const,
+  runnerComponents: (runnerId: number) =>
+    ['testomniac', 'runner', runnerId, 'components'] as const,
+  runnerPersonas: (runnerId: number) =>
+    ['testomniac', 'runner', runnerId, 'personas'] as const,
   pageStateReusableElements: (pageStateId: number) =>
     ['testomniac', 'page-state', pageStateId, 'reusable-elements'] as const,
   htmlElement: (id: number) => ['testomniac', 'html-element', id] as const,
-  appTestSuites: (appId: number) =>
-    ['testomniac', 'app', appId, 'test-suites'] as const,
+  runnerTestSuites: (runnerId: number) =>
+    ['testomniac', 'runner', runnerId, 'test-suites'] as const,
   testSuiteChildSuites: (testSuiteId: number) =>
     ['testomniac', 'test-suite', testSuiteId, 'suites'] as const,
   testSuiteTestCases: (testSuiteId: number) =>
@@ -91,6 +93,6 @@ export const QUERY_KEYS = {
     ['testomniac', 'test-case', testCaseId, 'actions'] as const,
   testRunFindings: (testRunId: number) =>
     ['testomniac', 'test-run', testRunId, 'findings'] as const,
-  appFindings: (appId: number) =>
-    ['testomniac', 'app', appId, 'findings'] as const,
+  runnerFindings: (runnerId: number) =>
+    ['testomniac', 'runner', runnerId, 'findings'] as const,
 } as const;

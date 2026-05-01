@@ -1,21 +1,21 @@
 import type { NetworkClient } from '@sudobility/types';
 import type {
   ActionableItemResponse,
-  AppResponse,
   BaseResponse,
-  CreateAppRequest,
   CreateDiscoveryRunRequest,
   CreateDiscoveryRunResponse,
-  CreateProjectRequest,
+  CreateProductRequest,
+  CreateRunnerRequest,
   HtmlElementResponse,
   InputValueResponse,
   PageResponse,
   PageStateResponse,
   PageStateReusableElementResponse,
   PersonaResponse,
-  ProjectResponse,
-  ProjectSummaryResponse,
+  ProductResponse,
+  ProductSummaryResponse,
   ReusableHtmlElementResponse,
+  RunnerResponse,
   TestActionResponse,
   TestCaseResponse,
   TestRunFindingResponse,
@@ -149,72 +149,72 @@ export class TestomniacClient {
     );
   }
 
-  // --- Projects ---
+  // --- Products ---
 
-  async getEntityProjects(
+  async getEntityProducts(
     entitySlug: string,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<ProjectSummaryResponse[]>> {
+  ): Promise<BaseResponse<ProductSummaryResponse[]>> {
     const url = buildUrl(
       this.baseUrl,
-      `/api/v1/entities/${entitySlug}/projects`
+      `/api/v1/entities/${entitySlug}/products`
     );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<ProjectSummaryResponse[]>(
+    return validateResponse<ProductSummaryResponse[]>(
       response.data,
-      'getEntityProjects'
+      'getEntityProducts'
     );
   }
 
-  async createProject(
-    data: CreateProjectRequest,
+  async createProduct(
+    data: CreateProductRequest,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<ProjectResponse>> {
-    const url = buildUrl(this.baseUrl, '/api/v1/projects');
+  ): Promise<BaseResponse<ProductResponse>> {
+    const url = buildUrl(this.baseUrl, '/api/v1/products');
     const response = await this.networkClient.post(url, {
       headers: createAuthHeaders(token),
       body: data,
     });
-    return validateResponse<ProjectResponse>(response.data, 'createProject');
+    return validateResponse<ProductResponse>(response.data, 'createProduct');
   }
 
-  async createApp(
-    projectId: number,
-    data: CreateAppRequest,
+  async createRunner(
+    productId: number,
+    data: CreateRunnerRequest,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<AppResponse>> {
-    const url = buildUrl(this.baseUrl, `/api/v1/projects/${projectId}/apps`);
+  ): Promise<BaseResponse<RunnerResponse>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/products/${productId}/runners`);
     const response = await this.networkClient.post(url, {
       headers: createAuthHeaders(token),
       body: data,
     });
-    return validateResponse<AppResponse>(response.data, 'createApp');
+    return validateResponse<RunnerResponse>(response.data, 'createRunner');
   }
 
-  async getProject(
-    projectId: number,
+  async getProduct(
+    productId: number,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<AppResponse>> {
-    const url = buildUrl(this.baseUrl, `/api/v1/projects/${projectId}`);
+  ): Promise<BaseResponse<RunnerResponse>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/products/${productId}`);
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<AppResponse>(response.data, 'getProject');
+    return validateResponse<RunnerResponse>(response.data, 'getProduct');
   }
 
   // --- Test Runs ---
 
-  async getProjectRuns(
-    projectId: number,
+  async getProductRuns(
+    productId: number,
     token: FirebaseIdToken
   ): Promise<BaseResponse<TestRunResponse[]>> {
-    const url = buildUrl(this.baseUrl, `/api/v1/projects/${projectId}/runs`);
+    const url = buildUrl(this.baseUrl, `/api/v1/products/${productId}/runs`);
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<TestRunResponse[]>(response.data, 'getProjectRuns');
+    return validateResponse<TestRunResponse[]>(response.data, 'getProductRuns');
   }
 
   async getTestRun(
@@ -291,105 +291,123 @@ export class TestomniacClient {
     return validateResponse<unknown[]>(response.data, 'getRunComponents');
   }
 
-  // --- Apps ---
+  // --- Runners ---
 
-  async getProjectApps(
-    projectId: number,
+  async getProductRunners(
+    productId: number,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<AppResponse[]>> {
-    const url = buildUrl(this.baseUrl, `/api/v1/projects/${projectId}/apps`);
+  ): Promise<BaseResponse<RunnerResponse[]>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/products/${productId}/runners`);
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<AppResponse[]>(response.data, 'getProjectApps');
+    return validateResponse<RunnerResponse[]>(
+      response.data,
+      'getProductRunners'
+    );
   }
 
-  async getApp(
-    appId: number,
+  async getRunner(
+    runnerId: number,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<AppResponse>> {
-    const url = buildUrl(this.baseUrl, `/api/v1/apps/${appId}`);
+  ): Promise<BaseResponse<RunnerResponse>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/runners/${runnerId}`);
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<AppResponse>(response.data, 'getApp');
+    return validateResponse<RunnerResponse>(response.data, 'getRunner');
   }
 
-  // --- App sub-resources ---
+  // --- Runner sub-resources ---
 
-  async getAppPages(
-    appId: number,
+  async getRunnerPages(
+    runnerId: number,
     token: FirebaseIdToken
   ): Promise<BaseResponse<PageResponse[]>> {
-    const url = buildUrl(this.baseUrl, `/api/v1/apps/${appId}/pages`);
+    const url = buildUrl(this.baseUrl, `/api/v1/runners/${runnerId}/pages`);
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<PageResponse[]>(response.data, 'getAppPages');
+    return validateResponse<PageResponse[]>(response.data, 'getRunnerPages');
   }
 
-  async getAppPageStates(
-    appId: number,
+  async getRunnerPageStates(
+    runnerId: number,
     token: FirebaseIdToken
   ): Promise<BaseResponse<PageStateResponse[]>> {
-    const url = buildUrl(this.baseUrl, `/api/v1/apps/${appId}/page-states`);
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runners/${runnerId}/page-states`
+    );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
     return validateResponse<PageStateResponse[]>(
       response.data,
-      'getAppPageStates'
+      'getRunnerPageStates'
     );
   }
 
-  async getAppTestCases(
-    appId: number,
+  async getRunnerTestCases(
+    runnerId: number,
     token: FirebaseIdToken
   ): Promise<BaseResponse<TestCaseResponse[]>> {
-    const url = buildUrl(this.baseUrl, `/api/v1/apps/${appId}/test-cases`);
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runners/${runnerId}/test-cases`
+    );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
     return validateResponse<TestCaseResponse[]>(
       response.data,
-      'getAppTestCases'
+      'getRunnerTestCases'
     );
   }
 
-  async getAppTestRuns(
-    appId: number,
+  async getRunnerTestRuns(
+    runnerId: number,
     token: FirebaseIdToken
   ): Promise<BaseResponse<TestRunResponse[]>> {
-    const url = buildUrl(this.baseUrl, `/api/v1/apps/${appId}/test-runs`);
+    const url = buildUrl(this.baseUrl, `/api/v1/runners/${runnerId}/test-runs`);
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<TestRunResponse[]>(response.data, 'getAppTestRuns');
+    return validateResponse<TestRunResponse[]>(
+      response.data,
+      'getRunnerTestRuns'
+    );
   }
 
-  async getAppComponents(
-    appId: number,
+  async getRunnerComponents(
+    runnerId: number,
     token: FirebaseIdToken
   ): Promise<BaseResponse<ReusableHtmlElementResponse[]>> {
-    const url = buildUrl(this.baseUrl, `/api/v1/apps/${appId}/components`);
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runners/${runnerId}/components`
+    );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
     return validateResponse<ReusableHtmlElementResponse[]>(
       response.data,
-      'getAppComponents'
+      'getRunnerComponents'
     );
   }
 
-  async getAppPersonas(
-    appId: number,
+  async getRunnerPersonas(
+    runnerId: number,
     token: FirebaseIdToken
   ): Promise<BaseResponse<PersonaResponse[]>> {
-    const url = buildUrl(this.baseUrl, `/api/v1/apps/${appId}/personas`);
+    const url = buildUrl(this.baseUrl, `/api/v1/runners/${runnerId}/personas`);
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<PersonaResponse[]>(response.data, 'getAppPersonas');
+    return validateResponse<PersonaResponse[]>(
+      response.data,
+      'getRunnerPersonas'
+    );
   }
 
   // --- Page sub-resources ---
@@ -497,17 +515,20 @@ export class TestomniacClient {
 
   // --- Test Suites ---
 
-  async getAppTestSuites(
-    appId: number,
+  async getRunnerTestSuites(
+    runnerId: number,
     token: FirebaseIdToken
   ): Promise<BaseResponse<TestSuiteResponse[]>> {
-    const url = buildUrl(this.baseUrl, `/api/v1/apps/${appId}/test-suites`);
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runners/${runnerId}/test-suites`
+    );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
     return validateResponse<TestSuiteResponse[]>(
       response.data,
-      'getAppTestSuites'
+      'getRunnerTestSuites'
     );
   }
 
@@ -566,17 +587,17 @@ export class TestomniacClient {
     );
   }
 
-  async getAppFindings(
-    appId: number,
+  async getRunnerFindings(
+    runnerId: number,
     token: FirebaseIdToken
   ): Promise<BaseResponse<TestRunFindingResponse[]>> {
-    const url = buildUrl(this.baseUrl, `/api/v1/apps/${appId}/findings`);
+    const url = buildUrl(this.baseUrl, `/api/v1/runners/${runnerId}/findings`);
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
     return validateResponse<TestRunFindingResponse[]>(
       response.data,
-      'getAppFindings'
+      'getRunnerFindings'
     );
   }
 }

@@ -3,22 +3,22 @@ import type { NetworkClient } from '@sudobility/types';
 import { TestomniacClient } from '../network/TestomniacClient';
 import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
 
-interface UseAppComponentsConfig {
+interface UseRunnerComponentsConfig {
   networkClient: NetworkClient;
   baseUrl: string;
-  appId: number;
+  runnerId: number;
   token: FirebaseIdToken;
   enabled?: boolean;
 }
 
-export function useAppComponents(config: UseAppComponentsConfig) {
-  const { networkClient, baseUrl, appId, token, enabled = true } = config;
+export function useRunnerComponents(config: UseRunnerComponentsConfig) {
+  const { networkClient, baseUrl, runnerId, token, enabled = true } = config;
   const client = new TestomniacClient({ baseUrl, networkClient });
 
   const query = useQuery({
-    queryKey: QUERY_KEYS.appComponents(appId),
-    queryFn: () => client.getAppComponents(appId, token),
-    enabled: enabled && !!appId && !!token,
+    queryKey: QUERY_KEYS.runnerComponents(runnerId),
+    queryFn: () => client.getRunnerComponents(runnerId, token),
+    enabled: enabled && !!runnerId && !!token,
     staleTime: DEFAULT_STALE_TIME,
   });
 

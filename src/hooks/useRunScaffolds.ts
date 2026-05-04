@@ -3,27 +3,27 @@ import type { NetworkClient } from '@sudobility/types';
 import { TestomniacClient } from '../network/TestomniacClient';
 import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
 
-interface UseRunnerComponentsConfig {
+interface UseRunScaffoldsConfig {
   networkClient: NetworkClient;
   baseUrl: string;
-  runnerId: number;
+  runId: number;
   token: FirebaseIdToken;
   enabled?: boolean;
 }
 
-export function useRunnerComponents(config: UseRunnerComponentsConfig) {
-  const { networkClient, baseUrl, runnerId, token, enabled = true } = config;
+export function useRunScaffolds(config: UseRunScaffoldsConfig) {
+  const { networkClient, baseUrl, runId, token, enabled = true } = config;
   const client = new TestomniacClient({ baseUrl, networkClient });
 
   const query = useQuery({
-    queryKey: QUERY_KEYS.runnerComponents(runnerId),
-    queryFn: () => client.getRunnerComponents(runnerId, token),
-    enabled: enabled && !!runnerId && !!token,
+    queryKey: QUERY_KEYS.runScaffolds(runId),
+    queryFn: () => client.getRunScaffolds(runId, token),
+    enabled: enabled && !!runId && !!token,
     staleTime: DEFAULT_STALE_TIME,
   });
 
   return {
-    components: query.data?.data ?? [],
+    scaffolds: query.data?.data ?? [],
     isLoading: query.isLoading,
     error: query.error?.message ?? query.data?.error ?? null,
     refetch: query.refetch,

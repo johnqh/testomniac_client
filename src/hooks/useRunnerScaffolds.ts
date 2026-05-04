@@ -3,29 +3,27 @@ import type { NetworkClient } from '@sudobility/types';
 import { TestomniacClient } from '../network/TestomniacClient';
 import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
 
-interface UsePageStateReusableElementsConfig {
+interface UseRunnerScaffoldsConfig {
   networkClient: NetworkClient;
   baseUrl: string;
-  pageStateId: number;
+  runnerId: number;
   token: FirebaseIdToken;
   enabled?: boolean;
 }
 
-export function usePageStateReusableElements(
-  config: UsePageStateReusableElementsConfig
-) {
-  const { networkClient, baseUrl, pageStateId, token, enabled = true } = config;
+export function useRunnerScaffolds(config: UseRunnerScaffoldsConfig) {
+  const { networkClient, baseUrl, runnerId, token, enabled = true } = config;
   const client = new TestomniacClient({ baseUrl, networkClient });
 
   const query = useQuery({
-    queryKey: QUERY_KEYS.pageStateReusableElements(pageStateId),
-    queryFn: () => client.getPageStateReusableElements(pageStateId, token),
-    enabled: enabled && !!pageStateId && !!token,
+    queryKey: QUERY_KEYS.runnerScaffolds(runnerId),
+    queryFn: () => client.getRunnerScaffolds(runnerId, token),
+    enabled: enabled && !!runnerId && !!token,
     staleTime: DEFAULT_STALE_TIME,
   });
 
   return {
-    reusableElements: query.data?.data ?? [],
+    scaffolds: query.data?.data ?? [],
     isLoading: query.isLoading,
     error: query.error?.message ?? query.data?.error ?? null,
     refetch: query.refetch,

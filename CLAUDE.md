@@ -34,7 +34,7 @@ src/
 │   ├── useRunTestRuns.ts             # Query test runs for a run
 │   ├── useRunIssues.ts               # Query issues for a run
 │   ├── useRunPersonas.ts             # Query personas for a run
-│   ├── useRunComponents.ts           # Query components for a run
+│   ├── useRunScaffolds.ts             # Query scaffolds for a run
 │   ├── usePageStates.ts              # Query states for a page
 │   ├── usePageStateItems.ts          # Query actionable items for a state
 │   ├── usePersonaUseCases.ts         # Query use cases for a persona
@@ -76,7 +76,7 @@ HTTP client class constructed with `{ baseUrl, networkClient }`. Uses dependency
 - `useRunTestRuns(config)` — test execution results for a run
 - `useRunIssues(config)` — issues detected in a run
 - `useRunPersonas(config)` — AI-generated personas for a run
-- `useRunComponents(config)` — reusable components found in a run
+- `useRunScaffolds(config)` — scaffolds found in a run
 - `usePageStates(config)` — states captured for a page
 - `usePageStateItems(config)` — actionable items in a page state
 - `usePersonaUseCases(config)` — use cases for a persona

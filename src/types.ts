@@ -53,8 +53,8 @@ export const QUERY_KEYS = {
     ['testomniac', 'run', runId, 'test-runs'] as const,
   runPersonas: (runId: number) =>
     ['testomniac', 'run', runId, 'personas'] as const,
-  runComponents: (runId: number) =>
-    ['testomniac', 'run', runId, 'components'] as const,
+  runScaffolds: (runId: number) =>
+    ['testomniac', 'run', runId, 'scaffolds'] as const,
   pageStates: (pageId: number) =>
     ['testomniac', 'page', pageId, 'states'] as const,
   pageStateItems: (pageStateId: number) =>
@@ -79,12 +79,12 @@ export const QUERY_KEYS = {
     ['testomniac', 'runner', runnerId, 'test-cases'] as const,
   runnerTestRuns: (runnerId: number) =>
     ['testomniac', 'runner', runnerId, 'test-runs'] as const,
-  runnerComponents: (runnerId: number) =>
-    ['testomniac', 'runner', runnerId, 'components'] as const,
+  runnerScaffolds: (runnerId: number) =>
+    ['testomniac', 'runner', runnerId, 'scaffolds'] as const,
   runnerPersonas: (runnerId: number) =>
     ['testomniac', 'runner', runnerId, 'personas'] as const,
-  pageStateReusableElements: (pageStateId: number) =>
-    ['testomniac', 'page-state', pageStateId, 'reusable-elements'] as const,
+  pageStateScaffolds: (pageStateId: number) =>
+    ['testomniac', 'page-state', pageStateId, 'scaffolds'] as const,
   htmlElement: (id: number) => ['testomniac', 'html-element', id] as const,
   runnerTestSuites: (runnerId: number) =>
     ['testomniac', 'runner', runnerId, 'test-suites'] as const,

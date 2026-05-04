@@ -10,12 +10,12 @@ import type {
   InputValueResponse,
   PageResponse,
   PageStateResponse,
-  PageStateReusableElementResponse,
+  PageStateScaffoldResponse,
   PersonaResponse,
   ProductResponse,
   ProductSummaryResponse,
-  ReusableHtmlElementResponse,
   RunnerResponse,
+  ScaffoldResponse,
   TestActionResponse,
   TestCaseResponse,
   TestRunFindingResponse,
@@ -280,15 +280,18 @@ export class TestomniacClient {
     return validateResponse<PersonaResponse[]>(response.data, 'getRunPersonas');
   }
 
-  async getRunComponents(
+  async getRunScaffolds(
     runId: number,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<unknown[]>> {
-    const url = buildUrl(this.baseUrl, `/api/v1/runs/${runId}/components`);
+  ): Promise<BaseResponse<ScaffoldResponse[]>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/runs/${runId}/scaffolds`);
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<unknown[]>(response.data, 'getRunComponents');
+    return validateResponse<ScaffoldResponse[]>(
+      response.data,
+      'getRunScaffolds'
+    );
   }
 
   // --- Runners ---
@@ -379,20 +382,17 @@ export class TestomniacClient {
     );
   }
 
-  async getRunnerComponents(
+  async getRunnerScaffolds(
     runnerId: number,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<ReusableHtmlElementResponse[]>> {
-    const url = buildUrl(
-      this.baseUrl,
-      `/api/v1/runners/${runnerId}/components`
-    );
+  ): Promise<BaseResponse<ScaffoldResponse[]>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/runners/${runnerId}/scaffolds`);
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<ReusableHtmlElementResponse[]>(
+    return validateResponse<ScaffoldResponse[]>(
       response.data,
-      'getRunnerComponents'
+      'getRunnerScaffolds'
     );
   }
 
@@ -443,20 +443,20 @@ export class TestomniacClient {
     );
   }
 
-  async getPageStateReusableElements(
+  async getPageStateScaffolds(
     pageStateId: number,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<PageStateReusableElementResponse[]>> {
+  ): Promise<BaseResponse<PageStateScaffoldResponse[]>> {
     const url = buildUrl(
       this.baseUrl,
-      `/api/v1/page-details/page-states/${pageStateId}/reusable-elements`
+      `/api/v1/page-details/page-states/${pageStateId}/scaffolds`
     );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<PageStateReusableElementResponse[]>(
+    return validateResponse<PageStateScaffoldResponse[]>(
       response.data,
-      'getPageStateReusableElements'
+      'getPageStateScaffolds'
     );
   }
 

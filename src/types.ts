@@ -104,4 +104,6 @@ export const QUERY_KEYS = {
     ['testomniac', 'test-scenario', scenarioId, 'sequences'] as const,
   testScenarioSequenceTestCases: (sequenceId: number) =>
     ['testomniac', 'test-scenario-sequence', sequenceId, 'test-cases'] as const,
+  testScenarioSequenceRuns: (sequenceId: number) =>
+    ['testomniac', 'test-scenario-sequence', sequenceId, 'runs'] as const,
 } as const;

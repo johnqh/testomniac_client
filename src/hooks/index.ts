@@ -35,3 +35,4 @@ export { useTestScenarioSequenceTestCases } from './useTestScenarioSequenceTestC
 export { useCreateTestScenario } from './useCreateTestScenario';
 export { useUpdateTestScenario } from './useUpdateTestScenario';
 export { useDeleteTestScenario } from './useDeleteTestScenario';
+export { useTestScenarioSequenceRuns } from './useTestScenarioSequenceRuns';

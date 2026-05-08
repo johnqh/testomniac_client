@@ -23,6 +23,7 @@ import type {
   TestRunResponse,
   TestScenarioResponse,
   TestScenarioSequenceResponse,
+  TestScenarioSequenceRunResponse,
   TestScenarioSequenceTestCaseLinkResponse,
   TestSuiteResponse,
   UpdateTestScenarioRequest,
@@ -715,6 +716,25 @@ export class TestomniacClient {
     return validateResponse<TestScenarioSequenceTestCaseLinkResponse[]>(
       response.data,
       'getTestScenarioSequenceTestCases'
+    );
+  }
+
+  // --- Test Scenario Sequence Runs ---
+
+  async getTestScenarioSequenceRuns(
+    sequenceId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestScenarioSequenceRunResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/test-scenarios/sequences/${sequenceId}/runs`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestScenarioSequenceRunResponse[]>(
+      response.data,
+      'getTestScenarioSequenceRuns'
     );
   }
 }

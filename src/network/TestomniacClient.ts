@@ -6,6 +6,7 @@ import type {
   CreateDiscoveryRunResponse,
   CreateProductRequest,
   CreateRunnerRequest,
+  CreateTestScenarioRequest,
   HtmlElementResponse,
   InputValueResponse,
   PageResponse,
@@ -20,7 +21,11 @@ import type {
   TestCaseResponse,
   TestRunFindingResponse,
   TestRunResponse,
+  TestScenarioResponse,
+  TestScenarioSequenceResponse,
+  TestScenarioSequenceTestCaseLinkResponse,
   TestSuiteResponse,
+  UpdateTestScenarioRequest,
   UseCaseResponse,
   User,
 } from '@sudobility/testomniac_types';
@@ -598,6 +603,118 @@ export class TestomniacClient {
     return validateResponse<TestRunFindingResponse[]>(
       response.data,
       'getRunnerFindings'
+    );
+  }
+
+  // --- Test Scenarios ---
+
+  async getRunnerTestScenarios(
+    runnerId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestScenarioResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runners/${runnerId}/test-scenarios`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestScenarioResponse[]>(
+      response.data,
+      'getRunnerTestScenarios'
+    );
+  }
+
+  async createTestScenario(
+    runnerId: number,
+    data: CreateTestScenarioRequest,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestScenarioResponse>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runners/${runnerId}/test-scenarios`
+    );
+    const response = await this.networkClient.post(url, {
+      headers: createAuthHeaders(token),
+      body: data,
+    });
+    return validateResponse<TestScenarioResponse>(
+      response.data,
+      'createTestScenario'
+    );
+  }
+
+  async updateTestScenario(
+    runnerId: number,
+    scenarioId: number,
+    data: UpdateTestScenarioRequest,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestScenarioResponse>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runners/${runnerId}/test-scenarios/${scenarioId}`
+    );
+    const response = await this.networkClient.put(url, {
+      headers: createAuthHeaders(token),
+      body: data,
+    });
+    return validateResponse<TestScenarioResponse>(
+      response.data,
+      'updateTestScenario'
+    );
+  }
+
+  async deleteTestScenario(
+    runnerId: number,
+    scenarioId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestScenarioResponse>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runners/${runnerId}/test-scenarios/${scenarioId}`
+    );
+    const response = await this.networkClient.delete(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestScenarioResponse>(
+      response.data,
+      'deleteTestScenario'
+    );
+  }
+
+  // --- Test Scenario Sequences ---
+
+  async getTestScenarioSequences(
+    scenarioId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestScenarioSequenceResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/test-scenarios/${scenarioId}/sequences`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestScenarioSequenceResponse[]>(
+      response.data,
+      'getTestScenarioSequences'
+    );
+  }
+
+  async getTestScenarioSequenceTestCases(
+    sequenceId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestScenarioSequenceTestCaseLinkResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/test-scenarios/sequences/${sequenceId}/test-cases`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestScenarioSequenceTestCaseLinkResponse[]>(
+      response.data,
+      'getTestScenarioSequenceTestCases'
     );
   }
 }

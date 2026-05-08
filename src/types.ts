@@ -98,4 +98,10 @@ export const QUERY_KEYS = {
     ['testomniac', 'test-run', testRunId, 'findings'] as const,
   runnerFindings: (runnerId: number) =>
     ['testomniac', 'runner', runnerId, 'findings'] as const,
+  runnerTestScenarios: (runnerId: number) =>
+    ['testomniac', 'runner', runnerId, 'test-scenarios'] as const,
+  testScenarioSequences: (scenarioId: number) =>
+    ['testomniac', 'test-scenario', scenarioId, 'sequences'] as const,
+  testScenarioSequenceTestCases: (sequenceId: number) =>
+    ['testomniac', 'test-scenario-sequence', sequenceId, 'test-cases'] as const,
 } as const;

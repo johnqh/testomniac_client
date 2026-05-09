@@ -255,6 +255,10 @@ export const QUERY_KEYS = {
   htmlElement: (id: number) => ['testomniac', 'html-element', id] as const,
   runnerTestSurfaces: (runnerId: number) =>
     ['testomniac', 'runner', runnerId, 'test-surfaces'] as const,
+  runnerTestSurfaceBundles: (runnerId: number) =>
+    ['testomniac', 'runner', runnerId, 'test-surface-bundles'] as const,
+  runnerSchedules: (runnerId: number) =>
+    ['testomniac', 'runner', runnerId, 'test-schedules'] as const,
   testSurfaceChildSurfaces: (testSurfaceId: number) =>
     ['testomniac', 'test-surface', testSurfaceId, 'surfaces'] as const,
   testSurfaceTestElements: (testSurfaceId: number) =>

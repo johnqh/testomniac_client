@@ -7,6 +7,7 @@ import type {
   CreateProductRequest,
   CreateRunnerRequest,
   CreateTestScenarioRequest,
+  CreateTestScheduleRequest,
   HtmlElementResponse,
   InputValueResponse,
   PageResponse,
@@ -26,6 +27,8 @@ import type {
   TestScenarioSequenceResponse,
   TestScenarioSequenceRunResponse,
   TestScenarioSequenceTestElementLinkResponse,
+  TestScheduleResponse,
+  TestSurfaceBundleResponse,
   TestSurfaceResponse,
   UpdateTestScenarioRequest,
   UseCaseResponse,
@@ -503,6 +506,59 @@ export class TestomniacClient {
     return validateResponse<PersonaResponse[]>(
       response.data,
       'getRunnerPersonas'
+    );
+  }
+
+  async getRunnerTestSurfaceBundles(
+    runnerId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestSurfaceBundleResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runners/${runnerId}/test-surface-bundles`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestSurfaceBundleResponse[]>(
+      response.data,
+      'getRunnerTestSurfaceBundles'
+    );
+  }
+
+  async getRunnerSchedules(
+    runnerId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestScheduleResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runners/${runnerId}/test-schedules`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestScheduleResponse[]>(
+      response.data,
+      'getRunnerSchedules'
+    );
+  }
+
+  async createTestSchedule(
+    runnerId: number,
+    data: CreateTestScheduleRequest,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestScheduleResponse>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runners/${runnerId}/test-schedules`
+    );
+    const response = await this.networkClient.post(url, {
+      headers: createAuthHeaders(token),
+      body: data,
+    });
+    return validateResponse<TestScheduleResponse>(
+      response.data,
+      'createTestSchedule'
     );
   }
 

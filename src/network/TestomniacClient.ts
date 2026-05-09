@@ -19,6 +19,7 @@ import type {
   ScaffoldResponse,
   TestActionResponse,
   TestCaseResponse,
+  TestCaseRunResponse,
   TestRunFindingResponse,
   TestRunResponse,
   TestScenarioResponse,
@@ -30,7 +31,12 @@ import type {
   UseCaseResponse,
   User,
 } from '@sudobility/testomniac_types';
-import type { FirebaseIdToken } from '../types';
+import type {
+  FirebaseIdToken,
+  RunPageDetailSummary,
+  RunPageSummary,
+  RunSummary,
+} from '../types';
 import { buildUrl, createAuthHeaders } from '../utils/starter-helpers';
 
 /**
@@ -234,6 +240,17 @@ export class TestomniacClient {
     return validateResponse<TestRunResponse>(response.data, 'getTestRun');
   }
 
+  async getRunSummary(
+    runId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<RunSummary>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/runs/${runId}/summary`);
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<RunSummary>(response.data, 'getRunSummary');
+  }
+
   // --- Run sub-resources ---
 
   async getRunPages(
@@ -245,6 +262,52 @@ export class TestomniacClient {
       headers: createAuthHeaders(token),
     });
     return validateResponse<PageResponse[]>(response.data, 'getRunPages');
+  }
+
+  async getRunPagesSummary(
+    runId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<RunPageSummary[]>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/runs/${runId}/pages-summary`);
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<RunPageSummary[]>(
+      response.data,
+      'getRunPagesSummary'
+    );
+  }
+
+  async getRunPageSummary(
+    runId: number,
+    pageId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<RunPageDetailSummary>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runs/${runId}/pages/${pageId}/summary`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<RunPageDetailSummary>(
+      response.data,
+      'getRunPageSummary'
+    );
+  }
+
+  async getRunFindings(
+    runId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestRunFindingResponse[]>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/runs/${runId}/findings`);
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestRunFindingResponse[]>(
+      response.data,
+      'getRunFindings'
+    );
   }
 
   async getRunTestCases(
@@ -590,6 +653,23 @@ export class TestomniacClient {
     return validateResponse<TestRunFindingResponse[]>(
       response.data,
       'getTestCaseRunFindings'
+    );
+  }
+
+  async getTestCaseRun(
+    testCaseRunId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestCaseRunResponse | null>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/test-case-runs/${testCaseRunId}`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestCaseRunResponse | null>(
+      response.data,
+      'getTestCaseRun'
     );
   }
 

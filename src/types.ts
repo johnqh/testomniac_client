@@ -7,6 +7,81 @@
  */
 export type FirebaseIdToken = string;
 
+export interface RunSummary {
+  runId: number;
+  rootRunId: number;
+  runnerId: number;
+  testEnvironmentId: number | null;
+  status: string;
+  aiSummary: string | null;
+  pagesFound: number | null;
+  pageStatesFound: number | null;
+  testRunsCompleted: number | null;
+  totalFindings: number;
+  expertiseSummary: Record<
+    string,
+    {
+      warnings: number;
+      errors: number;
+      findings: number;
+    }
+  >;
+  recentFindings: Array<{
+    id: number;
+    type: string;
+    title: string;
+    description: string;
+    expertise: string | null;
+    createdAt: string | null;
+  }>;
+  completedAt: string | null;
+  createdAt: string | null;
+}
+
+export interface RunPageSummary {
+  pageId: number;
+  relativePath: string;
+  routeKey: string | null;
+  requiresLogin: boolean | null;
+  latestPageStateId: number | null;
+  latestScreenshotPath: string | null;
+  pageStatesCount: number;
+  testCasesCount: number;
+  testCaseRunsCount: number;
+  findings: number;
+  errors: number;
+  warnings: number;
+  expertiseSummary: Record<
+    string,
+    {
+      findings: number;
+      errors: number;
+      warnings: number;
+    }
+  >;
+}
+
+export interface RunPageDetailSummary extends RunPageSummary {
+  recentFindings: Array<{
+    id: number;
+    type: string;
+    title: string;
+    description: string;
+    expertise: string | null;
+    createdAt: string | null;
+    testCaseRunId: number;
+  }>;
+  runtimeSignals: Array<{
+    testCaseRunId: number;
+    testCaseId: number;
+    testCaseTitle: string | null;
+    status: string;
+    consoleLog: string | null;
+    networkLog: string | null;
+    completedAt: string | null;
+  }>;
+}
+
 /**
  * Default stale time for TanStack Query hooks (5 minutes).
  *
@@ -46,7 +121,15 @@ export const QUERY_KEYS = {
   productRuns: (productId: number) =>
     ['testomniac', 'product', productId, 'runs'] as const,
   run: (runId: number) => ['testomniac', 'run', runId] as const,
+  runSummary: (runId: number) =>
+    ['testomniac', 'run', runId, 'summary'] as const,
   runPages: (runId: number) => ['testomniac', 'run', runId, 'pages'] as const,
+  runPagesSummary: (runId: number) =>
+    ['testomniac', 'run', runId, 'pages-summary'] as const,
+  runPageSummary: (runId: number, pageId: number) =>
+    ['testomniac', 'run', runId, 'page', pageId, 'summary'] as const,
+  runFindings: (runId: number) =>
+    ['testomniac', 'run', runId, 'findings'] as const,
   runTestCases: (runId: number) =>
     ['testomniac', 'run', runId, 'test-cases'] as const,
   runTestRuns: (runId: number) =>

@@ -282,4 +282,12 @@ export const QUERY_KEYS = {
     ] as const,
   testScenarioSequenceRuns: (sequenceId: number) =>
     ['testomniac', 'test-scenario-sequence', sequenceId, 'runs'] as const,
+  productEnvironments: (productId: number) =>
+    ['testomniac', 'product', productId, 'environments'] as const,
+  environmentPages: (envId: number) =>
+    ['testomniac', 'environment', envId, 'pages'] as const,
+  environmentTestElements: (envId: number) =>
+    ['testomniac', 'environment', envId, 'test-elements'] as const,
+  environmentTestSurfaces: (envId: number) =>
+    ['testomniac', 'environment', envId, 'test-surfaces'] as const,
 } as const;

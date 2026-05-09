@@ -46,3 +46,8 @@ export { useCreateTestScenario } from './useCreateTestScenario';
 export { useUpdateTestScenario } from './useUpdateTestScenario';
 export { useDeleteTestScenario } from './useDeleteTestScenario';
 export { useTestScenarioSequenceRuns } from './useTestScenarioSequenceRuns';
+export { useProductEnvironments } from './useProductEnvironments';
+export { useEnvironmentPages } from './useEnvironmentPages';
+export { useEnvironmentTestElements } from './useEnvironmentTestElements';
+export { useEnvironmentTestSurfaces } from './useEnvironmentTestSurfaces';
+export { useCreateTestElementRun } from './useCreateTestElementRun';

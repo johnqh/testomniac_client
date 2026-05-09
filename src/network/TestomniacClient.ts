@@ -6,6 +6,7 @@ import type {
   CreateDiscoveryRunResponse,
   CreateProductRequest,
   CreateRunnerRequest,
+  CreateTestElementRunRequest,
   CreateTestScenarioRequest,
   CreateTestScheduleRequest,
   HtmlElementResponse,
@@ -21,6 +22,7 @@ import type {
   TestActionResponse,
   TestElementResponse,
   TestElementRunResponse,
+  TestEnvironmentResponse,
   TestRunFindingResponse,
   TestRunResponse,
   TestScenarioResponse,
@@ -898,6 +900,93 @@ export class TestomniacClient {
     return validateResponse<TestScenarioSequenceRunResponse[]>(
       response.data,
       'getTestScenarioSequenceRuns'
+    );
+  }
+
+  // --- Test Environments ---
+
+  async getProductEnvironments(
+    productId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestEnvironmentResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/products/${productId}/environments`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestEnvironmentResponse[]>(
+      response.data,
+      'getProductEnvironments'
+    );
+  }
+
+  async getEnvironmentPages(
+    envId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<PageResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/test-environments/${envId}/pages`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<PageResponse[]>(
+      response.data,
+      'getEnvironmentPages'
+    );
+  }
+
+  async getEnvironmentTestElements(
+    envId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestElementResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/test-environments/${envId}/test-elements`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestElementResponse[]>(
+      response.data,
+      'getEnvironmentTestElements'
+    );
+  }
+
+  async getEnvironmentTestSurfaces(
+    envId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestSurfaceResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/test-environments/${envId}/test-surfaces`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestSurfaceResponse[]>(
+      response.data,
+      'getEnvironmentTestSurfaces'
+    );
+  }
+
+  // --- Test Element Runs ---
+
+  async createTestElementRun(
+    data: CreateTestElementRunRequest,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestElementRunResponse>> {
+    const url = buildUrl(this.baseUrl, '/api/v1/test-element-runs');
+    const response = await this.networkClient.post(url, {
+      headers: createAuthHeaders(token),
+      body: data,
+    });
+    return validateResponse<TestElementRunResponse>(
+      response.data,
+      'createTestElementRun'
     );
   }
 }

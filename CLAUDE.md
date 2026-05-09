@@ -30,7 +30,7 @@ src/
 │   ├── useRun.ts                     # Query single run
 │   ├── useRunPages.ts                # Query pages for a run
 │   ├── useRunActions.ts              # Query actions for a run
-│   ├── useRunTestCases.ts            # Query test cases for a run
+│   ├── useRunTestElements.ts            # Query test elements for a run
 │   ├── useRunTestRuns.ts             # Query test runs for a run
 │   ├── useRunIssues.ts               # Query issues for a run
 │   ├── useRunPersonas.ts             # Query personas for a run
@@ -72,7 +72,7 @@ HTTP client class constructed with `{ baseUrl, networkClient }`. Uses dependency
 - `useRun(config)` — single run details
 - `useRunPages(config)` — pages discovered in a run
 - `useRunActions(config)` — actions performed in a run
-- `useRunTestCases(config)` — generated test cases for a run
+- `useRunTestElements(config)` — generated test elements for a run
 - `useRunTestRuns(config)` — test execution results for a run
 - `useRunIssues(config)` — issues detected in a run
 - `useRunPersonas(config)` — AI-generated personas for a run

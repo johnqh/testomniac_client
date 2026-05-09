@@ -3,36 +3,27 @@ import type { NetworkClient } from '@sudobility/types';
 import { TestomniacClient } from '../network/TestomniacClient';
 import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
 
-interface UseTestScenarioSequenceTestCasesConfig {
+interface UseTestElementActionsConfig {
   networkClient: NetworkClient;
   baseUrl: string;
-  testScenarioSequenceId: number;
+  testElementId: number;
   token: FirebaseIdToken;
   enabled?: boolean;
 }
 
-export function useTestScenarioSequenceTestCases(
-  config: UseTestScenarioSequenceTestCasesConfig
-) {
-  const {
-    networkClient,
-    baseUrl,
-    testScenarioSequenceId,
-    token,
-    enabled = true,
-  } = config;
+export function useTestElementActions(config: UseTestElementActionsConfig) {
+  const { networkClient, baseUrl, testElementId, token, enabled = true } = config;
   const client = new TestomniacClient({ baseUrl, networkClient });
 
   const query = useQuery({
-    queryKey: QUERY_KEYS.testScenarioSequenceTestCases(testScenarioSequenceId),
-    queryFn: () =>
-      client.getTestScenarioSequenceTestCases(testScenarioSequenceId, token),
-    enabled: enabled && !!testScenarioSequenceId && !!token,
+    queryKey: QUERY_KEYS.testElementActions(testElementId),
+    queryFn: () => client.getTestElementActions(testElementId, token),
+    enabled: enabled && !!testElementId && !!token,
     staleTime: DEFAULT_STALE_TIME,
   });
 
   return {
-    testCaseLinks: query.data?.data ?? [],
+    actions: query.data?.data ?? [],
     isLoading: query.isLoading,
     error: query.error?.message ?? query.data?.error ?? null,
     refetch: query.refetch,

@@ -1,20 +1,20 @@
 import type { NetworkClient } from '@sudobility/types';
 import type { FirebaseIdToken } from '../types';
 
-interface UseTestSuiteChildSuitesConfig {
+interface UseTestSurfaceChildSurfacesConfig {
   networkClient: NetworkClient;
   baseUrl: string;
-  testSuiteId: number;
+  testSurfaceId: number;
   token: FirebaseIdToken;
   enabled?: boolean;
 }
 
-/** @deprecated Test suites no longer nest. This hook always returns an empty array. */
-export function useTestSuiteChildSuites(
-  _config: UseTestSuiteChildSuitesConfig
+/** @deprecated Test surfaces no longer nest. This hook always returns an empty array. */
+export function useTestSurfaceChildSurfaces(
+  _config: UseTestSurfaceChildSurfacesConfig
 ) {
   return {
-    childSuites: [] as never[],
+    childSurfaces: [] as never[],
     isLoading: false,
     error: null,
     refetch: () => Promise.resolve(),

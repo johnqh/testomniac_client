@@ -46,8 +46,8 @@ export interface RunPageSummary {
   latestPageStateId: number | null;
   latestScreenshotPath: string | null;
   pageStatesCount: number;
-  testCasesCount: number;
-  testCaseRunsCount: number;
+  testElementsCount: number;
+  testElementRunsCount: number;
   findings: number;
   errors: number;
   warnings: number;
@@ -69,12 +69,12 @@ export interface RunPageDetailSummary extends RunPageSummary {
     description: string;
     expertise: string | null;
     createdAt: string | null;
-    testCaseRunId: number;
+    testElementRunId: number;
   }>;
   runtimeSignals: Array<{
-    testCaseRunId: number;
-    testCaseId: number;
-    testCaseTitle: string | null;
+    testElementRunId: number;
+    testElementId: number;
+    testElementTitle: string | null;
     status: string;
     consoleLog: string | null;
     networkLog: string | null;
@@ -121,32 +121,32 @@ export interface RunStructure {
   };
   bundleRun: {
     id: number;
-    testSuiteBundleId: number;
+    testSurfaceBundleId: number;
     status: string;
     startedAt: string | null;
     completedAt: string | null;
     createdAt: string | null;
   };
-  suites: Array<{
+  surfaces: Array<{
     id: number;
     title: string;
     priority: number;
-    suiteTags: string[];
-    suiteRuns: Array<{
+    surfaceTags: string[];
+    surfaceRuns: Array<{
       id: number;
       status: string;
       startedAt: string | null;
       completedAt: string | null;
     }>;
-    testCases: Array<{
+    testElements: Array<{
       id: number;
       title: string;
       testType: string;
       priority: number;
-      dependencyTestCaseId: number | null;
+      dependencyTestElementId: number | null;
       startingPath: string | null;
       startingPageStateId: number | null;
-      caseRuns: Array<{
+      elementRuns: Array<{
         id: number;
         status: string;
         durationMs: number | null;
@@ -214,8 +214,8 @@ export const QUERY_KEYS = {
     ['testomniac', 'run', runId, 'page', pageId, 'summary'] as const,
   runFindings: (runId: number) =>
     ['testomniac', 'run', runId, 'findings'] as const,
-  runTestCases: (runId: number) =>
-    ['testomniac', 'run', runId, 'test-cases'] as const,
+  runTestElements: (runId: number) =>
+    ['testomniac', 'run', runId, 'test-elements'] as const,
   runTestRuns: (runId: number) =>
     ['testomniac', 'run', runId, 'test-runs'] as const,
   runPersonas: (runId: number) =>
@@ -242,8 +242,8 @@ export const QUERY_KEYS = {
   /** @deprecated Use `runnerDiscoveryRuns` or `runnerTestRuns`. */
   runnerScans: (runnerId: number) =>
     ['testomniac', 'runner', runnerId, 'test-runs'] as const,
-  runnerTestCases: (runnerId: number) =>
-    ['testomniac', 'runner', runnerId, 'test-cases'] as const,
+  runnerTestElements: (runnerId: number) =>
+    ['testomniac', 'runner', runnerId, 'test-elements'] as const,
   runnerTestRuns: (runnerId: number) =>
     ['testomniac', 'runner', runnerId, 'test-runs'] as const,
   runnerScaffolds: (runnerId: number) =>
@@ -253,14 +253,14 @@ export const QUERY_KEYS = {
   pageStateScaffolds: (pageStateId: number) =>
     ['testomniac', 'page-state', pageStateId, 'scaffolds'] as const,
   htmlElement: (id: number) => ['testomniac', 'html-element', id] as const,
-  runnerTestSuites: (runnerId: number) =>
-    ['testomniac', 'runner', runnerId, 'test-suites'] as const,
-  testSuiteChildSuites: (testSuiteId: number) =>
-    ['testomniac', 'test-suite', testSuiteId, 'suites'] as const,
-  testSuiteTestCases: (testSuiteId: number) =>
-    ['testomniac', 'test-suite', testSuiteId, 'cases'] as const,
-  testCaseActions: (testCaseId: number) =>
-    ['testomniac', 'test-case', testCaseId, 'actions'] as const,
+  runnerTestSurfaces: (runnerId: number) =>
+    ['testomniac', 'runner', runnerId, 'test-surfaces'] as const,
+  testSurfaceChildSurfaces: (testSurfaceId: number) =>
+    ['testomniac', 'test-surface', testSurfaceId, 'surfaces'] as const,
+  testSurfaceTestElements: (testSurfaceId: number) =>
+    ['testomniac', 'test-surface', testSurfaceId, 'elements'] as const,
+  testElementActions: (testElementId: number) =>
+    ['testomniac', 'test-element', testElementId, 'actions'] as const,
   testRunFindings: (testRunId: number) =>
     ['testomniac', 'test-run', testRunId, 'findings'] as const,
   runnerFindings: (runnerId: number) =>
@@ -269,8 +269,8 @@ export const QUERY_KEYS = {
     ['testomniac', 'runner', runnerId, 'test-scenarios'] as const,
   testScenarioSequences: (scenarioId: number) =>
     ['testomniac', 'test-scenario', scenarioId, 'sequences'] as const,
-  testScenarioSequenceTestCases: (sequenceId: number) =>
-    ['testomniac', 'test-scenario-sequence', sequenceId, 'test-cases'] as const,
+  testScenarioSequenceTestElements: (sequenceId: number) =>
+    ['testomniac', 'test-scenario-sequence', sequenceId, 'test-elements'] as const,
   testScenarioSequenceRuns: (sequenceId: number) =>
     ['testomniac', 'test-scenario-sequence', sequenceId, 'runs'] as const,
 } as const;

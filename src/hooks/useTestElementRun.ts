@@ -3,27 +3,33 @@ import type { NetworkClient } from '@sudobility/types';
 import { TestomniacClient } from '../network/TestomniacClient';
 import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
 
-interface UseRunnerTestSuitesConfig {
+interface UseTestElementRunConfig {
   networkClient: NetworkClient;
   baseUrl: string;
-  runnerId: number;
+  testElementRunId: number;
   token: FirebaseIdToken;
   enabled?: boolean;
 }
 
-export function useRunnerTestSuites(config: UseRunnerTestSuitesConfig) {
-  const { networkClient, baseUrl, runnerId, token, enabled = true } = config;
+export function useTestElementRun(config: UseTestElementRunConfig) {
+  const {
+    networkClient,
+    baseUrl,
+    testElementRunId,
+    token,
+    enabled = true,
+  } = config;
   const client = new TestomniacClient({ baseUrl, networkClient });
 
   const query = useQuery({
-    queryKey: QUERY_KEYS.runnerTestSuites(runnerId),
-    queryFn: () => client.getRunnerTestSuites(runnerId, token),
-    enabled: enabled && !!runnerId && !!token,
+    queryKey: [...QUERY_KEYS.testRunFindings(testElementRunId), 'detail'] as const,
+    queryFn: () => client.getTestElementRun(testElementRunId, token),
+    enabled: enabled && !!testElementRunId && !!token,
     staleTime: DEFAULT_STALE_TIME,
   });
 
   return {
-    testSuites: query.data?.data ?? [],
+    testElementRun: query.data?.data ?? null,
     isLoading: query.isLoading,
     error: query.error?.message ?? query.data?.error ?? null,
     refetch: query.refetch,

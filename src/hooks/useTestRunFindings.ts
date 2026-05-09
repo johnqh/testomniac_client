@@ -6,7 +6,7 @@ import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
 interface UseTestRunFindingsConfig {
   networkClient: NetworkClient;
   baseUrl: string;
-  testCaseRunId: number;
+  testElementRunId: number;
   token: FirebaseIdToken;
   enabled?: boolean;
 }
@@ -15,16 +15,16 @@ export function useTestRunFindings(config: UseTestRunFindingsConfig) {
   const {
     networkClient,
     baseUrl,
-    testCaseRunId,
+    testElementRunId,
     token,
     enabled = true,
   } = config;
   const client = new TestomniacClient({ baseUrl, networkClient });
 
   const query = useQuery({
-    queryKey: QUERY_KEYS.testRunFindings(testCaseRunId),
-    queryFn: () => client.getTestCaseRunFindings(testCaseRunId, token),
-    enabled: enabled && !!testCaseRunId && !!token,
+    queryKey: QUERY_KEYS.testRunFindings(testElementRunId),
+    queryFn: () => client.getTestElementRunFindings(testElementRunId, token),
+    enabled: enabled && !!testElementRunId && !!token,
     staleTime: DEFAULT_STALE_TIME,
   });
 

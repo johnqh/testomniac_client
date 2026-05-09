@@ -18,15 +18,15 @@ import type {
   RunnerResponse,
   ScaffoldResponse,
   TestActionResponse,
-  TestCaseResponse,
-  TestCaseRunResponse,
+  TestElementResponse,
+  TestElementRunResponse,
   TestRunFindingResponse,
   TestRunResponse,
   TestScenarioResponse,
   TestScenarioSequenceResponse,
   TestScenarioSequenceRunResponse,
-  TestScenarioSequenceTestCaseLinkResponse,
-  TestSuiteResponse,
+  TestScenarioSequenceTestElementLinkResponse,
+  TestSurfaceResponse,
   UpdateTestScenarioRequest,
   UseCaseResponse,
   User,
@@ -337,17 +337,17 @@ export class TestomniacClient {
     );
   }
 
-  async getRunTestCases(
+  async getRunTestElements(
     runId: number,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<TestCaseResponse[]>> {
-    const url = buildUrl(this.baseUrl, `/api/v1/runs/${runId}/test-cases`);
+  ): Promise<BaseResponse<TestElementResponse[]>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/runs/${runId}/test-elements`);
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<TestCaseResponse[]>(
+    return validateResponse<TestElementResponse[]>(
       response.data,
-      'getRunTestCases'
+      'getRunTestElements'
     );
   }
 
@@ -447,20 +447,20 @@ export class TestomniacClient {
     );
   }
 
-  async getRunnerTestCases(
+  async getRunnerTestElements(
     runnerId: number,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<TestCaseResponse[]>> {
+  ): Promise<BaseResponse<TestElementResponse[]>> {
     const url = buildUrl(
       this.baseUrl,
-      `/api/v1/runners/${runnerId}/test-cases`
+      `/api/v1/runners/${runnerId}/test-elements`
     );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<TestCaseResponse[]>(
+    return validateResponse<TestElementResponse[]>(
       response.data,
-      'getRunnerTestCases'
+      'getRunnerTestElements'
     );
   }
 
@@ -609,94 +609,94 @@ export class TestomniacClient {
     );
   }
 
-  // --- Test Suites ---
+  // --- Test Surfaces ---
 
-  async getRunnerTestSuites(
+  async getRunnerTestSurfaces(
     runnerId: number,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<TestSuiteResponse[]>> {
+  ): Promise<BaseResponse<TestSurfaceResponse[]>> {
     const url = buildUrl(
       this.baseUrl,
-      `/api/v1/runners/${runnerId}/test-suites`
+      `/api/v1/runners/${runnerId}/test-surfaces`
     );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<TestSuiteResponse[]>(
+    return validateResponse<TestSurfaceResponse[]>(
       response.data,
-      'getRunnerTestSuites'
+      'getRunnerTestSurfaces'
     );
   }
 
-  async getTestSuiteTestCases(
-    testSuiteId: number,
+  async getTestSurfaceTestElements(
+    testSurfaceId: number,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<TestCaseResponse[]>> {
+  ): Promise<BaseResponse<TestElementResponse[]>> {
     const url = buildUrl(
       this.baseUrl,
-      `/api/v1/test-suites/${testSuiteId}/cases`
+      `/api/v1/test-surfaces/${testSurfaceId}/cases`
     );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<TestCaseResponse[]>(
+    return validateResponse<TestElementResponse[]>(
       response.data,
-      'getTestSuiteTestCases'
+      'getTestSurfaceTestElements'
     );
   }
 
-  // --- Test Case Actions ---
+  // --- Test Element Actions ---
 
-  async getTestCaseActions(
-    testCaseId: number,
+  async getTestElementActions(
+    testElementId: number,
     token: FirebaseIdToken
   ): Promise<BaseResponse<TestActionResponse[]>> {
     const url = buildUrl(
       this.baseUrl,
-      `/api/v1/test-cases/${testCaseId}/actions`
+      `/api/v1/test-elements/${testElementId}/actions`
     );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
     return validateResponse<TestActionResponse[]>(
       response.data,
-      'getTestCaseActions'
+      'getTestElementActions'
     );
   }
 
-  // --- Test Case Run Findings ---
+  // --- Test Element Run Findings ---
 
-  async getTestCaseRunFindings(
-    testCaseRunId: number,
+  async getTestElementRunFindings(
+    testElementRunId: number,
     token: FirebaseIdToken
   ): Promise<BaseResponse<TestRunFindingResponse[]>> {
     const url = buildUrl(
       this.baseUrl,
-      `/api/v1/test-case-runs/${testCaseRunId}/findings`
+      `/api/v1/test-element-runs/${testElementRunId}/findings`
     );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
     return validateResponse<TestRunFindingResponse[]>(
       response.data,
-      'getTestCaseRunFindings'
+      'getTestElementRunFindings'
     );
   }
 
-  async getTestCaseRun(
-    testCaseRunId: number,
+  async getTestElementRun(
+    testElementRunId: number,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<TestCaseRunResponse | null>> {
+  ): Promise<BaseResponse<TestElementRunResponse | null>> {
     const url = buildUrl(
       this.baseUrl,
-      `/api/v1/test-case-runs/${testCaseRunId}`
+      `/api/v1/test-element-runs/${testElementRunId}`
     );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<TestCaseRunResponse | null>(
+    return validateResponse<TestElementRunResponse | null>(
       response.data,
-      'getTestCaseRun'
+      'getTestElementRun'
     );
   }
 
@@ -809,20 +809,20 @@ export class TestomniacClient {
     );
   }
 
-  async getTestScenarioSequenceTestCases(
+  async getTestScenarioSequenceTestElements(
     sequenceId: number,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<TestScenarioSequenceTestCaseLinkResponse[]>> {
+  ): Promise<BaseResponse<TestScenarioSequenceTestElementLinkResponse[]>> {
     const url = buildUrl(
       this.baseUrl,
-      `/api/v1/test-scenarios/sequences/${sequenceId}/test-cases`
+      `/api/v1/test-scenarios/sequences/${sequenceId}/test-elements`
     );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<TestScenarioSequenceTestCaseLinkResponse[]>(
+    return validateResponse<TestScenarioSequenceTestElementLinkResponse[]>(
       response.data,
-      'getTestScenarioSequenceTestCases'
+      'getTestScenarioSequenceTestElements'
     );
   }
 

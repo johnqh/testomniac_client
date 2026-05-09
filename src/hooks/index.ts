@@ -5,6 +5,8 @@ export { useProductRunners } from './useProductRunners';
 export { useRun } from './useRun';
 export { useRunFindings } from './useRunFindings';
 export { useRunSummary } from './useRunSummary';
+export { useRunNavigationMap } from './useRunNavigationMap';
+export { useRunStructure } from './useRunStructure';
 export { useRunPages } from './useRunPages';
 export { useRunPagesSummary } from './useRunPagesSummary';
 export { useRunPageSummary } from './useRunPageSummary';

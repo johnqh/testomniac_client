@@ -33,8 +33,10 @@ import type {
 } from '@sudobility/testomniac_types';
 import type {
   FirebaseIdToken,
+  RunNavigationMap,
   RunPageDetailSummary,
   RunPageSummary,
+  RunStructure,
   RunSummary,
 } from '../types';
 import { buildUrl, createAuthHeaders } from '../utils/starter-helpers';
@@ -249,6 +251,31 @@ export class TestomniacClient {
       headers: createAuthHeaders(token),
     });
     return validateResponse<RunSummary>(response.data, 'getRunSummary');
+  }
+
+  async getRunNavigationMap(
+    runId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<RunNavigationMap>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/runs/${runId}/navigation-map`);
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<RunNavigationMap>(
+      response.data,
+      'getRunNavigationMap'
+    );
+  }
+
+  async getRunStructure(
+    runId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<RunStructure>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/runs/${runId}/structure`);
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<RunStructure>(response.data, 'getRunStructure');
   }
 
   // --- Run sub-resources ---

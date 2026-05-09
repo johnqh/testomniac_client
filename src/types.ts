@@ -82,6 +82,86 @@ export interface RunPageDetailSummary extends RunPageSummary {
   }>;
 }
 
+export interface RunNavigationMap {
+  runId: number;
+  rootRunId: number;
+  testEnvironmentId: number | null;
+  discoveredPages: Array<{
+    id: number;
+    testEnvironmentId: number;
+    relativePath: string;
+    sourcePagePath: string | null;
+    sourceLabel: string | null;
+    isPublic: boolean;
+    createdAt: string | null;
+    updatedAt: string | null;
+  }>;
+  pageVisits: Array<{
+    id: number;
+    testRunId: number;
+    testEnvironmentId: number;
+    relativePath: string;
+    status: string;
+    redirectPath: string | null;
+    requiresLogin: boolean | null;
+    errorMessage: string | null;
+    createdAt: string | null;
+  }>;
+}
+
+export interface RunStructure {
+  runId: number;
+  rootRunId: number;
+  bundle: {
+    id: number;
+    runnerId: number;
+    title: string;
+    uid: string | null;
+    createdAt: string | null;
+  };
+  bundleRun: {
+    id: number;
+    testSuiteBundleId: number;
+    status: string;
+    startedAt: string | null;
+    completedAt: string | null;
+    createdAt: string | null;
+  };
+  suites: Array<{
+    id: number;
+    title: string;
+    priority: number;
+    suiteTags: string[];
+    suiteRuns: Array<{
+      id: number;
+      status: string;
+      startedAt: string | null;
+      completedAt: string | null;
+    }>;
+    testCases: Array<{
+      id: number;
+      title: string;
+      testType: string;
+      priority: number;
+      dependencyTestCaseId: number | null;
+      startingPath: string | null;
+      startingPageStateId: number | null;
+      caseRuns: Array<{
+        id: number;
+        status: string;
+        durationMs: number | null;
+        findings: Array<{
+          id: number;
+          type: string;
+          title: string;
+          description: string;
+          createdAt: string | null;
+        }>;
+      }>;
+    }>;
+  }>;
+}
+
 /**
  * Default stale time for TanStack Query hooks (5 minutes).
  *
@@ -123,6 +203,10 @@ export const QUERY_KEYS = {
   run: (runId: number) => ['testomniac', 'run', runId] as const,
   runSummary: (runId: number) =>
     ['testomniac', 'run', runId, 'summary'] as const,
+  runNavigationMap: (runId: number) =>
+    ['testomniac', 'run', runId, 'navigation-map'] as const,
+  runStructure: (runId: number) =>
+    ['testomniac', 'run', runId, 'structure'] as const,
   runPages: (runId: number) => ['testomniac', 'run', runId, 'pages'] as const,
   runPagesSummary: (runId: number) =>
     ['testomniac', 'run', runId, 'pages-summary'] as const,

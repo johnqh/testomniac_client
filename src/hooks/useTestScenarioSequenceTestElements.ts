@@ -24,7 +24,9 @@ export function useTestScenarioSequenceTestElements(
   const client = new TestomniacClient({ baseUrl, networkClient });
 
   const query = useQuery({
-    queryKey: QUERY_KEYS.testScenarioSequenceTestElements(testScenarioSequenceId),
+    queryKey: QUERY_KEYS.testScenarioSequenceTestElements(
+      testScenarioSequenceId
+    ),
     queryFn: () =>
       client.getTestScenarioSequenceTestElements(testScenarioSequenceId, token),
     enabled: enabled && !!testScenarioSequenceId && !!token,

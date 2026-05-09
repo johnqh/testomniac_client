@@ -12,7 +12,13 @@ interface UseTestElementActionsConfig {
 }
 
 export function useTestElementActions(config: UseTestElementActionsConfig) {
-  const { networkClient, baseUrl, testElementId, token, enabled = true } = config;
+  const {
+    networkClient,
+    baseUrl,
+    testElementId,
+    token,
+    enabled = true,
+  } = config;
   const client = new TestomniacClient({ baseUrl, networkClient });
 
   const query = useQuery({

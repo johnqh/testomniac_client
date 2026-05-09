@@ -11,8 +11,16 @@ interface UseTestSurfaceTestElementsConfig {
   enabled?: boolean;
 }
 
-export function useTestSurfaceTestElements(config: UseTestSurfaceTestElementsConfig) {
-  const { networkClient, baseUrl, testSurfaceId, token, enabled = true } = config;
+export function useTestSurfaceTestElements(
+  config: UseTestSurfaceTestElementsConfig
+) {
+  const {
+    networkClient,
+    baseUrl,
+    testSurfaceId,
+    token,
+    enabled = true,
+  } = config;
   const client = new TestomniacClient({ baseUrl, networkClient });
 
   const query = useQuery({

@@ -22,7 +22,10 @@ export function useTestElementRun(config: UseTestElementRunConfig) {
   const client = new TestomniacClient({ baseUrl, networkClient });
 
   const query = useQuery({
-    queryKey: [...QUERY_KEYS.testRunFindings(testElementRunId), 'detail'] as const,
+    queryKey: [
+      ...QUERY_KEYS.testRunFindings(testElementRunId),
+      'detail',
+    ] as const,
     queryFn: () => client.getTestElementRun(testElementRunId, token),
     enabled: enabled && !!testElementRunId && !!token,
     staleTime: DEFAULT_STALE_TIME,

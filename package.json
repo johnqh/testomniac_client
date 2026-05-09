@@ -1,6 +1,6 @@
 {
   "name": "@sudobility/testomniac_client",
-  "version": "0.0.53",
+  "version": "0.0.54",
   "description": "Testomniac API client library with TanStack Query hooks",
   "type": "module",
   "main": "dist/index.js",

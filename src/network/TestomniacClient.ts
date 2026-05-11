@@ -989,4 +989,18 @@ export class TestomniacClient {
       'createTestElementRun'
     );
   }
+
+  async clearSupersededFindings(
+    testElementRunId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<null>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/test-element-runs/${testElementRunId}/superseded-findings`
+    );
+    const response = await this.networkClient.delete(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<null>(response.data, 'clearSupersededFindings');
+  }
 }

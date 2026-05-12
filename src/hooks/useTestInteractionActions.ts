@@ -3,36 +3,35 @@ import type { NetworkClient } from '@sudobility/types';
 import { TestomniacClient } from '../network/TestomniacClient';
 import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
 
-interface UseTestElementRunConfig {
+interface UseTestInteractionActionsConfig {
   networkClient: NetworkClient;
   baseUrl: string;
-  testElementRunId: number;
+  testInteractionId: number;
   token: FirebaseIdToken;
   enabled?: boolean;
 }
 
-export function useTestElementRun(config: UseTestElementRunConfig) {
+export function useTestInteractionActions(
+  config: UseTestInteractionActionsConfig
+) {
   const {
     networkClient,
     baseUrl,
-    testElementRunId,
+    testInteractionId,
     token,
     enabled = true,
   } = config;
   const client = new TestomniacClient({ baseUrl, networkClient });
 
   const query = useQuery({
-    queryKey: [
-      ...QUERY_KEYS.testRunFindings(testElementRunId),
-      'detail',
-    ] as const,
-    queryFn: () => client.getTestElementRun(testElementRunId, token),
-    enabled: enabled && !!testElementRunId && !!token,
+    queryKey: QUERY_KEYS.testInteractionActions(testInteractionId),
+    queryFn: () => client.getTestInteractionActions(testInteractionId, token),
+    enabled: enabled && !!testInteractionId && !!token,
     staleTime: DEFAULT_STALE_TIME,
   });
 
   return {
-    testElementRun: query.data?.data ?? null,
+    actions: query.data?.data ?? [],
     isLoading: query.isLoading,
     error: query.error?.message ?? query.data?.error ?? null,
     refetch: query.refetch,

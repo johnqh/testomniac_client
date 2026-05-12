@@ -46,8 +46,8 @@ export interface RunPageSummary {
   latestPageStateId: number | null;
   latestScreenshotPath: string | null;
   pageStatesCount: number;
-  testElementsCount: number;
-  testElementRunsCount: number;
+  testInteractionsCount: number;
+  testInteractionRunsCount: number;
   findings: number;
   errors: number;
   warnings: number;
@@ -69,12 +69,12 @@ export interface RunPageDetailSummary extends RunPageSummary {
     description: string;
     expertise: string | null;
     createdAt: string | null;
-    testElementRunId: number;
+    testInteractionRunId: number;
   }>;
   runtimeSignals: Array<{
-    testElementRunId: number;
-    testElementId: number;
-    testElementTitle: string | null;
+    testInteractionRunId: number;
+    testInteractionId: number;
+    testInteractionTitle: string | null;
     status: string;
     consoleLog: string | null;
     networkLog: string | null;
@@ -138,15 +138,15 @@ export interface RunStructure {
       startedAt: string | null;
       completedAt: string | null;
     }>;
-    testElements: Array<{
+    testInteractions: Array<{
       id: number;
       title: string;
       testType: string;
       priority: number;
-      dependencyTestElementId: number | null;
+      dependencyTestInteractionId: number | null;
       startingPath: string | null;
       startingPageStateId: number | null;
-      elementRuns: Array<{
+      interactionRuns: Array<{
         id: number;
         status: string;
         durationMs: number | null;
@@ -214,8 +214,8 @@ export const QUERY_KEYS = {
     ['testomniac', 'run', runId, 'page', pageId, 'summary'] as const,
   runFindings: (runId: number) =>
     ['testomniac', 'run', runId, 'findings'] as const,
-  runTestElements: (runId: number) =>
-    ['testomniac', 'run', runId, 'test-elements'] as const,
+  runTestInteractions: (runId: number) =>
+    ['testomniac', 'run', runId, 'test-interactions'] as const,
   runTestRuns: (runId: number) =>
     ['testomniac', 'run', runId, 'test-runs'] as const,
   runPersonas: (runId: number) =>
@@ -242,8 +242,8 @@ export const QUERY_KEYS = {
   /** @deprecated Use `runnerDiscoveryRuns` or `runnerTestRuns`. */
   runnerScans: (runnerId: number) =>
     ['testomniac', 'runner', runnerId, 'test-runs'] as const,
-  runnerTestElements: (runnerId: number) =>
-    ['testomniac', 'runner', runnerId, 'test-elements'] as const,
+  runnerTestInteractions: (runnerId: number) =>
+    ['testomniac', 'runner', runnerId, 'test-interactions'] as const,
   runnerTestRuns: (runnerId: number) =>
     ['testomniac', 'runner', runnerId, 'test-runs'] as const,
   runnerScaffolds: (runnerId: number) =>
@@ -261,10 +261,10 @@ export const QUERY_KEYS = {
     ['testomniac', 'runner', runnerId, 'test-schedules'] as const,
   testSurfaceChildSurfaces: (testSurfaceId: number) =>
     ['testomniac', 'test-surface', testSurfaceId, 'surfaces'] as const,
-  testSurfaceTestElements: (testSurfaceId: number) =>
+  testSurfaceTestInteractions: (testSurfaceId: number) =>
     ['testomniac', 'test-surface', testSurfaceId, 'elements'] as const,
-  testElementActions: (testElementId: number) =>
-    ['testomniac', 'test-element', testElementId, 'actions'] as const,
+  testInteractionActions: (testInteractionId: number) =>
+    ['testomniac', 'test-interaction', testInteractionId, 'actions'] as const,
   testRunFindings: (testRunId: number) =>
     ['testomniac', 'test-run', testRunId, 'findings'] as const,
   runnerFindings: (runnerId: number) =>
@@ -273,12 +273,12 @@ export const QUERY_KEYS = {
     ['testomniac', 'runner', runnerId, 'test-scenarios'] as const,
   testScenarioSequences: (scenarioId: number) =>
     ['testomniac', 'test-scenario', scenarioId, 'sequences'] as const,
-  testScenarioSequenceTestElements: (sequenceId: number) =>
+  testScenarioSequenceTestInteractions: (sequenceId: number) =>
     [
       'testomniac',
       'test-scenario-sequence',
       sequenceId,
-      'test-elements',
+      'test-interactions',
     ] as const,
   testScenarioSequenceRuns: (sequenceId: number) =>
     ['testomniac', 'test-scenario-sequence', sequenceId, 'runs'] as const,
@@ -286,8 +286,8 @@ export const QUERY_KEYS = {
     ['testomniac', 'product', productId, 'environments'] as const,
   environmentPages: (envId: number) =>
     ['testomniac', 'environment', envId, 'pages'] as const,
-  environmentTestElements: (envId: number) =>
-    ['testomniac', 'environment', envId, 'test-elements'] as const,
+  environmentTestInteractions: (envId: number) =>
+    ['testomniac', 'environment', envId, 'test-interactions'] as const,
   environmentTestSurfaces: (envId: number) =>
     ['testomniac', 'environment', envId, 'test-surfaces'] as const,
 } as const;

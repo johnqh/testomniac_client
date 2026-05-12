@@ -6,7 +6,7 @@ import type {
   CreateDiscoveryRunResponse,
   CreateProductRequest,
   CreateRunnerRequest,
-  CreateTestElementRunRequest,
+  CreateTestInteractionRunRequest,
   CreateTestScenarioRequest,
   CreateTestScheduleRequest,
   HtmlElementResponse,
@@ -20,15 +20,15 @@ import type {
   RunnerResponse,
   ScaffoldResponse,
   TestActionResponse,
-  TestElementResponse,
-  TestElementRunResponse,
   TestEnvironmentResponse,
+  TestInteractionResponse,
+  TestInteractionRunResponse,
   TestRunFindingResponse,
   TestRunResponse,
   TestScenarioResponse,
   TestScenarioSequenceResponse,
   TestScenarioSequenceRunResponse,
-  TestScenarioSequenceTestElementLinkResponse,
+  TestScenarioSequenceTestInteractionLinkResponse,
   TestScheduleResponse,
   TestSurfaceBundleResponse,
   TestSurfaceResponse,
@@ -342,17 +342,20 @@ export class TestomniacClient {
     );
   }
 
-  async getRunTestElements(
+  async getRunTestInteractions(
     runId: number,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<TestElementResponse[]>> {
-    const url = buildUrl(this.baseUrl, `/api/v1/runs/${runId}/test-elements`);
+  ): Promise<BaseResponse<TestInteractionResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runs/${runId}/test-interactions`
+    );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<TestElementResponse[]>(
+    return validateResponse<TestInteractionResponse[]>(
       response.data,
-      'getRunTestElements'
+      'getRunTestInteractions'
     );
   }
 
@@ -452,20 +455,20 @@ export class TestomniacClient {
     );
   }
 
-  async getRunnerTestElements(
+  async getRunnerTestInteractions(
     runnerId: number,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<TestElementResponse[]>> {
+  ): Promise<BaseResponse<TestInteractionResponse[]>> {
     const url = buildUrl(
       this.baseUrl,
-      `/api/v1/runners/${runnerId}/test-elements`
+      `/api/v1/runners/${runnerId}/test-interactions`
     );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<TestElementResponse[]>(
+    return validateResponse<TestInteractionResponse[]>(
       response.data,
-      'getRunnerTestElements'
+      'getRunnerTestInteractions'
     );
   }
 
@@ -686,75 +689,75 @@ export class TestomniacClient {
     );
   }
 
-  async getTestSurfaceTestElements(
+  async getTestSurfaceTestInteractions(
     testSurfaceId: number,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<TestElementResponse[]>> {
+  ): Promise<BaseResponse<TestInteractionResponse[]>> {
     const url = buildUrl(
       this.baseUrl,
-      `/api/v1/test-surfaces/${testSurfaceId}/cases`
+      `/api/v1/test-surfaces/${testSurfaceId}/interactions`
     );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<TestElementResponse[]>(
+    return validateResponse<TestInteractionResponse[]>(
       response.data,
-      'getTestSurfaceTestElements'
+      'getTestSurfaceTestInteractions'
     );
   }
 
-  // --- Test Element Actions ---
+  // --- Test Interaction Actions ---
 
-  async getTestElementActions(
-    testElementId: number,
+  async getTestInteractionActions(
+    testInteractionId: number,
     token: FirebaseIdToken
   ): Promise<BaseResponse<TestActionResponse[]>> {
     const url = buildUrl(
       this.baseUrl,
-      `/api/v1/test-elements/${testElementId}/actions`
+      `/api/v1/test-interactions/${testInteractionId}/actions`
     );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
     return validateResponse<TestActionResponse[]>(
       response.data,
-      'getTestElementActions'
+      'getTestInteractionActions'
     );
   }
 
-  // --- Test Element Run Findings ---
+  // --- Test Interaction Run Findings ---
 
-  async getTestElementRunFindings(
-    testElementRunId: number,
+  async getTestInteractionRunFindings(
+    testInteractionRunId: number,
     token: FirebaseIdToken
   ): Promise<BaseResponse<TestRunFindingResponse[]>> {
     const url = buildUrl(
       this.baseUrl,
-      `/api/v1/test-element-runs/${testElementRunId}/findings`
+      `/api/v1/test-interaction-runs/${testInteractionRunId}/findings`
     );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
     return validateResponse<TestRunFindingResponse[]>(
       response.data,
-      'getTestElementRunFindings'
+      'getTestInteractionRunFindings'
     );
   }
 
-  async getTestElementRun(
-    testElementRunId: number,
+  async getTestInteractionRun(
+    testInteractionRunId: number,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<TestElementRunResponse | null>> {
+  ): Promise<BaseResponse<TestInteractionRunResponse | null>> {
     const url = buildUrl(
       this.baseUrl,
-      `/api/v1/test-element-runs/${testElementRunId}`
+      `/api/v1/test-interaction-runs/${testInteractionRunId}`
     );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<TestElementRunResponse | null>(
+    return validateResponse<TestInteractionRunResponse | null>(
       response.data,
-      'getTestElementRun'
+      'getTestInteractionRun'
     );
   }
 
@@ -867,20 +870,20 @@ export class TestomniacClient {
     );
   }
 
-  async getTestScenarioSequenceTestElements(
+  async getTestScenarioSequenceTestInteractions(
     sequenceId: number,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<TestScenarioSequenceTestElementLinkResponse[]>> {
+  ): Promise<BaseResponse<TestScenarioSequenceTestInteractionLinkResponse[]>> {
     const url = buildUrl(
       this.baseUrl,
-      `/api/v1/test-scenarios/sequences/${sequenceId}/test-elements`
+      `/api/v1/test-scenarios/sequences/${sequenceId}/test-interactions`
     );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<TestScenarioSequenceTestElementLinkResponse[]>(
+    return validateResponse<TestScenarioSequenceTestInteractionLinkResponse[]>(
       response.data,
-      'getTestScenarioSequenceTestElements'
+      'getTestScenarioSequenceTestInteractions'
     );
   }
 
@@ -939,20 +942,20 @@ export class TestomniacClient {
     );
   }
 
-  async getEnvironmentTestElements(
+  async getEnvironmentTestInteractions(
     envId: number,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<TestElementResponse[]>> {
+  ): Promise<BaseResponse<TestInteractionResponse[]>> {
     const url = buildUrl(
       this.baseUrl,
-      `/api/v1/test-environments/${envId}/test-elements`
+      `/api/v1/test-environments/${envId}/test-interactions`
     );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
     });
-    return validateResponse<TestElementResponse[]>(
+    return validateResponse<TestInteractionResponse[]>(
       response.data,
-      'getEnvironmentTestElements'
+      'getEnvironmentTestInteractions'
     );
   }
 
@@ -973,30 +976,30 @@ export class TestomniacClient {
     );
   }
 
-  // --- Test Element Runs ---
+  // --- Test Interaction Runs ---
 
-  async createTestElementRun(
-    data: CreateTestElementRunRequest,
+  async createTestInteractionRun(
+    data: CreateTestInteractionRunRequest,
     token: FirebaseIdToken
-  ): Promise<BaseResponse<TestElementRunResponse>> {
-    const url = buildUrl(this.baseUrl, '/api/v1/test-element-runs');
+  ): Promise<BaseResponse<TestInteractionRunResponse>> {
+    const url = buildUrl(this.baseUrl, '/api/v1/test-interaction-runs');
     const response = await this.networkClient.post(url, {
       headers: createAuthHeaders(token),
       body: data,
     });
-    return validateResponse<TestElementRunResponse>(
+    return validateResponse<TestInteractionRunResponse>(
       response.data,
-      'createTestElementRun'
+      'createTestInteractionRun'
     );
   }
 
   async clearSupersededFindings(
-    testElementRunId: number,
+    testInteractionRunId: number,
     token: FirebaseIdToken
   ): Promise<BaseResponse<null>> {
     const url = buildUrl(
       this.baseUrl,
-      `/api/v1/test-element-runs/${testElementRunId}/superseded-findings`
+      `/api/v1/test-interaction-runs/${testInteractionRunId}/superseded-findings`
     );
     const response = await this.networkClient.delete(url, {
       headers: createAuthHeaders(token),

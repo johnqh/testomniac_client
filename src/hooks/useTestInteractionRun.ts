@@ -3,27 +3,36 @@ import type { NetworkClient } from '@sudobility/types';
 import { TestomniacClient } from '../network/TestomniacClient';
 import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
 
-interface UseRunTestElementsConfig {
+interface UseTestInteractionRunConfig {
   networkClient: NetworkClient;
   baseUrl: string;
-  runId: number;
+  testInteractionRunId: number;
   token: FirebaseIdToken;
   enabled?: boolean;
 }
 
-export function useRunTestElements(config: UseRunTestElementsConfig) {
-  const { networkClient, baseUrl, runId, token, enabled = true } = config;
+export function useTestInteractionRun(config: UseTestInteractionRunConfig) {
+  const {
+    networkClient,
+    baseUrl,
+    testInteractionRunId,
+    token,
+    enabled = true,
+  } = config;
   const client = new TestomniacClient({ baseUrl, networkClient });
 
   const query = useQuery({
-    queryKey: QUERY_KEYS.runTestElements(runId),
-    queryFn: () => client.getRunTestElements(runId, token),
-    enabled: enabled && !!runId && !!token,
+    queryKey: [
+      ...QUERY_KEYS.testRunFindings(testInteractionRunId),
+      'detail',
+    ] as const,
+    queryFn: () => client.getTestInteractionRun(testInteractionRunId, token),
+    enabled: enabled && !!testInteractionRunId && !!token,
     staleTime: DEFAULT_STALE_TIME,
   });
 
   return {
-    testElements: query.data?.data ?? [],
+    testInteractionRun: query.data?.data ?? null,
     isLoading: query.isLoading,
     error: query.error?.message ?? query.data?.error ?? null,
     refetch: query.refetch,

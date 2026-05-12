@@ -586,7 +586,7 @@ export class TestomniacClient {
   ): Promise<BaseResponse<ActionableItemResponse[]>> {
     const url = buildUrl(
       this.baseUrl,
-      `/api/v1/page-states/${pageStateId}/items`
+      `/api/v1/pages/states/${pageStateId}/items`
     );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),
@@ -656,7 +656,7 @@ export class TestomniacClient {
   ): Promise<BaseResponse<InputValueResponse[]>> {
     const url = buildUrl(
       this.baseUrl,
-      `/api/v1/use-cases/${useCaseId}/input-values`
+      `/api/v1/personas/use-cases/${useCaseId}/input-values`
     );
     const response = await this.networkClient.get(url, {
       headers: createAuthHeaders(token),

@@ -699,6 +699,57 @@ export class TestomniacClient {
     return validateResponse<unknown>(response.data, 'addScenarioToBundle');
   }
 
+  async removeSurfaceFromBundle(
+    runnerId: number,
+    bundleId: number,
+    surfaceId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<unknown>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runners/${runnerId}/test-surface-bundles/${bundleId}/surfaces/${surfaceId}`
+    );
+    const response = await this.networkClient.delete(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<unknown>(response.data, 'removeSurfaceFromBundle');
+  }
+
+  async removeInteractionFromBundle(
+    runnerId: number,
+    bundleId: number,
+    interactionId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<unknown>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runners/${runnerId}/test-surface-bundles/${bundleId}/interactions/${interactionId}`
+    );
+    const response = await this.networkClient.delete(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<unknown>(
+      response.data,
+      'removeInteractionFromBundle'
+    );
+  }
+
+  async removeScenarioFromBundle(
+    runnerId: number,
+    bundleId: number,
+    scenarioId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<unknown>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runners/${runnerId}/test-surface-bundles/${bundleId}/scenarios/${scenarioId}`
+    );
+    const response = await this.networkClient.delete(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<unknown>(response.data, 'removeScenarioFromBundle');
+  }
+
   async getRunnerSchedules(
     runnerId: number,
     token: FirebaseIdToken

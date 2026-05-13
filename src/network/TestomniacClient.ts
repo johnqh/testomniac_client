@@ -9,6 +9,7 @@ import type {
   CreateTestInteractionRunRequest,
   CreateTestScenarioRequest,
   CreateTestScheduleRequest,
+  CreateTestSurfaceBundleRequest,
   HtmlElementResponse,
   InputValueResponse,
   PageResponse,
@@ -33,6 +34,7 @@ import type {
   TestSurfaceBundleResponse,
   TestSurfaceResponse,
   UpdateTestScenarioRequest,
+  UpdateTestSurfaceBundleRequest,
   UseCaseResponse,
   User,
 } from '@sudobility/testomniac_types';
@@ -579,6 +581,61 @@ export class TestomniacClient {
     return validateResponse<TestScenarioResponse[]>(
       response.data,
       'getBundleScenarios'
+    );
+  }
+
+  async createTestSurfaceBundle(
+    runnerId: number,
+    data: CreateTestSurfaceBundleRequest,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestSurfaceBundleResponse>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runners/${runnerId}/test-surface-bundles`
+    );
+    const response = await this.networkClient.post(url, data, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestSurfaceBundleResponse>(
+      response.data,
+      'createTestSurfaceBundle'
+    );
+  }
+
+  async updateTestSurfaceBundle(
+    runnerId: number,
+    bundleId: number,
+    data: UpdateTestSurfaceBundleRequest,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestSurfaceBundleResponse>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runners/${runnerId}/test-surface-bundles/${bundleId}`
+    );
+    const response = await this.networkClient.put(url, data, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestSurfaceBundleResponse>(
+      response.data,
+      'updateTestSurfaceBundle'
+    );
+  }
+
+  async deleteTestSurfaceBundle(
+    runnerId: number,
+    bundleId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestSurfaceBundleResponse>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runners/${runnerId}/test-surface-bundles/${bundleId}`
+    );
+    const response = await this.networkClient.delete(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestSurfaceBundleResponse>(
+      response.data,
+      'deleteTestSurfaceBundle'
     );
   }
 

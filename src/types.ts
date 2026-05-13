@@ -257,6 +257,12 @@ export const QUERY_KEYS = {
     ['testomniac', 'runner', runnerId, 'test-surfaces'] as const,
   runnerTestSurfaceBundles: (runnerId: number) =>
     ['testomniac', 'runner', runnerId, 'test-surface-bundles'] as const,
+  bundleSurfaces: (bundleId: number) =>
+    ['testomniac', 'bundle', bundleId, 'surfaces'] as const,
+  bundleInteractions: (bundleId: number) =>
+    ['testomniac', 'bundle', bundleId, 'interactions'] as const,
+  bundleScenarios: (bundleId: number) =>
+    ['testomniac', 'bundle', bundleId, 'scenarios'] as const,
   runnerSchedules: (runnerId: number) =>
     ['testomniac', 'runner', runnerId, 'test-schedules'] as const,
   testSurfaceChildSurfaces: (testSurfaceId: number) =>

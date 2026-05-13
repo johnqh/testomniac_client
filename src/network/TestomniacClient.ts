@@ -528,6 +528,60 @@ export class TestomniacClient {
     );
   }
 
+  async getBundleSurfaces(
+    runnerId: number,
+    bundleId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestSurfaceResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runners/${runnerId}/test-surface-bundles/${bundleId}/surfaces`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestSurfaceResponse[]>(
+      response.data,
+      'getBundleSurfaces'
+    );
+  }
+
+  async getBundleInteractions(
+    runnerId: number,
+    bundleId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestInteractionResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runners/${runnerId}/test-surface-bundles/${bundleId}/interactions`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestInteractionResponse[]>(
+      response.data,
+      'getBundleInteractions'
+    );
+  }
+
+  async getBundleScenarios(
+    runnerId: number,
+    bundleId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<TestScenarioResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/runners/${runnerId}/test-surface-bundles/${bundleId}/scenarios`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<TestScenarioResponse[]>(
+      response.data,
+      'getBundleScenarios'
+    );
+  }
+
   async getRunnerSchedules(
     runnerId: number,
     token: FirebaseIdToken

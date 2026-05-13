@@ -146,7 +146,7 @@ export class TestomniacClient {
     data: CreateDiscoveryRunRequest
   ): Promise<BaseResponse<CreateDiscoveryRunResponse>> {
     const url = buildUrl(this.baseUrl, '/api/v1/scan');
-    const response = await this.networkClient.post(url, { body: data });
+    const response = await this.networkClient.post(url, data);
     return validateResponse<CreateDiscoveryRunResponse>(
       response.data,
       'submitDiscoveryRun'
@@ -158,9 +158,8 @@ export class TestomniacClient {
     token: FirebaseIdToken
   ): Promise<BaseResponse<CreateDiscoveryRunResponse>> {
     const url = buildUrl(this.baseUrl, '/api/v1/scan');
-    const response = await this.networkClient.post(url, {
+    const response = await this.networkClient.post(url, data, {
       headers: createAuthHeaders(token),
-      body: data,
     });
     return validateResponse<CreateDiscoveryRunResponse>(
       response.data,
@@ -192,9 +191,8 @@ export class TestomniacClient {
     token: FirebaseIdToken
   ): Promise<BaseResponse<ProductResponse>> {
     const url = buildUrl(this.baseUrl, '/api/v1/products');
-    const response = await this.networkClient.post(url, {
+    const response = await this.networkClient.post(url, data, {
       headers: createAuthHeaders(token),
-      body: data,
     });
     return validateResponse<ProductResponse>(response.data, 'createProduct');
   }
@@ -205,9 +203,8 @@ export class TestomniacClient {
     token: FirebaseIdToken
   ): Promise<BaseResponse<RunnerResponse>> {
     const url = buildUrl(this.baseUrl, `/api/v1/products/${productId}/runners`);
-    const response = await this.networkClient.post(url, {
+    const response = await this.networkClient.post(url, data, {
       headers: createAuthHeaders(token),
-      body: data,
     });
     return validateResponse<RunnerResponse>(response.data, 'createRunner');
   }
@@ -557,9 +554,8 @@ export class TestomniacClient {
       this.baseUrl,
       `/api/v1/runners/${runnerId}/test-schedules`
     );
-    const response = await this.networkClient.post(url, {
+    const response = await this.networkClient.post(url, data, {
       headers: createAuthHeaders(token),
-      body: data,
     });
     return validateResponse<TestScheduleResponse>(
       response.data,
@@ -803,9 +799,8 @@ export class TestomniacClient {
       this.baseUrl,
       `/api/v1/runners/${runnerId}/test-scenarios`
     );
-    const response = await this.networkClient.post(url, {
+    const response = await this.networkClient.post(url, data, {
       headers: createAuthHeaders(token),
-      body: data,
     });
     return validateResponse<TestScenarioResponse>(
       response.data,
@@ -823,9 +818,8 @@ export class TestomniacClient {
       this.baseUrl,
       `/api/v1/runners/${runnerId}/test-scenarios/${scenarioId}`
     );
-    const response = await this.networkClient.put(url, {
+    const response = await this.networkClient.put(url, data, {
       headers: createAuthHeaders(token),
-      body: data,
     });
     return validateResponse<TestScenarioResponse>(
       response.data,
@@ -983,9 +977,8 @@ export class TestomniacClient {
     token: FirebaseIdToken
   ): Promise<BaseResponse<TestInteractionRunResponse>> {
     const url = buildUrl(this.baseUrl, '/api/v1/test-interaction-runs');
-    const response = await this.networkClient.post(url, {
+    const response = await this.networkClient.post(url, data, {
       headers: createAuthHeaders(token),
-      body: data,
     });
     return validateResponse<TestInteractionRunResponse>(
       response.data,

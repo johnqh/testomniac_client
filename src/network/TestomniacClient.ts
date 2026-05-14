@@ -4,12 +4,14 @@ import type {
   BaseResponse,
   CreateDiscoveryRunRequest,
   CreateDiscoveryRunResponse,
+  CreateEntityCredentialRequest,
   CreateProductRequest,
   CreateRunnerRequest,
   CreateTestInteractionRunRequest,
   CreateTestScenarioRequest,
   CreateTestScheduleRequest,
   CreateTestSurfaceBundleRequest,
+  EntityCredentialResponse,
   HtmlElementResponse,
   InputValueResponse,
   PageResponse,
@@ -33,6 +35,7 @@ import type {
   TestScheduleResponse,
   TestSurfaceBundleResponse,
   TestSurfaceResponse,
+  UpdateEntityCredentialRequest,
   UpdateTestScenarioRequest,
   UpdateTestSurfaceBundleRequest,
   UseCaseResponse,
@@ -1220,5 +1223,79 @@ export class TestomniacClient {
       headers: createAuthHeaders(token),
     });
     return validateResponse<null>(response.data, 'clearSupersededFindings');
+  }
+
+  // --- Entity Credentials ---
+
+  async getEntityCredentials(
+    entitySlug: string,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<EntityCredentialResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/entities/${entitySlug}/credentials`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<EntityCredentialResponse[]>(
+      response.data,
+      'getEntityCredentials'
+    );
+  }
+
+  async createEntityCredential(
+    entitySlug: string,
+    data: CreateEntityCredentialRequest,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<EntityCredentialResponse>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/entities/${entitySlug}/credentials`
+    );
+    const response = await this.networkClient.post(url, data, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<EntityCredentialResponse>(
+      response.data,
+      'createEntityCredential'
+    );
+  }
+
+  async updateEntityCredential(
+    entitySlug: string,
+    credentialId: number,
+    data: UpdateEntityCredentialRequest,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<EntityCredentialResponse>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/entities/${entitySlug}/credentials/${credentialId}`
+    );
+    const response = await this.networkClient.put(url, data, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<EntityCredentialResponse>(
+      response.data,
+      'updateEntityCredential'
+    );
+  }
+
+  async deleteEntityCredential(
+    entitySlug: string,
+    credentialId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<EntityCredentialResponse>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/entities/${entitySlug}/credentials/${credentialId}`
+    );
+    const response = await this.networkClient.delete(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<EntityCredentialResponse>(
+      response.data,
+      'deleteEntityCredential'
+    );
   }
 }

@@ -57,3 +57,7 @@ export { useEnvironmentPages } from './useEnvironmentPages';
 export { useEnvironmentTestInteractions } from './useEnvironmentTestInteractions';
 export { useEnvironmentTestSurfaces } from './useEnvironmentTestSurfaces';
 export { useCreateTestInteractionRun } from './useCreateTestInteractionRun';
+export { useEntityCredentials } from './useEntityCredentials';
+export { useCreateEntityCredential } from './useCreateEntityCredential';
+export { useUpdateEntityCredential } from './useUpdateEntityCredential';
+export { useDeleteEntityCredential } from './useDeleteEntityCredential';

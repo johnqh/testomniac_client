@@ -250,6 +250,8 @@ export const QUERY_KEYS = {
     ['testomniac', 'runner', runnerId, 'scaffolds'] as const,
   runnerPersonas: (runnerId: number) =>
     ['testomniac', 'runner', runnerId, 'personas'] as const,
+  productPersonas: (productId: number) =>
+    ['testomniac', 'product', productId, 'personas'] as const,
   pageStateScaffolds: (pageStateId: number) =>
     ['testomniac', 'page-state', pageStateId, 'scaffolds'] as const,
   htmlElement: (id: number) => ['testomniac', 'html-element', id] as const,

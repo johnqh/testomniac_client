@@ -5,12 +5,15 @@ import type {
   CreateDiscoveryRunRequest,
   CreateDiscoveryRunResponse,
   CreateEntityCredentialRequest,
+  CreatePersonaRequest,
   CreateProductRequest,
   CreateRunnerRequest,
   CreateTestInteractionRunRequest,
   CreateTestScenarioRequest,
   CreateTestScheduleRequest,
   CreateTestSurfaceBundleRequest,
+  DetectPersonasRequest,
+  DetectPersonasResponse,
   EntityCredentialResponse,
   HtmlElementResponse,
   InputValueResponse,
@@ -36,6 +39,7 @@ import type {
   TestSurfaceBundleResponse,
   TestSurfaceResponse,
   UpdateEntityCredentialRequest,
+  UpdatePersonaRequest,
   UpdateTestScenarioRequest,
   UpdateTestSurfaceBundleRequest,
   UseCaseResponse,
@@ -1296,6 +1300,73 @@ export class TestomniacClient {
     return validateResponse<EntityCredentialResponse>(
       response.data,
       'deleteEntityCredential'
+    );
+  }
+
+  // --- Personas CRUD ---
+
+  async getProductPersonas(
+    productId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<PersonaResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/personas?productId=${productId}`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<PersonaResponse[]>(
+      response.data,
+      'getProductPersonas'
+    );
+  }
+
+  async createPersona(
+    data: CreatePersonaRequest,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<PersonaResponse>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/personas`);
+    const response = await this.networkClient.post(url, data, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<PersonaResponse>(response.data, 'createPersona');
+  }
+
+  async updatePersona(
+    personaId: number,
+    data: UpdatePersonaRequest,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<PersonaResponse>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/personas/${personaId}`);
+    const response = await this.networkClient.put(url, data, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<PersonaResponse>(response.data, 'updatePersona');
+  }
+
+  async deletePersona(
+    personaId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<PersonaResponse>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/personas/${personaId}`);
+    const response = await this.networkClient.delete(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<PersonaResponse>(response.data, 'deletePersona');
+  }
+
+  async detectPersonas(
+    data: DetectPersonasRequest,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<DetectPersonasResponse>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/personas/detect`);
+    const response = await this.networkClient.post(url, data, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<DetectPersonasResponse>(
+      response.data,
+      'detectPersonas'
     );
   }
 }

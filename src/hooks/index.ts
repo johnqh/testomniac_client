@@ -14,6 +14,7 @@ export { useRunTestInteractions } from './useRunTestInteractions';
 export { useRunTestRuns } from './useRunTestRuns';
 export { useRunPersonas } from './useRunPersonas';
 export { useRunScaffolds } from './useRunScaffolds';
+export { useRunPatterns } from './useRunPatterns';
 export { useRunner } from './useRunner';
 export { useRunnerPages } from './useRunnerPages';
 export { useRunnerPageStates } from './useRunnerPageStates';

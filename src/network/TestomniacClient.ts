@@ -18,6 +18,7 @@ import type {
   HtmlElementResponse,
   InputValueResponse,
   PageResponse,
+  PageStatePatternResponse,
   PageStateResponse,
   PageStateScaffoldResponse,
   PersonaResponse,
@@ -401,6 +402,20 @@ export class TestomniacClient {
     return validateResponse<ScaffoldResponse[]>(
       response.data,
       'getRunScaffolds'
+    );
+  }
+
+  async getRunPatterns(
+    runId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<PageStatePatternResponse[]>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/runs/${runId}/patterns`);
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<PageStatePatternResponse[]>(
+      response.data,
+      'getRunPatterns'
     );
   }
 

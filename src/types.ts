@@ -300,4 +300,6 @@ export const QUERY_KEYS = {
     ['testomniac', 'environment', envId, 'test-surfaces'] as const,
   entityCredentials: (entitySlug: string) =>
     ['testomniac', 'entity', entitySlug, 'credentials'] as const,
+  runPatterns: (runId: number) =>
+    ['testomniac', 'run', runId, 'patterns'] as const,
 } as const;

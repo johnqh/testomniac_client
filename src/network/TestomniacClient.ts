@@ -16,6 +16,8 @@ import type {
   DetectPersonasResponse,
   EntityCredentialResponse,
   EntityWithRole,
+  GenerateSequenceRequest,
+  GenerateSequenceResponse,
   HtmlElementResponse,
   InputValueResponse,
   PageResponse,
@@ -1395,6 +1397,24 @@ export class TestomniacClient {
     return validateResponse<DetectPersonasResponse>(
       response.data,
       'detectPersonas'
+    );
+  }
+
+  async generateSequence(
+    scenarioId: number,
+    data: GenerateSequenceRequest,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<GenerateSequenceResponse>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/test-scenarios/${scenarioId}/generate-sequence`
+    );
+    const response = await this.networkClient.post(url, data, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<GenerateSequenceResponse>(
+      response.data,
+      'generateSequence'
     );
   }
 }

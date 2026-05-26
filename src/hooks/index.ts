@@ -68,3 +68,4 @@ export { useEntityCredentials } from './useEntityCredentials';
 export { useCreateEntityCredential } from './useCreateEntityCredential';
 export { useUpdateEntityCredential } from './useUpdateEntityCredential';
 export { useDeleteEntityCredential } from './useDeleteEntityCredential';
+export { useGenerateSequence } from './useGenerateSequence';

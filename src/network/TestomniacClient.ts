@@ -15,6 +15,7 @@ import type {
   DetectPersonasRequest,
   DetectPersonasResponse,
   EntityCredentialResponse,
+  EntityWithRole,
   HtmlElementResponse,
   InputValueResponse,
   PageResponse,
@@ -148,6 +149,18 @@ export class TestomniacClient {
       headers: createAuthHeaders(token),
     });
     return validateResponse<User>(response.data, 'getUser');
+  }
+
+  // --- Entities ---
+
+  async getEntities(
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<EntityWithRole[]>> {
+    const url = buildUrl(this.baseUrl, '/api/v1/entities');
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<EntityWithRole[]>(response.data, 'getEntities');
   }
 
   // --- Discovery Run ---

@@ -195,6 +195,7 @@ export const DEFAULT_GC_TIME = 30 * 60 * 1000;
  */
 export const QUERY_KEYS = {
   user: (userId: string) => ['testomniac', 'user', userId] as const,
+  entities: () => ['testomniac', 'entities'] as const,
   entityProducts: (entitySlug: string) =>
     ['testomniac', 'products', entitySlug] as const,
   product: (productId: number) => ['testomniac', 'product', productId] as const,

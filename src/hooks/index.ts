@@ -1,3 +1,4 @@
+export { useEntities } from './useEntities';
 export { useEntityProducts } from './useEntityProducts';
 export { useProduct } from './useProduct';
 export { useProductRuns } from './useProductRuns';

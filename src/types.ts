@@ -162,6 +162,13 @@ export interface RunStructure {
   }>;
 }
 
+export interface RunLiveDashboard {
+  summary: RunSummary;
+  pagesSummary: RunPageSummary[];
+  navigationMap: RunNavigationMap;
+  structure: RunStructure | null;
+}
+
 /**
  * Default stale time for TanStack Query hooks (5 minutes).
  *
@@ -208,6 +215,8 @@ export const QUERY_KEYS = {
     ['testomniac', 'run', runId, 'navigation-map'] as const,
   runStructure: (runId: number) =>
     ['testomniac', 'run', runId, 'structure'] as const,
+  runLiveDashboard: (runId: number) =>
+    ['testomniac', 'run', runId, 'live-dashboard'] as const,
   runPages: (runId: number) => ['testomniac', 'run', runId, 'pages'] as const,
   runPagesSummary: (runId: number) =>
     ['testomniac', 'run', runId, 'pages-summary'] as const,

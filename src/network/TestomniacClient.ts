@@ -51,6 +51,7 @@ import type {
 } from '@sudobility/testomniac_types';
 import type {
   FirebaseIdToken,
+  RunLiveDashboard,
   RunNavigationMap,
   RunPageDetailSummary,
   RunPageSummary,
@@ -303,6 +304,20 @@ export class TestomniacClient {
       headers: createAuthHeaders(token),
     });
     return validateResponse<RunStructure>(response.data, 'getRunStructure');
+  }
+
+  async getRunLiveDashboard(
+    runId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<RunLiveDashboard>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/runs/${runId}/live-dashboard`);
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<RunLiveDashboard>(
+      response.data,
+      'getRunLiveDashboard'
+    );
   }
 
   // --- Run sub-resources ---

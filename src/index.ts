@@ -8,6 +8,7 @@ export {
   type RunPageSummary,
   type RunStructure,
   type RunSummary,
+  type RunLiveDashboard,
   QUERY_KEYS,
   DEFAULT_STALE_TIME,
   DEFAULT_GC_TIME,

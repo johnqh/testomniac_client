@@ -1,11 +1,11 @@
-# @sudobility/starter_client
+# @sudobility/testomniac_client
 
 API client SDK for Starter with TanStack Query hooks.
 
 ## Installation
 
 ```bash
-bun add @sudobility/starter_client
+bun add @sudobility/testomniac_client
 ```
 
 Peer dependencies:
@@ -17,14 +17,21 @@ bun add react @tanstack/react-query @sudobility/types
 ## Usage
 
 ```ts
-import { StarterClient } from "@sudobility/starter_client";
-import { useHistories, useHistoriesTotal } from "@sudobility/starter_client/hooks";
+import { StarterClient } from '@sudobility/testomniac_client';
+import {
+  useHistories,
+  useHistoriesTotal,
+} from '@sudobility/testomniac_client/hooks';
 
 // Create the HTTP client (dependency-injected NetworkClient)
-const client = new StarterClient({ baseUrl: "https://api.example.com", networkClient });
+const client = new StarterClient({
+  baseUrl: 'https://api.example.com',
+  networkClient,
+});
 
 // In a React component:
-const { data, createHistory, updateHistory, deleteHistory } = useHistories(config);
+const { data, createHistory, updateHistory, deleteHistory } =
+  useHistories(config);
 const { data: total } = useHistoriesTotal(config);
 ```
 
@@ -59,11 +66,11 @@ bun run verify         # All checks + build (use before commit)
 
 ## Related Packages
 
-- **starter_types** -- Shared type definitions (imported for API types)
-- **starter_api** -- Backend server this client communicates with
-- **starter_lib** -- Business logic library that wraps this client's hooks
-- **starter_app** -- Web frontend (consumes transitively via starter_lib)
-- **starter_app_rn** -- React Native app (consumes transitively via starter_lib)
+- **testomniac_types** -- Shared type definitions (imported for API types)
+- **testomniac_api** -- Backend server this client communicates with
+- **testomniac_lib** -- Business logic library that wraps this client's hooks
+- **testomniac_app** -- Web frontend (consumes transitively via testomniac_lib)
+- **testomniac_app_rn** -- React Native app (consumes transitively via testomniac_lib)
 
 ## License
 

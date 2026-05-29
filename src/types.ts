@@ -13,6 +13,7 @@ export interface RunSummary {
   runnerId: number;
   testEnvironmentId: number | null;
   status: string;
+  status_update?: string | null;
   aiSummary: string | null;
   pagesFound: number | null;
   pageStatesFound: number | null;

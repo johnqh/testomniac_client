@@ -30,6 +30,7 @@ export { useCreatePersona } from './useCreatePersona';
 export { useUpdatePersona } from './useUpdatePersona';
 export { useDeletePersona } from './useDeletePersona';
 export { useDetectPersonas } from './useDetectPersonas';
+export { useDetectTestScenarios } from './useDetectTestScenarios';
 export { usePageStates } from './usePageStates';
 export { usePageStateItems } from './usePageStateItems';
 export { usePageStateScaffolds } from './usePageStateScaffolds';

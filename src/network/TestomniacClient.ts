@@ -14,6 +14,8 @@ import type {
   CreateTestSurfaceBundleRequest,
   DetectPersonasRequest,
   DetectPersonasResponse,
+  DetectTestScenariosRequest,
+  DetectTestScenariosResponse,
   EntityCredentialResponse,
   EntityWithRole,
   GenerateSequenceRequest,
@@ -1412,6 +1414,20 @@ export class TestomniacClient {
     return validateResponse<DetectPersonasResponse>(
       response.data,
       'detectPersonas'
+    );
+  }
+
+  async detectTestScenarios(
+    data: DetectTestScenariosRequest,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<DetectTestScenariosResponse>> {
+    const url = buildUrl(this.baseUrl, `/api/v1/test-scenarios/detect`);
+    const response = await this.networkClient.post(url, data, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<DetectTestScenariosResponse>(
+      response.data,
+      'detectTestScenarios'
     );
   }
 

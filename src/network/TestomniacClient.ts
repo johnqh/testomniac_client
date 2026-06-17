@@ -52,6 +52,8 @@ import type {
   User,
 } from '@sudobility/testomniac_types';
 import type {
+  CreateEntityApiKeyRequest,
+  EntityApiKeyResponse,
   FirebaseIdToken,
   RunLiveDashboard,
   RunNavigationMap,
@@ -59,8 +61,22 @@ import type {
   RunPageSummary,
   RunStructure,
   RunSummary,
+  ScriptKind,
 } from '../types';
 import { buildUrl, createAuthHeaders } from '../utils/starter-helpers';
+
+/**
+ * Maps each {@link ScriptKind} to its API path for the generated Playwright
+ * `/script` endpoint.
+ *
+ * @internal
+ */
+const SCRIPT_PATHS: Record<ScriptKind, (id: number) => string> = {
+  interaction: id => `/api/v1/test-interactions/${id}/script`,
+  surface: id => `/api/v1/test-surfaces/${id}/script`,
+  sequence: id => `/api/v1/test-scenarios/sequences/${id}/script`,
+  finding: id => `/api/v1/test-run-findings/${id}/script`,
+};
 
 /**
  * Validates that a response from the API conforms to the expected {@link BaseResponse} shape.
@@ -1348,6 +1364,84 @@ export class TestomniacClient {
       response.data,
       'deleteEntityCredential'
     );
+  }
+
+  // --- Entity API Keys ---
+
+  async getEntityApiKeys(
+    entitySlug: string,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<EntityApiKeyResponse[]>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/entities/${entitySlug}/api-keys`
+    );
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<EntityApiKeyResponse[]>(
+      response.data,
+      'getEntityApiKeys'
+    );
+  }
+
+  async createEntityApiKey(
+    entitySlug: string,
+    data: CreateEntityApiKeyRequest,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<EntityApiKeyResponse>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/entities/${entitySlug}/api-keys`
+    );
+    const response = await this.networkClient.post(url, data, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<EntityApiKeyResponse>(
+      response.data,
+      'createEntityApiKey'
+    );
+  }
+
+  async deleteEntityApiKey(
+    entitySlug: string,
+    apiKeyId: number,
+    token: FirebaseIdToken
+  ): Promise<BaseResponse<null>> {
+    const url = buildUrl(
+      this.baseUrl,
+      `/api/v1/entities/${entitySlug}/api-keys/${apiKeyId}`
+    );
+    const response = await this.networkClient.delete(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse<null>(response.data, 'deleteEntityApiKey');
+  }
+
+  // --- Object Scripts ---
+
+  /**
+   * Fetches the complete generated Playwright script (imports + test wrapper +
+   * body) for a domain object from the API's `/script` endpoints.
+   *
+   * @returns The raw script source as a string
+   * @throws {Error} If the request fails or returns no script
+   */
+  async getObjectScript(
+    kind: ScriptKind,
+    id: number,
+    token: FirebaseIdToken
+  ): Promise<string> {
+    const url = buildUrl(this.baseUrl, SCRIPT_PATHS[kind](id));
+    const response = await this.networkClient.get<{ script: string }>(url, {
+      headers: createAuthHeaders(token),
+    });
+    if (!response.ok || !response.success || !response.data) {
+      throw new Error(
+        response.error || `Failed to load script (HTTP ${response.status})`
+      );
+    }
+    return response.data.script;
   }
 
   // --- Personas CRUD ---

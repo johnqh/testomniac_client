@@ -1,3 +1,5 @@
+import type { ApiKeyResponse } from '@sudobility/testomniac_types';
+
 /**
  * Branded type alias for Firebase ID tokens used to authenticate API requests.
  *
@@ -6,6 +8,27 @@
  * `firebase.auth().currentUser.getIdToken()`.
  */
 export type FirebaseIdToken = string;
+
+/**
+ * The kinds of domain objects that expose a generated Playwright `/script`
+ * endpoint on the Testomniac API.
+ */
+export type ScriptKind = 'interaction' | 'sequence' | 'surface' | 'finding';
+
+/**
+ * An entity-scoped API key as returned by
+ * `/api/v1/entities/:entitySlug/api-keys`.
+ */
+export interface EntityApiKeyResponse extends ApiKeyResponse {
+  entitySlug: string;
+  associatedPersonalEntityId: string | null;
+}
+
+/** Request payload for creating an entity-scoped API key. */
+export interface CreateEntityApiKeyRequest {
+  title: string;
+  associatedPersonalEntityId?: string | null;
+}
 
 export interface RunSummary {
   runId: number;
@@ -311,6 +334,10 @@ export const QUERY_KEYS = {
     ['testomniac', 'environment', envId, 'test-surfaces'] as const,
   entityCredentials: (entitySlug: string) =>
     ['testomniac', 'entity', entitySlug, 'credentials'] as const,
+  entityApiKeys: (entitySlug: string) =>
+    ['testomniac', 'entity', entitySlug, 'api-keys'] as const,
+  objectScript: (kind: string, id: number) =>
+    ['testomniac', 'object-script', kind, id] as const,
   runPatterns: (runId: number) =>
     ['testomniac', 'run', runId, 'patterns'] as const,
 } as const;

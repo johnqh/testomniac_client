@@ -71,3 +71,8 @@ export { useCreateEntityCredential } from './useCreateEntityCredential';
 export { useUpdateEntityCredential } from './useUpdateEntityCredential';
 export { useDeleteEntityCredential } from './useDeleteEntityCredential';
 export { useGenerateSequence } from './useGenerateSequence';
+export { useEntityApiKeys } from './useEntityApiKeys';
+export { useCreateEntityApiKey } from './useCreateEntityApiKey';
+export { useDeleteEntityApiKey } from './useDeleteEntityApiKey';
+export { useObjectScript } from './useObjectScript';
+export { useEventSource } from './useEventSource';

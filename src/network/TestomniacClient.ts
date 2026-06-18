@@ -1245,6 +1245,51 @@ export class TestomniacClient {
     );
   }
 
+  /**
+   * Paginated + server-filtered test interactions for the list view. Avoids
+   * shipping the full (potentially huge) interaction set; returns one page plus
+   * the total count for the active filters.
+   */
+  async getEnvironmentTestInteractionsPage(
+    envId: number,
+    params: {
+      limit: number;
+      offset: number;
+      testType?: string;
+      priority?: number;
+      sizeClass?: string;
+      search?: string;
+    },
+    token: FirebaseIdToken
+  ): Promise<
+    BaseResponse<{
+      items: TestInteractionResponse[];
+      total: number;
+      limit: number;
+      offset: number;
+    }>
+  > {
+    const qs = new URLSearchParams();
+    qs.set('limit', String(params.limit));
+    qs.set('offset', String(params.offset));
+    if (params.testType) qs.set('testType', params.testType);
+    if (params.priority !== undefined)
+      qs.set('priority', String(params.priority));
+    if (params.sizeClass) qs.set('sizeClass', params.sizeClass);
+    if (params.search) qs.set('search', params.search);
+    const url = `${buildUrl(
+      this.baseUrl,
+      `/api/v1/test-environments/${envId}/test-interactions/page`
+    )}?${qs.toString()}`;
+    const response = await this.networkClient.get(url, {
+      headers: createAuthHeaders(token),
+    });
+    return validateResponse(
+      response.data,
+      'getEnvironmentTestInteractionsPage'
+    );
+  }
+
   async getEnvironmentTestSurfaces(
     envId: number,
     token: FirebaseIdToken

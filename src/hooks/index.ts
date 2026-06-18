@@ -69,6 +69,7 @@ export { useTestScenarioSequenceRuns } from './useTestScenarioSequenceRuns';
 export { useProductEnvironments } from './useProductEnvironments';
 export { useEnvironmentPages } from './useEnvironmentPages';
 export { useEnvironmentTestInteractions } from './useEnvironmentTestInteractions';
+export { useEnvironmentTestInteractionsPage } from './useEnvironmentTestInteractionsPage';
 export { useEnvironmentTestSurfaces } from './useEnvironmentTestSurfaces';
 export { useCreateTestInteractionRun } from './useCreateTestInteractionRun';
 export { useEntityCredentials } from './useEntityCredentials';

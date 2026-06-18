@@ -330,6 +330,25 @@ export const QUERY_KEYS = {
     ['testomniac', 'environment', envId, 'pages'] as const,
   environmentTestInteractions: (envId: number) =>
     ['testomniac', 'environment', envId, 'test-interactions'] as const,
+  environmentTestInteractionsPage: (
+    envId: number,
+    params: {
+      limit: number;
+      offset: number;
+      testType?: string;
+      priority?: number;
+      sizeClass?: string;
+      search?: string;
+    }
+  ) =>
+    [
+      'testomniac',
+      'environment',
+      envId,
+      'test-interactions',
+      'page',
+      params,
+    ] as const,
   environmentTestSurfaces: (envId: number) =>
     ['testomniac', 'environment', envId, 'test-surfaces'] as const,
   entityCredentials: (entitySlug: string) =>

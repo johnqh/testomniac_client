@@ -12,7 +12,7 @@ interface UseEventSourceConfig {
   reconnectIntervalMs?: number;
 }
 
-interface UseEventSourceReturn {
+export interface UseEventSourceReturn {
   isConnected: boolean;
   error: string | null;
   disconnect: () => void;

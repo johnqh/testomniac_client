@@ -44,10 +44,11 @@ export function useDashboardEnvironmentContextData(
   const environmentQueries = useQueries({
     queries: products.map(product => ({
       queryKey: QUERY_KEYS.productEnvironments(product.id),
-      queryFn: async () => {
-        const response = await client.getProductEnvironments(product.id, token);
-        return response.data ?? [];
-      },
+      // Must return the full BaseResponse to match useProductEnvironments,
+      // which shares this query key. Returning a different shape (e.g. just
+      // `response.data`) corrupts the shared cache entry depending on which
+      // hook fetches first.
+      queryFn: () => client.getProductEnvironments(product.id, token),
       enabled: enabled && !!token,
       staleTime: DEFAULT_STALE_TIME,
     })),
@@ -56,7 +57,7 @@ export function useDashboardEnvironmentContextData(
   const matchingProduct = useMemo(() => {
     for (let index = 0; index < products.length; index += 1) {
       const product = products[index];
-      const environments = environmentQueries[index]?.data ?? [];
+      const environments = environmentQueries[index]?.data?.data ?? [];
       if (environments.some(environment => environment.id === envId)) {
         return product;
       }
@@ -66,7 +67,7 @@ export function useDashboardEnvironmentContextData(
 
   const matchingEnvironment = useMemo(() => {
     for (const query of environmentQueries) {
-      const environment = query.data?.find(item => item.id === envId);
+      const environment = query.data?.data?.find(item => item.id === envId);
       if (environment) return environment;
     }
     return null;

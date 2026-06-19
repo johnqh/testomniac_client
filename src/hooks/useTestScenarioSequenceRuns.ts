@@ -1,40 +1,46 @@
-import { useQuery } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react';
+import {
+  useQuery,
+  type UseQueryOptions,
+  type UseQueryResult,
+} from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
+import type {
+  BaseResponse,
+  TestScenarioSequenceRunResponse,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
-import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
+import type { FirebaseIdToken } from '../types';
+import { queryKeys } from './query-keys';
+import { STALE_TIMES } from './query-config';
 
-interface UseTestScenarioSequenceRunsConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  testScenarioSequenceId: number;
-  token: FirebaseIdToken;
-  enabled?: boolean;
-}
+export const useTestScenarioSequenceRuns = (
+  networkClient: NetworkClient,
+  baseUrl: string,
+  token: FirebaseIdToken,
+  testScenarioSequenceId: number,
+  options?: Omit<
+    UseQueryOptions<BaseResponse<TestScenarioSequenceRunResponse[]>>,
+    'queryKey' | 'queryFn'
+  >
+): UseQueryResult<BaseResponse<TestScenarioSequenceRunResponse[]>> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useTestScenarioSequenceRuns(
-  config: UseTestScenarioSequenceRunsConfig
-) {
-  const {
-    networkClient,
-    baseUrl,
-    testScenarioSequenceId,
-    token,
-    enabled = true,
-  } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
+  const queryFn = useCallback(
+    () => client.getTestScenarioSequenceRuns(token, testScenarioSequenceId),
+    [client, token, testScenarioSequenceId]
+  );
 
-  const query = useQuery({
-    queryKey: QUERY_KEYS.testScenarioSequenceRuns(testScenarioSequenceId),
-    queryFn: () =>
-      client.getTestScenarioSequenceRuns(testScenarioSequenceId, token),
-    enabled: enabled && !!testScenarioSequenceId && !!token,
-    staleTime: DEFAULT_STALE_TIME,
+  return useQuery({
+    queryKey: queryKeys.testomniac.testScenarioSequenceRuns(
+      testScenarioSequenceId
+    ),
+    queryFn,
+    staleTime: STALE_TIMES.SCENARIO,
+    enabled: !!token && !!testScenarioSequenceId,
+    ...options,
   });
-
-  return {
-    runs: query.data?.data ?? [],
-    isLoading: query.isLoading,
-    error: query.error?.message ?? query.data?.error ?? null,
-    refetch: query.refetch,
-  };
-}
+};

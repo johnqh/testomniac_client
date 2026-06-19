@@ -1,49 +1,61 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMemo } from 'react';
+import { useMutation, type UseMutationResult } from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
+import type { BaseResponse } from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
 import type { FirebaseIdToken } from '../types';
 import type { BundleItemType } from './useAddToBundle';
 
-interface UseRemoveFromBundleConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  runnerId: number;
-  bundleId: number;
-  token: FirebaseIdToken;
-  itemType: BundleItemType;
-}
+export const useRemoveFromBundle = (
+  networkClient: NetworkClient,
+  baseUrl: string
+): UseMutationResult<
+  BaseResponse<unknown>,
+  Error,
+  {
+    token: FirebaseIdToken;
+    runnerId: number;
+    bundleId: number;
+    itemType: BundleItemType;
+    itemId: number;
+  }
+> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useRemoveFromBundle(config: UseRemoveFromBundleConfig) {
-  const { networkClient, baseUrl, runnerId, bundleId, token, itemType } =
-    config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
-
-  const mutation = useMutation({
-    mutationFn: (itemId: number) => {
+  return useMutation({
+    mutationFn: ({
+      token,
+      runnerId,
+      bundleId,
+      itemType,
+      itemId,
+    }: {
+      token: FirebaseIdToken;
+      runnerId: number;
+      bundleId: number;
+      itemType: BundleItemType;
+      itemId: number;
+    }) => {
       if (itemType === 'surface') {
         return client.removeSurfaceFromBundle(
+          token,
           runnerId,
           bundleId,
-          itemId,
-          token
+          itemId
         );
       }
       if (itemType === 'interaction') {
         return client.removeInteractionFromBundle(
+          token,
           runnerId,
           bundleId,
-          itemId,
-          token
+          itemId
         );
       }
-      return client.removeScenarioFromBundle(runnerId, bundleId, itemId, token);
+      return client.removeScenarioFromBundle(token, runnerId, bundleId, itemId);
     },
   });
-
-  return {
-    removeFromBundle: mutation.mutateAsync,
-    isRemoving: mutation.isPending,
-    error: mutation.error?.message ?? null,
-    reset: mutation.reset,
-  };
-}
+};

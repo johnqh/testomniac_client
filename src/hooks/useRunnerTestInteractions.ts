@@ -1,33 +1,44 @@
-import { useQuery } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react';
+import {
+  useQuery,
+  type UseQueryOptions,
+  type UseQueryResult,
+} from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
+import type {
+  BaseResponse,
+  TestInteractionResponse,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
-import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
+import type { FirebaseIdToken } from '../types';
+import { queryKeys } from './query-keys';
+import { STALE_TIMES } from './query-config';
 
-interface UseRunnerTestInteractionsConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  runnerId: number;
-  token: FirebaseIdToken;
-  enabled?: boolean;
-}
+export const useRunnerTestInteractions = (
+  networkClient: NetworkClient,
+  baseUrl: string,
+  token: FirebaseIdToken,
+  runnerId: number,
+  options?: Omit<
+    UseQueryOptions<BaseResponse<TestInteractionResponse[]>>,
+    'queryKey' | 'queryFn'
+  >
+): UseQueryResult<BaseResponse<TestInteractionResponse[]>> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useRunnerTestInteractions(
-  config: UseRunnerTestInteractionsConfig
-) {
-  const { networkClient, baseUrl, runnerId, token, enabled = true } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
+  const queryFn = useCallback(
+    () => client.getRunnerTestInteractions(token, runnerId),
+    [client, token, runnerId]
+  );
 
-  const query = useQuery({
-    queryKey: QUERY_KEYS.runnerTestInteractions(runnerId),
-    queryFn: () => client.getRunnerTestInteractions(runnerId, token),
-    enabled: enabled && !!runnerId && !!token,
-    staleTime: DEFAULT_STALE_TIME,
+  return useQuery({
+    queryKey: queryKeys.testomniac.runnerTestInteractions(runnerId),
+    queryFn,
+    staleTime: STALE_TIMES.INTERACTION,
+    enabled: !!token && !!runnerId,
+    ...options,
   });
-
-  return {
-    testInteractions: query.data?.data ?? [],
-    isLoading: query.isLoading,
-    error: query.error?.message ?? query.data?.error ?? null,
-    refetch: query.refetch,
-  };
-}
+};

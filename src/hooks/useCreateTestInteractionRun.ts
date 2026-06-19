@@ -1,30 +1,34 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMemo } from 'react';
+import { useMutation, type UseMutationResult } from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
-import type { CreateTestInteractionRunRequest } from '@sudobility/testomniac_types';
+import type {
+  BaseResponse,
+  CreateTestInteractionRunRequest,
+  TestInteractionRunResponse,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
 import type { FirebaseIdToken } from '../types';
 
-interface UseCreateTestInteractionRunConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  token: FirebaseIdToken;
-}
+export const useCreateTestInteractionRun = (
+  networkClient: NetworkClient,
+  baseUrl: string
+): UseMutationResult<
+  BaseResponse<TestInteractionRunResponse>,
+  Error,
+  { token: FirebaseIdToken; data: CreateTestInteractionRunRequest }
+> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useCreateTestInteractionRun(
-  config: UseCreateTestInteractionRunConfig
-) {
-  const { networkClient, baseUrl, token } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
-
-  const mutation = useMutation({
-    mutationFn: (data: CreateTestInteractionRunRequest) =>
-      client.createTestInteractionRun(data, token),
+  return useMutation({
+    mutationFn: ({
+      token,
+      data,
+    }: {
+      token: FirebaseIdToken;
+      data: CreateTestInteractionRunRequest;
+    }) => client.createTestInteractionRun(token, data),
   });
-
-  return {
-    createRun: mutation.mutateAsync,
-    isCreating: mutation.isPending,
-    error: mutation.error?.message ?? null,
-    reset: mutation.reset,
-  };
-}
+};

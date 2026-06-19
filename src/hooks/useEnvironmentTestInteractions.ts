@@ -1,33 +1,44 @@
-import { useQuery } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react';
+import {
+  useQuery,
+  type UseQueryOptions,
+  type UseQueryResult,
+} from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
+import type {
+  BaseResponse,
+  TestInteractionResponse,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
-import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
+import type { FirebaseIdToken } from '../types';
+import { queryKeys } from './query-keys';
+import { STALE_TIMES } from './query-config';
 
-interface UseEnvironmentTestInteractionsConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  envId: number;
-  token: FirebaseIdToken;
-  enabled?: boolean;
-}
+export const useEnvironmentTestInteractions = (
+  networkClient: NetworkClient,
+  baseUrl: string,
+  token: FirebaseIdToken,
+  envId: number,
+  options?: Omit<
+    UseQueryOptions<BaseResponse<TestInteractionResponse[]>>,
+    'queryKey' | 'queryFn'
+  >
+): UseQueryResult<BaseResponse<TestInteractionResponse[]>> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useEnvironmentTestInteractions(
-  config: UseEnvironmentTestInteractionsConfig
-) {
-  const { networkClient, baseUrl, envId, token, enabled = true } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
+  const queryFn = useCallback(
+    () => client.getEnvironmentTestInteractions(token, envId),
+    [client, token, envId]
+  );
 
-  const query = useQuery({
-    queryKey: QUERY_KEYS.environmentTestInteractions(envId),
-    queryFn: () => client.getEnvironmentTestInteractions(envId, token),
-    enabled: enabled && !!envId && !!token,
-    staleTime: DEFAULT_STALE_TIME,
+  return useQuery({
+    queryKey: queryKeys.testomniac.environmentTestInteractions(envId),
+    queryFn,
+    staleTime: STALE_TIMES.INTERACTION,
+    enabled: !!token && !!envId,
+    ...options,
   });
-
-  return {
-    testInteractions: query.data?.data ?? [],
-    isLoading: query.isLoading,
-    error: query.error?.message ?? query.data?.error ?? null,
-    refetch: query.refetch,
-  };
-}
+};

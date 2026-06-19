@@ -1,31 +1,44 @@
-import { useQuery } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react';
+import {
+  useQuery,
+  type UseQueryOptions,
+  type UseQueryResult,
+} from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
+import type {
+  BaseResponse,
+  HtmlElementResponse,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
-import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
+import type { FirebaseIdToken } from '../types';
+import { queryKeys } from './query-keys';
+import { STALE_TIMES } from './query-config';
 
-interface UseHtmlElementConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  id: number;
-  token: FirebaseIdToken;
-  enabled?: boolean;
-}
+export const useHtmlElement = (
+  networkClient: NetworkClient,
+  baseUrl: string,
+  token: FirebaseIdToken,
+  id: number,
+  options?: Omit<
+    UseQueryOptions<BaseResponse<HtmlElementResponse>>,
+    'queryKey' | 'queryFn'
+  >
+): UseQueryResult<BaseResponse<HtmlElementResponse>> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useHtmlElement(config: UseHtmlElementConfig) {
-  const { networkClient, baseUrl, id, token, enabled = true } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
+  const queryFn = useCallback(
+    () => client.getHtmlElement(token, id),
+    [client, token, id]
+  );
 
-  const query = useQuery({
-    queryKey: QUERY_KEYS.htmlElement(id),
-    queryFn: () => client.getHtmlElement(id, token),
-    enabled: enabled && !!id && !!token,
-    staleTime: DEFAULT_STALE_TIME,
+  return useQuery({
+    queryKey: queryKeys.testomniac.htmlElement(id),
+    queryFn,
+    staleTime: STALE_TIMES.PAGE,
+    enabled: !!token && !!id,
+    ...options,
   });
-
-  return {
-    htmlElement: query.data?.data ?? null,
-    isLoading: query.isLoading,
-    error: query.error?.message ?? query.data?.error ?? null,
-    refetch: query.refetch,
-  };
-}
+};

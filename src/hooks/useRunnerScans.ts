@@ -1,31 +1,44 @@
-import { useQuery } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react';
+import {
+  useQuery,
+  type UseQueryOptions,
+  type UseQueryResult,
+} from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
+import type {
+  BaseResponse,
+  TestRunResponse,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
-import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
+import type { FirebaseIdToken } from '../types';
+import { queryKeys } from './query-keys';
+import { STALE_TIMES } from './query-config';
 
-interface UseRunnerScansConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  runnerId: number;
-  token: FirebaseIdToken;
-  enabled?: boolean;
-}
+export const useRunnerScans = (
+  networkClient: NetworkClient,
+  baseUrl: string,
+  token: FirebaseIdToken,
+  runnerId: number,
+  options?: Omit<
+    UseQueryOptions<BaseResponse<TestRunResponse[]>>,
+    'queryKey' | 'queryFn'
+  >
+): UseQueryResult<BaseResponse<TestRunResponse[]>> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useRunnerScans(config: UseRunnerScansConfig) {
-  const { networkClient, baseUrl, runnerId, token, enabled = true } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
+  const queryFn = useCallback(
+    () => client.getRunnerTestRuns(token, runnerId),
+    [client, token, runnerId]
+  );
 
-  const query = useQuery({
-    queryKey: QUERY_KEYS.runnerDiscoveryRuns(runnerId),
-    queryFn: () => client.getRunnerTestRuns(runnerId, token),
-    enabled: enabled && !!runnerId && !!token,
-    staleTime: DEFAULT_STALE_TIME,
+  return useQuery({
+    queryKey: queryKeys.testomniac.runnerDiscoveryRuns(runnerId),
+    queryFn,
+    staleTime: STALE_TIMES.RUN,
+    enabled: !!token && !!runnerId,
+    ...options,
   });
-
-  return {
-    scans: query.data?.data ?? [],
-    isLoading: query.isLoading,
-    error: query.error?.message ?? query.data?.error ?? null,
-    refetch: query.refetch,
-  };
-}
+};

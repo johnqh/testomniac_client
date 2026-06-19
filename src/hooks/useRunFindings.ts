@@ -1,31 +1,44 @@
-import { useQuery } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react';
+import {
+  useQuery,
+  type UseQueryOptions,
+  type UseQueryResult,
+} from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
+import type {
+  BaseResponse,
+  TestRunFindingResponse,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
-import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
+import type { FirebaseIdToken } from '../types';
+import { queryKeys } from './query-keys';
+import { STALE_TIMES } from './query-config';
 
-interface UseRunFindingsConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  runId: number;
-  token: FirebaseIdToken;
-  enabled?: boolean;
-}
+export const useRunFindings = (
+  networkClient: NetworkClient,
+  baseUrl: string,
+  token: FirebaseIdToken,
+  runId: number,
+  options?: Omit<
+    UseQueryOptions<BaseResponse<TestRunFindingResponse[]>>,
+    'queryKey' | 'queryFn'
+  >
+): UseQueryResult<BaseResponse<TestRunFindingResponse[]>> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useRunFindings(config: UseRunFindingsConfig) {
-  const { networkClient, baseUrl, runId, token, enabled = true } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
+  const queryFn = useCallback(
+    () => client.getRunFindings(token, runId),
+    [client, token, runId]
+  );
 
-  const query = useQuery({
-    queryKey: QUERY_KEYS.runFindings(runId),
-    queryFn: () => client.getRunFindings(runId, token),
-    enabled: enabled && !!runId && !!token,
-    staleTime: DEFAULT_STALE_TIME,
+  return useQuery({
+    queryKey: queryKeys.testomniac.runFindings(runId),
+    queryFn,
+    staleTime: STALE_TIMES.FINDING,
+    enabled: !!token && !!runId,
+    ...options,
   });
-
-  return {
-    findings: query.data?.data ?? [],
-    isLoading: query.isLoading,
-    error: query.error?.message ?? query.data?.error ?? null,
-    refetch: query.refetch,
-  };
-}
+};

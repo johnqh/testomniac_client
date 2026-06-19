@@ -3,18 +3,23 @@ import { useMutation, type UseMutationResult } from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
 import type {
   BaseResponse,
-  PersonaResponse,
+  ScanEndRequest,
+  ScanEndResponse,
 } from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
 import type { FirebaseIdToken } from '../types';
 
-export const useDeletePersona = (
+/**
+ * Ends a scan and detects personas + scenarios for a product
+ * (`POST /api/v1/scan/end`).
+ */
+export const useEndScan = (
   networkClient: NetworkClient,
   baseUrl: string
 ): UseMutationResult<
-  BaseResponse<PersonaResponse>,
+  BaseResponse<ScanEndResponse>,
   Error,
-  { token: FirebaseIdToken; personaId: number }
+  { token: FirebaseIdToken; data: ScanEndRequest }
 > => {
   const client = useMemo(
     () => new TestomniacClient(networkClient, baseUrl),
@@ -24,10 +29,10 @@ export const useDeletePersona = (
   return useMutation({
     mutationFn: ({
       token,
-      personaId,
+      data,
     }: {
       token: FirebaseIdToken;
-      personaId: number;
-    }) => client.deletePersona(token, personaId),
+      data: ScanEndRequest;
+    }) => client.endScan(token, data),
   });
 };

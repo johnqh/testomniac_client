@@ -1,31 +1,44 @@
-import { useQuery } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react';
+import {
+  useQuery,
+  type UseQueryOptions,
+  type UseQueryResult,
+} from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
+import type {
+  BaseResponse,
+  TestRunResponse,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
-import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
+import type { FirebaseIdToken } from '../types';
+import { queryKeys } from './query-keys';
+import { STALE_TIMES } from './query-config';
 
-interface UseRunConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  runId: number;
-  token: FirebaseIdToken;
-  enabled?: boolean;
-}
+export const useRun = (
+  networkClient: NetworkClient,
+  baseUrl: string,
+  token: FirebaseIdToken,
+  runId: number,
+  options?: Omit<
+    UseQueryOptions<BaseResponse<TestRunResponse>>,
+    'queryKey' | 'queryFn'
+  >
+): UseQueryResult<BaseResponse<TestRunResponse>> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useRun(config: UseRunConfig) {
-  const { networkClient, baseUrl, runId, token, enabled = true } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
+  const queryFn = useCallback(
+    () => client.getTestRun(token, runId),
+    [client, token, runId]
+  );
 
-  const query = useQuery({
-    queryKey: QUERY_KEYS.run(runId),
-    queryFn: () => client.getTestRun(runId, token),
-    enabled: enabled && !!runId && !!token,
-    staleTime: DEFAULT_STALE_TIME,
+  return useQuery({
+    queryKey: queryKeys.testomniac.run(runId),
+    queryFn,
+    staleTime: STALE_TIMES.RUN,
+    enabled: !!token && !!runId,
+    ...options,
   });
-
-  return {
-    run: query.data?.data ?? null,
-    isLoading: query.isLoading,
-    error: query.error?.message ?? query.data?.error ?? null,
-    refetch: query.refetch,
-  };
-}
+};

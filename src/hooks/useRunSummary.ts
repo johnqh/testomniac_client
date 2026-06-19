@@ -1,31 +1,41 @@
-import { useQuery } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react';
+import {
+  useQuery,
+  type UseQueryOptions,
+  type UseQueryResult,
+} from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
+import type { BaseResponse } from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
-import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
+import type { FirebaseIdToken, RunSummary } from '../types';
+import { queryKeys } from './query-keys';
+import { STALE_TIMES } from './query-config';
 
-interface UseRunSummaryConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  runId: number;
-  token: FirebaseIdToken;
-  enabled?: boolean;
-}
+export const useRunSummary = (
+  networkClient: NetworkClient,
+  baseUrl: string,
+  token: FirebaseIdToken,
+  runId: number,
+  options?: Omit<
+    UseQueryOptions<BaseResponse<RunSummary>>,
+    'queryKey' | 'queryFn'
+  >
+): UseQueryResult<BaseResponse<RunSummary>> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useRunSummary(config: UseRunSummaryConfig) {
-  const { networkClient, baseUrl, runId, token, enabled = true } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
+  const queryFn = useCallback(
+    () => client.getRunSummary(token, runId),
+    [client, token, runId]
+  );
 
-  const query = useQuery({
-    queryKey: QUERY_KEYS.runSummary(runId),
-    queryFn: () => client.getRunSummary(runId, token),
-    enabled: enabled && !!runId && !!token,
-    staleTime: DEFAULT_STALE_TIME,
+  return useQuery({
+    queryKey: queryKeys.testomniac.runSummary(runId),
+    queryFn,
+    staleTime: STALE_TIMES.RUN,
+    enabled: !!token && !!runId,
+    ...options,
   });
-
-  return {
-    summary: query.data?.data ?? null,
-    isLoading: query.isLoading,
-    error: query.error?.message ?? query.data?.error ?? null,
-    refetch: query.refetch,
-  };
-}
+};

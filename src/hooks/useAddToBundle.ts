@@ -1,39 +1,52 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMemo } from 'react';
+import { useMutation, type UseMutationResult } from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
+import type { BaseResponse } from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
 import type { FirebaseIdToken } from '../types';
 
 export type BundleItemType = 'surface' | 'interaction' | 'scenario';
 
-interface UseAddToBundleConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  runnerId: number;
-  token: FirebaseIdToken;
-  itemType: BundleItemType;
-  itemId: number;
-}
+export const useAddToBundle = (
+  networkClient: NetworkClient,
+  baseUrl: string
+): UseMutationResult<
+  BaseResponse<unknown>,
+  Error,
+  {
+    token: FirebaseIdToken;
+    runnerId: number;
+    bundleId: number;
+    itemType: BundleItemType;
+    itemId: number;
+  }
+> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useAddToBundle(config: UseAddToBundleConfig) {
-  const { networkClient, baseUrl, runnerId, token, itemType, itemId } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
-
-  const mutation = useMutation({
-    mutationFn: (bundleId: number) => {
+  return useMutation({
+    mutationFn: ({
+      token,
+      runnerId,
+      bundleId,
+      itemType,
+      itemId,
+    }: {
+      token: FirebaseIdToken;
+      runnerId: number;
+      bundleId: number;
+      itemType: BundleItemType;
+      itemId: number;
+    }) => {
       if (itemType === 'surface') {
-        return client.addSurfaceToBundle(runnerId, bundleId, itemId, token);
+        return client.addSurfaceToBundle(token, runnerId, bundleId, itemId);
       }
       if (itemType === 'interaction') {
-        return client.addInteractionToBundle(runnerId, bundleId, itemId, token);
+        return client.addInteractionToBundle(token, runnerId, bundleId, itemId);
       }
-      return client.addScenarioToBundle(runnerId, bundleId, itemId, token);
+      return client.addScenarioToBundle(token, runnerId, bundleId, itemId);
     },
   });
-
-  return {
-    addToBundle: mutation.mutateAsync,
-    isAdding: mutation.isPending,
-    error: mutation.error?.message ?? null,
-    reset: mutation.reset,
-  };
-}
+};

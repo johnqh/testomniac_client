@@ -1,39 +1,45 @@
-import { useQuery } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react';
+import {
+  useQuery,
+  type UseQueryOptions,
+  type UseQueryResult,
+} from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
+import type {
+  BaseResponse,
+  TestScenarioResponse,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
-import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
+import type { FirebaseIdToken } from '../types';
+import { queryKeys } from './query-keys';
+import { STALE_TIMES } from './query-config';
 
-interface UseBundleScenariosConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  runnerId: number;
-  bundleId: number;
-  token: FirebaseIdToken;
-  enabled?: boolean;
-}
+export const useBundleScenarios = (
+  networkClient: NetworkClient,
+  baseUrl: string,
+  token: FirebaseIdToken,
+  runnerId: number,
+  bundleId: number,
+  options?: Omit<
+    UseQueryOptions<BaseResponse<TestScenarioResponse[]>>,
+    'queryKey' | 'queryFn'
+  >
+): UseQueryResult<BaseResponse<TestScenarioResponse[]>> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useBundleScenarios(config: UseBundleScenariosConfig) {
-  const {
-    networkClient,
-    baseUrl,
-    runnerId,
-    bundleId,
-    token,
-    enabled = true,
-  } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
+  const queryFn = useCallback(
+    () => client.getBundleScenarios(token, runnerId, bundleId),
+    [client, token, runnerId, bundleId]
+  );
 
-  const query = useQuery({
-    queryKey: QUERY_KEYS.bundleScenarios(bundleId),
-    queryFn: () => client.getBundleScenarios(runnerId, bundleId, token),
-    enabled: enabled && !!runnerId && !!bundleId && !!token,
-    staleTime: DEFAULT_STALE_TIME,
+  return useQuery({
+    queryKey: queryKeys.testomniac.bundleScenarios(bundleId),
+    queryFn,
+    staleTime: STALE_TIMES.SCENARIO,
+    enabled: !!token && !!runnerId && !!bundleId,
+    ...options,
   });
-
-  return {
-    scenarios: query.data?.data ?? [],
-    isLoading: query.isLoading,
-    error: query.error?.message ?? query.data?.error ?? null,
-    refetch: query.refetch,
-  };
-}
+};

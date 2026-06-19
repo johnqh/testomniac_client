@@ -1,39 +1,45 @@
-import { useQuery } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react';
+import {
+  useQuery,
+  type UseQueryOptions,
+  type UseQueryResult,
+} from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
+import type {
+  BaseResponse,
+  TestSurfaceResponse,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
-import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
+import type { FirebaseIdToken } from '../types';
+import { queryKeys } from './query-keys';
+import { STALE_TIMES } from './query-config';
 
-interface UseBundleSurfacesConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  runnerId: number;
-  bundleId: number;
-  token: FirebaseIdToken;
-  enabled?: boolean;
-}
+export const useBundleSurfaces = (
+  networkClient: NetworkClient,
+  baseUrl: string,
+  token: FirebaseIdToken,
+  runnerId: number,
+  bundleId: number,
+  options?: Omit<
+    UseQueryOptions<BaseResponse<TestSurfaceResponse[]>>,
+    'queryKey' | 'queryFn'
+  >
+): UseQueryResult<BaseResponse<TestSurfaceResponse[]>> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useBundleSurfaces(config: UseBundleSurfacesConfig) {
-  const {
-    networkClient,
-    baseUrl,
-    runnerId,
-    bundleId,
-    token,
-    enabled = true,
-  } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
+  const queryFn = useCallback(
+    () => client.getBundleSurfaces(token, runnerId, bundleId),
+    [client, token, runnerId, bundleId]
+  );
 
-  const query = useQuery({
-    queryKey: QUERY_KEYS.bundleSurfaces(bundleId),
-    queryFn: () => client.getBundleSurfaces(runnerId, bundleId, token),
-    enabled: enabled && !!runnerId && !!bundleId && !!token,
-    staleTime: DEFAULT_STALE_TIME,
+  return useQuery({
+    queryKey: queryKeys.testomniac.bundleSurfaces(bundleId),
+    queryFn,
+    staleTime: STALE_TIMES.SURFACE,
+    enabled: !!token && !!runnerId && !!bundleId,
+    ...options,
   });
-
-  return {
-    surfaces: query.data?.data ?? [],
-    isLoading: query.isLoading,
-    error: query.error?.message ?? query.data?.error ?? null,
-    refetch: query.refetch,
-  };
-}
+};

@@ -1,31 +1,44 @@
-import { useQuery } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react';
+import {
+  useQuery,
+  type UseQueryOptions,
+  type UseQueryResult,
+} from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
+import type {
+  BaseResponse,
+  TestEnvironmentResponse,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
-import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
+import type { FirebaseIdToken } from '../types';
+import { queryKeys } from './query-keys';
+import { STALE_TIMES } from './query-config';
 
-interface UseProductEnvironmentsConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  productId: number;
-  token: FirebaseIdToken;
-  enabled?: boolean;
-}
+export const useProductEnvironments = (
+  networkClient: NetworkClient,
+  baseUrl: string,
+  token: FirebaseIdToken,
+  productId: number,
+  options?: Omit<
+    UseQueryOptions<BaseResponse<TestEnvironmentResponse[]>>,
+    'queryKey' | 'queryFn'
+  >
+): UseQueryResult<BaseResponse<TestEnvironmentResponse[]>> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useProductEnvironments(config: UseProductEnvironmentsConfig) {
-  const { networkClient, baseUrl, productId, token, enabled = true } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
+  const queryFn = useCallback(
+    () => client.getProductEnvironments(token, productId),
+    [client, token, productId]
+  );
 
-  const query = useQuery({
-    queryKey: QUERY_KEYS.productEnvironments(productId),
-    queryFn: () => client.getProductEnvironments(productId, token),
-    enabled: enabled && !!productId && !!token,
-    staleTime: DEFAULT_STALE_TIME,
+  return useQuery({
+    queryKey: queryKeys.testomniac.productEnvironments(productId),
+    queryFn,
+    staleTime: STALE_TIMES.ENVIRONMENT,
+    enabled: !!token && !!productId,
+    ...options,
   });
-
-  return {
-    environments: query.data?.data ?? [],
-    isLoading: query.isLoading,
-    error: query.error?.message ?? query.data?.error ?? null,
-    refetch: query.refetch,
-  };
-}
+};

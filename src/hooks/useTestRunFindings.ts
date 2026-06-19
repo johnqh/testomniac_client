@@ -1,38 +1,44 @@
-import { useQuery } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react';
+import {
+  useQuery,
+  type UseQueryOptions,
+  type UseQueryResult,
+} from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
+import type {
+  BaseResponse,
+  TestRunFindingResponse,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
-import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
+import type { FirebaseIdToken } from '../types';
+import { queryKeys } from './query-keys';
+import { STALE_TIMES } from './query-config';
 
-interface UseTestRunFindingsConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  testInteractionRunId: number;
-  token: FirebaseIdToken;
-  enabled?: boolean;
-}
+export const useTestRunFindings = (
+  networkClient: NetworkClient,
+  baseUrl: string,
+  token: FirebaseIdToken,
+  testInteractionRunId: number,
+  options?: Omit<
+    UseQueryOptions<BaseResponse<TestRunFindingResponse[]>>,
+    'queryKey' | 'queryFn'
+  >
+): UseQueryResult<BaseResponse<TestRunFindingResponse[]>> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useTestRunFindings(config: UseTestRunFindingsConfig) {
-  const {
-    networkClient,
-    baseUrl,
-    testInteractionRunId,
-    token,
-    enabled = true,
-  } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
+  const queryFn = useCallback(
+    () => client.getTestInteractionRunFindings(token, testInteractionRunId),
+    [client, token, testInteractionRunId]
+  );
 
-  const query = useQuery({
-    queryKey: QUERY_KEYS.testRunFindings(testInteractionRunId),
-    queryFn: () =>
-      client.getTestInteractionRunFindings(testInteractionRunId, token),
-    enabled: enabled && !!testInteractionRunId && !!token,
-    staleTime: DEFAULT_STALE_TIME,
+  return useQuery({
+    queryKey: queryKeys.testomniac.testRunFindings(testInteractionRunId),
+    queryFn,
+    staleTime: STALE_TIMES.FINDING,
+    enabled: !!token && !!testInteractionRunId,
+    ...options,
   });
-
-  return {
-    findings: query.data?.data ?? [],
-    isLoading: query.isLoading,
-    error: query.error?.message ?? query.data?.error ?? null,
-    refetch: query.refetch,
-  };
-}
+};

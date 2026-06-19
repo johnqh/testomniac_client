@@ -1,38 +1,43 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMemo } from 'react';
+import { useMutation, type UseMutationResult } from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
-import type { UpdateTestSurfaceBundleRequest } from '@sudobility/testomniac_types';
+import type {
+  BaseResponse,
+  TestSurfaceBundleResponse,
+  UpdateTestSurfaceBundleRequest,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
 import type { FirebaseIdToken } from '../types';
 
-interface UseUpdateTestSurfaceBundleConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  runnerId: number;
-  token: FirebaseIdToken;
-}
+export const useUpdateTestSurfaceBundle = (
+  networkClient: NetworkClient,
+  baseUrl: string
+): UseMutationResult<
+  BaseResponse<TestSurfaceBundleResponse>,
+  Error,
+  {
+    token: FirebaseIdToken;
+    runnerId: number;
+    bundleId: number;
+    data: UpdateTestSurfaceBundleRequest;
+  }
+> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useUpdateTestSurfaceBundle(
-  config: UseUpdateTestSurfaceBundleConfig
-) {
-  const { networkClient, baseUrl, runnerId, token } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
-
-  const mutation = useMutation({
-    mutationFn: (params: {
+  return useMutation({
+    mutationFn: ({
+      token,
+      runnerId,
+      bundleId,
+      data,
+    }: {
+      token: FirebaseIdToken;
+      runnerId: number;
       bundleId: number;
       data: UpdateTestSurfaceBundleRequest;
-    }) =>
-      client.updateTestSurfaceBundle(
-        runnerId,
-        params.bundleId,
-        params.data,
-        token
-      ),
+    }) => client.updateTestSurfaceBundle(token, runnerId, bundleId, data),
   });
-
-  return {
-    updateBundle: mutation.mutateAsync,
-    isUpdating: mutation.isPending,
-    error: mutation.error?.message ?? null,
-  };
-}
+};

@@ -2,24 +2,23 @@ import { useState } from 'react';
 import type { NetworkClient } from '@sudobility/types';
 import { useSubmitScan } from './useSubmitScan';
 
-interface UsePublicScanSubmissionConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-}
-
 interface SubmitPublicScanInput {
   url: string;
   email?: string;
 }
 
-export function usePublicScanSubmission(config: UsePublicScanSubmissionConfig) {
-  const { submitScan, isSubmitting } = useSubmitScan(config);
+export function usePublicScanSubmission(
+  networkClient: NetworkClient,
+  baseUrl: string
+) {
+  const mutation = useSubmitScan(networkClient, baseUrl);
+  const isSubmitting = mutation.isPending;
   const [error, setError] = useState<string | null>(null);
 
   async function submitPublicScan(input: SubmitPublicScanInput) {
     setError(null);
     try {
-      const response = await submitScan({
+      const response = await mutation.mutateAsync({
         url: input.url,
         ...(input.email ? { reportEmail: input.email } : {}),
       });

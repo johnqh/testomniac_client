@@ -1,31 +1,44 @@
-import { useQuery } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react';
+import {
+  useQuery,
+  type UseQueryOptions,
+  type UseQueryResult,
+} from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
+import type {
+  BaseResponse,
+  EntityCredentialResponse,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
-import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
+import type { FirebaseIdToken } from '../types';
+import { queryKeys } from './query-keys';
+import { STALE_TIMES } from './query-config';
 
-interface UseEntityCredentialsConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  entitySlug: string;
-  token: FirebaseIdToken;
-  enabled?: boolean;
-}
+export const useEntityCredentials = (
+  networkClient: NetworkClient,
+  baseUrl: string,
+  token: FirebaseIdToken,
+  entitySlug: string,
+  options?: Omit<
+    UseQueryOptions<BaseResponse<EntityCredentialResponse[]>>,
+    'queryKey' | 'queryFn'
+  >
+): UseQueryResult<BaseResponse<EntityCredentialResponse[]>> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useEntityCredentials(config: UseEntityCredentialsConfig) {
-  const { networkClient, baseUrl, entitySlug, token, enabled = true } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
+  const queryFn = useCallback(
+    () => client.getEntityCredentials(token, entitySlug),
+    [client, token, entitySlug]
+  );
 
-  const query = useQuery({
-    queryKey: QUERY_KEYS.entityCredentials(entitySlug),
-    queryFn: () => client.getEntityCredentials(entitySlug, token),
-    enabled: enabled && !!entitySlug && !!token,
-    staleTime: DEFAULT_STALE_TIME,
+  return useQuery({
+    queryKey: queryKeys.testomniac.entityCredentials(entitySlug),
+    queryFn,
+    staleTime: STALE_TIMES.CREDENTIAL,
+    enabled: !!token && !!entitySlug,
+    ...options,
   });
-
-  return {
-    credentials: query.data?.data ?? [],
-    isLoading: query.isLoading,
-    error: query.error?.message ?? query.data?.error ?? null,
-    refetch: query.refetch,
-  };
-}
+};

@@ -1,30 +1,40 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMemo } from 'react';
+import { useMutation, type UseMutationResult } from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
-import type { CreateTestSurfaceBundleRequest } from '@sudobility/testomniac_types';
+import type {
+  BaseResponse,
+  CreateTestSurfaceBundleRequest,
+  TestSurfaceBundleResponse,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
 import type { FirebaseIdToken } from '../types';
 
-interface UseCreateTestSurfaceBundleConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  runnerId: number;
-  token: FirebaseIdToken;
-}
+export const useCreateTestSurfaceBundle = (
+  networkClient: NetworkClient,
+  baseUrl: string
+): UseMutationResult<
+  BaseResponse<TestSurfaceBundleResponse>,
+  Error,
+  {
+    token: FirebaseIdToken;
+    runnerId: number;
+    data: CreateTestSurfaceBundleRequest;
+  }
+> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useCreateTestSurfaceBundle(
-  config: UseCreateTestSurfaceBundleConfig
-) {
-  const { networkClient, baseUrl, runnerId, token } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
-
-  const mutation = useMutation({
-    mutationFn: (data: CreateTestSurfaceBundleRequest) =>
-      client.createTestSurfaceBundle(runnerId, data, token),
+  return useMutation({
+    mutationFn: ({
+      token,
+      runnerId,
+      data,
+    }: {
+      token: FirebaseIdToken;
+      runnerId: number;
+      data: CreateTestSurfaceBundleRequest;
+    }) => client.createTestSurfaceBundle(token, runnerId, data),
   });
-
-  return {
-    createBundle: mutation.mutateAsync,
-    isCreating: mutation.isPending,
-    error: mutation.error?.message ?? null,
-  };
-}
+};

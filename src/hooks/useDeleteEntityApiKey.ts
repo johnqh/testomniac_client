@@ -1,33 +1,43 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMemo } from 'react';
+import {
+  useMutation,
+  type UseMutationResult,
+  useQueryClient,
+} from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
+import type { BaseResponse } from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
-import { type FirebaseIdToken, QUERY_KEYS } from '../types';
+import type { FirebaseIdToken } from '../types';
+import { queryKeys } from './query-keys';
 
-interface UseDeleteEntityApiKeyConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  entitySlug: string;
-  token: FirebaseIdToken;
-}
-
-export function useDeleteEntityApiKey(config: UseDeleteEntityApiKeyConfig) {
-  const { networkClient, baseUrl, entitySlug, token } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
+export const useDeleteEntityApiKey = (
+  networkClient: NetworkClient,
+  baseUrl: string
+): UseMutationResult<
+  BaseResponse<null>,
+  Error,
+  { token: FirebaseIdToken; entitySlug: string; apiKeyId: number }
+> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
   const queryClient = useQueryClient();
 
-  const mutation = useMutation({
-    mutationFn: (apiKeyId: number) =>
-      client.deleteEntityApiKey(entitySlug, apiKeyId, token),
-    onSuccess: () => {
+  return useMutation({
+    mutationFn: ({
+      token,
+      entitySlug,
+      apiKeyId,
+    }: {
+      token: FirebaseIdToken;
+      entitySlug: string;
+      apiKeyId: number;
+    }) => client.deleteEntityApiKey(token, entitySlug, apiKeyId),
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.entityApiKeys(entitySlug),
+        queryKey: queryKeys.testomniac.entityApiKeys(variables.entitySlug),
       });
     },
   });
-
-  return {
-    deleteApiKey: mutation.mutateAsync,
-    isDeleting: mutation.isPending,
-    error: mutation.error?.message ?? null,
-  };
-}
+};

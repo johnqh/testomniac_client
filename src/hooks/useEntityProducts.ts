@@ -1,31 +1,44 @@
-import { useQuery } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react';
+import {
+  useQuery,
+  type UseQueryOptions,
+  type UseQueryResult,
+} from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
+import type {
+  BaseResponse,
+  ProductSummaryResponse,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
-import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
+import type { FirebaseIdToken } from '../types';
+import { queryKeys } from './query-keys';
+import { STALE_TIMES } from './query-config';
 
-interface UseEntityProductsConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  entitySlug: string;
-  token: FirebaseIdToken;
-  enabled?: boolean;
-}
+export const useEntityProducts = (
+  networkClient: NetworkClient,
+  baseUrl: string,
+  token: FirebaseIdToken,
+  entitySlug: string,
+  options?: Omit<
+    UseQueryOptions<BaseResponse<ProductSummaryResponse[]>>,
+    'queryKey' | 'queryFn'
+  >
+): UseQueryResult<BaseResponse<ProductSummaryResponse[]>> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useEntityProducts(config: UseEntityProductsConfig) {
-  const { networkClient, baseUrl, entitySlug, token, enabled = true } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
+  const queryFn = useCallback(
+    () => client.getEntityProducts(token, entitySlug),
+    [client, token, entitySlug]
+  );
 
-  const query = useQuery({
-    queryKey: QUERY_KEYS.entityProducts(entitySlug),
-    queryFn: () => client.getEntityProducts(entitySlug, token),
-    enabled: enabled && !!entitySlug && !!token,
-    staleTime: DEFAULT_STALE_TIME,
+  return useQuery({
+    queryKey: queryKeys.testomniac.entityProducts(entitySlug),
+    queryFn,
+    staleTime: STALE_TIMES.PRODUCT,
+    enabled: !!token && !!entitySlug,
+    ...options,
   });
-
-  return {
-    products: query.data?.data ?? [],
-    isLoading: query.isLoading,
-    error: query.error?.message ?? query.data?.error ?? null,
-    refetch: query.refetch,
-  };
-}
+};

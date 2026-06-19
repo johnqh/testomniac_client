@@ -1,32 +1,36 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMemo } from 'react';
+import { useMutation, type UseMutationResult } from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
-import type { GenerateSequenceRequest } from '@sudobility/testomniac_types';
+import type {
+  BaseResponse,
+  GenerateSequenceRequest,
+  GenerateSequenceResponse,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
 import type { FirebaseIdToken } from '../types';
 
-interface UseGenerateSequenceConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  token: FirebaseIdToken;
-}
+export const useGenerateSequence = (
+  networkClient: NetworkClient,
+  baseUrl: string
+): UseMutationResult<
+  BaseResponse<GenerateSequenceResponse>,
+  Error,
+  { token: FirebaseIdToken; scenarioId: number; data: GenerateSequenceRequest }
+> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useGenerateSequence(config: UseGenerateSequenceConfig) {
-  const { networkClient, baseUrl, token } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
-
-  const mutation = useMutation({
-    mutationFn: (params: { scenarioId: number } & GenerateSequenceRequest) =>
-      client.generateSequence(
-        params.scenarioId,
-        { testEnvironmentId: params.testEnvironmentId },
-        token
-      ),
+  return useMutation({
+    mutationFn: ({
+      token,
+      scenarioId,
+      data,
+    }: {
+      token: FirebaseIdToken;
+      scenarioId: number;
+      data: GenerateSequenceRequest;
+    }) => client.generateSequence(token, scenarioId, data),
   });
-
-  return {
-    generateSequence: mutation.mutateAsync,
-    isGenerating: mutation.isPending,
-    error: mutation.error?.message ?? null,
-    reset: mutation.reset,
-  };
-}
+};

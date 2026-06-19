@@ -1,56 +1,56 @@
 import { useMemo } from 'react';
 import { useQueries } from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
-import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
+import type { FirebaseIdToken } from '../types';
 import { TestomniacClient } from '../network/TestomniacClient';
+import { queryKeys } from './query-keys';
+import { STALE_TIMES } from './query-config';
 import { useEntityProducts } from './useEntityProducts';
 import { useProductRuns } from './useProductRuns';
 import { useProductRunners } from './useProductRunners';
 
-interface UseDashboardEnvironmentContextDataConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  entitySlug: string;
-  envId: number;
-  token: FirebaseIdToken;
-  enabled?: boolean;
-}
-
+/**
+ * Aggregate hook that resolves the product / runner / latest-run context for a
+ * given environment. Returns a custom shaped object (it is a composite, not a
+ * single query) and intentionally does not follow the raw-UseQueryResult
+ * convention.
+ */
 export function useDashboardEnvironmentContextData(
-  config: UseDashboardEnvironmentContextDataConfig
+  networkClient: NetworkClient,
+  baseUrl: string,
+  token: FirebaseIdToken,
+  entitySlug: string,
+  envId: number,
+  enabled = true
 ) {
-  const {
-    networkClient,
-    baseUrl,
-    entitySlug,
-    envId,
-    token,
-    enabled = true,
-  } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-  const {
-    products,
-    isLoading: productsLoading,
-    error: productsError,
-  } = useEntityProducts({
+  const productsQuery = useEntityProducts(
     networkClient,
     baseUrl,
-    entitySlug,
     token,
-    enabled: enabled && !!entitySlug && !!token,
-  });
+    entitySlug,
+    {
+      enabled: enabled && !!entitySlug && !!token,
+    }
+  );
+  const products = productsQuery.data?.data ?? [];
+  const productsLoading = productsQuery.isLoading;
+  const productsError = productsQuery.error?.message ?? null;
 
   const environmentQueries = useQueries({
     queries: products.map(product => ({
-      queryKey: QUERY_KEYS.productEnvironments(product.id),
+      queryKey: queryKeys.testomniac.productEnvironments(product.id),
       // Must return the full BaseResponse to match useProductEnvironments,
       // which shares this query key. Returning a different shape (e.g. just
       // `response.data`) corrupts the shared cache entry depending on which
       // hook fetches first.
-      queryFn: () => client.getProductEnvironments(product.id, token),
+      queryFn: () => client.getProductEnvironments(token, product.id),
       enabled: enabled && !!token,
-      staleTime: DEFAULT_STALE_TIME,
+      staleTime: STALE_TIMES.ENVIRONMENT,
     })),
   });
 
@@ -75,29 +75,25 @@ export function useDashboardEnvironmentContextData(
 
   const productId = matchingProduct?.id ?? matchingEnvironment?.productId ?? 0;
 
-  const {
-    runs,
-    isLoading: runsLoading,
-    error: runsError,
-  } = useProductRuns({
-    networkClient,
-    baseUrl,
-    productId,
-    token,
+  const runsQuery = useProductRuns(networkClient, baseUrl, token, productId, {
     enabled: enabled && !!productId && !!token,
   });
+  const runs = runsQuery.data?.data ?? [];
+  const runsLoading = runsQuery.isLoading;
+  const runsError = runsQuery.error?.message ?? null;
 
-  const {
-    runners,
-    isLoading: runnersLoading,
-    error: runnersError,
-  } = useProductRunners({
+  const runnersQuery = useProductRunners(
     networkClient,
     baseUrl,
-    productId,
     token,
-    enabled: enabled && !!productId && !!token,
-  });
+    productId,
+    {
+      enabled: enabled && !!productId && !!token,
+    }
+  );
+  const runners = runnersQuery.data?.data ?? [];
+  const runnersLoading = runnersQuery.isLoading;
+  const runnersError = runnersQuery.error?.message ?? null;
 
   const environmentRuns = useMemo(
     () =>

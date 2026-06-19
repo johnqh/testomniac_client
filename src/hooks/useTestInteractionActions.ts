@@ -1,39 +1,44 @@
-import { useQuery } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react';
+import {
+  useQuery,
+  type UseQueryOptions,
+  type UseQueryResult,
+} from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
+import type {
+  BaseResponse,
+  TestActionResponse,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
-import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
+import type { FirebaseIdToken } from '../types';
+import { queryKeys } from './query-keys';
+import { STALE_TIMES } from './query-config';
 
-interface UseTestInteractionActionsConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  testInteractionId: number;
-  token: FirebaseIdToken;
-  enabled?: boolean;
-}
+export const useTestInteractionActions = (
+  networkClient: NetworkClient,
+  baseUrl: string,
+  token: FirebaseIdToken,
+  testInteractionId: number,
+  options?: Omit<
+    UseQueryOptions<BaseResponse<TestActionResponse[]>>,
+    'queryKey' | 'queryFn'
+  >
+): UseQueryResult<BaseResponse<TestActionResponse[]>> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useTestInteractionActions(
-  config: UseTestInteractionActionsConfig
-) {
-  const {
-    networkClient,
-    baseUrl,
-    testInteractionId,
-    token,
-    enabled = true,
-  } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
+  const queryFn = useCallback(
+    () => client.getTestInteractionActions(token, testInteractionId),
+    [client, token, testInteractionId]
+  );
 
-  const query = useQuery({
-    queryKey: QUERY_KEYS.testInteractionActions(testInteractionId),
-    queryFn: () => client.getTestInteractionActions(testInteractionId, token),
-    enabled: enabled && !!testInteractionId && !!token,
-    staleTime: DEFAULT_STALE_TIME,
+  return useQuery({
+    queryKey: queryKeys.testomniac.testInteractionActions(testInteractionId),
+    queryFn,
+    staleTime: STALE_TIMES.INTERACTION,
+    enabled: !!token && !!testInteractionId,
+    ...options,
   });
-
-  return {
-    actions: query.data?.data ?? [],
-    isLoading: query.isLoading,
-    error: query.error?.message ?? query.data?.error ?? null,
-    refetch: query.refetch,
-  };
-}
+};

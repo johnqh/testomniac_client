@@ -3,18 +3,19 @@ import { useMutation, type UseMutationResult } from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
 import type {
   BaseResponse,
-  PersonaResponse,
+  ResolveEnvironmentRequest,
+  ResolveEnvironmentResponse,
 } from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
 import type { FirebaseIdToken } from '../types';
 
-export const useDeletePersona = (
+export const useResolveTestEnvironment = (
   networkClient: NetworkClient,
   baseUrl: string
 ): UseMutationResult<
-  BaseResponse<PersonaResponse>,
+  BaseResponse<ResolveEnvironmentResponse>,
   Error,
-  { token: FirebaseIdToken; personaId: number }
+  { token: FirebaseIdToken; data: ResolveEnvironmentRequest }
 > => {
   const client = useMemo(
     () => new TestomniacClient(networkClient, baseUrl),
@@ -24,10 +25,10 @@ export const useDeletePersona = (
   return useMutation({
     mutationFn: ({
       token,
-      personaId,
+      data,
     }: {
       token: FirebaseIdToken;
-      personaId: number;
-    }) => client.deletePersona(token, personaId),
+      data: ResolveEnvironmentRequest;
+    }) => client.resolveTestEnvironment(token, data),
   });
 };

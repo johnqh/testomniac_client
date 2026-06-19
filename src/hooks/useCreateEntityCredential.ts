@@ -1,37 +1,51 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMemo } from 'react';
+import {
+  useMutation,
+  type UseMutationResult,
+  useQueryClient,
+} from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
-import type { CreateEntityCredentialRequest } from '@sudobility/testomniac_types';
+import type {
+  BaseResponse,
+  CreateEntityCredentialRequest,
+  EntityCredentialResponse,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
 import type { FirebaseIdToken } from '../types';
-import { QUERY_KEYS } from '../types';
+import { queryKeys } from './query-keys';
 
-interface UseCreateEntityCredentialConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  entitySlug: string;
-  token: FirebaseIdToken;
-}
-
-export function useCreateEntityCredential(
-  config: UseCreateEntityCredentialConfig
-) {
-  const { networkClient, baseUrl, entitySlug, token } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
+export const useCreateEntityCredential = (
+  networkClient: NetworkClient,
+  baseUrl: string
+): UseMutationResult<
+  BaseResponse<EntityCredentialResponse>,
+  Error,
+  {
+    token: FirebaseIdToken;
+    entitySlug: string;
+    data: CreateEntityCredentialRequest;
+  }
+> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
   const queryClient = useQueryClient();
 
-  const mutation = useMutation({
-    mutationFn: (data: CreateEntityCredentialRequest) =>
-      client.createEntityCredential(entitySlug, data, token),
-    onSuccess: () => {
+  return useMutation({
+    mutationFn: ({
+      token,
+      entitySlug,
+      data,
+    }: {
+      token: FirebaseIdToken;
+      entitySlug: string;
+      data: CreateEntityCredentialRequest;
+    }) => client.createEntityCredential(token, entitySlug, data),
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.entityCredentials(entitySlug),
+        queryKey: queryKeys.testomniac.entityCredentials(variables.entitySlug),
       });
     },
   });
-
-  return {
-    createCredential: mutation.mutateAsync,
-    isCreating: mutation.isPending,
-    error: mutation.error?.message ?? null,
-  };
-}
+};

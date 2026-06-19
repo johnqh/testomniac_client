@@ -1,45 +1,54 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMemo } from 'react';
+import {
+  useMutation,
+  type UseMutationResult,
+  useQueryClient,
+} from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
-import type { UpdateEntityCredentialRequest } from '@sudobility/testomniac_types';
+import type {
+  BaseResponse,
+  EntityCredentialResponse,
+  UpdateEntityCredentialRequest,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
 import type { FirebaseIdToken } from '../types';
-import { QUERY_KEYS } from '../types';
+import { queryKeys } from './query-keys';
 
-interface UseUpdateEntityCredentialConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  entitySlug: string;
-  token: FirebaseIdToken;
-}
-
-export function useUpdateEntityCredential(
-  config: UseUpdateEntityCredentialConfig
-) {
-  const { networkClient, baseUrl, entitySlug, token } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
+export const useUpdateEntityCredential = (
+  networkClient: NetworkClient,
+  baseUrl: string
+): UseMutationResult<
+  BaseResponse<EntityCredentialResponse>,
+  Error,
+  {
+    token: FirebaseIdToken;
+    entitySlug: string;
+    credentialId: number;
+    data: UpdateEntityCredentialRequest;
+  }
+> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
   const queryClient = useQueryClient();
 
-  const mutation = useMutation({
-    mutationFn: (params: {
+  return useMutation({
+    mutationFn: ({
+      token,
+      entitySlug,
+      credentialId,
+      data,
+    }: {
+      token: FirebaseIdToken;
+      entitySlug: string;
       credentialId: number;
       data: UpdateEntityCredentialRequest;
-    }) =>
-      client.updateEntityCredential(
-        entitySlug,
-        params.credentialId,
-        params.data,
-        token
-      ),
-    onSuccess: () => {
+    }) => client.updateEntityCredential(token, entitySlug, credentialId, data),
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.entityCredentials(entitySlug),
+        queryKey: queryKeys.testomniac.entityCredentials(variables.entitySlug),
       });
     },
   });
-
-  return {
-    updateCredential: mutation.mutateAsync,
-    isUpdating: mutation.isPending,
-    error: mutation.error?.message ?? null,
-  };
-}
+};

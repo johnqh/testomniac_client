@@ -1,29 +1,35 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMemo } from 'react';
+import { useMutation, type UseMutationResult } from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
+import type {
+  BaseResponse,
+  TestSurfaceBundleResponse,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
 import type { FirebaseIdToken } from '../types';
 
-interface UseDeleteTestSurfaceBundleConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  runnerId: number;
-  token: FirebaseIdToken;
-}
+export const useDeleteTestSurfaceBundle = (
+  networkClient: NetworkClient,
+  baseUrl: string
+): UseMutationResult<
+  BaseResponse<TestSurfaceBundleResponse>,
+  Error,
+  { token: FirebaseIdToken; runnerId: number; bundleId: number }
+> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useDeleteTestSurfaceBundle(
-  config: UseDeleteTestSurfaceBundleConfig
-) {
-  const { networkClient, baseUrl, runnerId, token } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
-
-  const mutation = useMutation({
-    mutationFn: (bundleId: number) =>
-      client.deleteTestSurfaceBundle(runnerId, bundleId, token),
+  return useMutation({
+    mutationFn: ({
+      token,
+      runnerId,
+      bundleId,
+    }: {
+      token: FirebaseIdToken;
+      runnerId: number;
+      bundleId: number;
+    }) => client.deleteTestSurfaceBundle(token, runnerId, bundleId),
   });
-
-  return {
-    deleteBundle: mutation.mutateAsync,
-    isDeleting: mutation.isPending,
-    error: mutation.error?.message ?? null,
-  };
-}
+};

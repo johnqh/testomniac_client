@@ -1,39 +1,42 @@
-import { useQuery } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react';
+import {
+  useQuery,
+  type UseQueryOptions,
+  type UseQueryResult,
+} from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
+import type { BaseResponse } from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
-import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
+import type { FirebaseIdToken, RunPageDetailSummary } from '../types';
+import { queryKeys } from './query-keys';
+import { STALE_TIMES } from './query-config';
 
-interface UseRunPageSummaryConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  runId: number;
-  pageId: number;
-  token: FirebaseIdToken;
-  enabled?: boolean;
-}
+export const useRunPageSummary = (
+  networkClient: NetworkClient,
+  baseUrl: string,
+  token: FirebaseIdToken,
+  runId: number,
+  pageId: number,
+  options?: Omit<
+    UseQueryOptions<BaseResponse<RunPageDetailSummary>>,
+    'queryKey' | 'queryFn'
+  >
+): UseQueryResult<BaseResponse<RunPageDetailSummary>> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useRunPageSummary(config: UseRunPageSummaryConfig) {
-  const {
-    networkClient,
-    baseUrl,
-    runId,
-    pageId,
-    token,
-    enabled = true,
-  } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
+  const queryFn = useCallback(
+    () => client.getRunPageSummary(token, runId, pageId),
+    [client, token, runId, pageId]
+  );
 
-  const query = useQuery({
-    queryKey: QUERY_KEYS.runPageSummary(runId, pageId),
-    queryFn: () => client.getRunPageSummary(runId, pageId, token),
-    enabled: enabled && !!runId && !!pageId && !!token,
-    staleTime: DEFAULT_STALE_TIME,
+  return useQuery({
+    queryKey: queryKeys.testomniac.runPageSummary(runId, pageId),
+    queryFn,
+    staleTime: STALE_TIMES.RUN,
+    enabled: !!token && !!runId && !!pageId,
+    ...options,
   });
-
-  return {
-    summary: query.data?.data ?? null,
-    isLoading: query.isLoading,
-    error: query.error?.message ?? query.data?.error ?? null,
-    refetch: query.refetch,
-  };
-}
+};

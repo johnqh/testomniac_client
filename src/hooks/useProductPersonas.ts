@@ -1,31 +1,44 @@
-import { useQuery } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react';
+import {
+  useQuery,
+  type UseQueryOptions,
+  type UseQueryResult,
+} from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
+import type {
+  BaseResponse,
+  PersonaResponse,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
-import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
+import type { FirebaseIdToken } from '../types';
+import { queryKeys } from './query-keys';
+import { STALE_TIMES } from './query-config';
 
-interface UseProductPersonasConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  productId: number;
-  token: FirebaseIdToken;
-  enabled?: boolean;
-}
+export const useProductPersonas = (
+  networkClient: NetworkClient,
+  baseUrl: string,
+  token: FirebaseIdToken,
+  productId: number,
+  options?: Omit<
+    UseQueryOptions<BaseResponse<PersonaResponse[]>>,
+    'queryKey' | 'queryFn'
+  >
+): UseQueryResult<BaseResponse<PersonaResponse[]>> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useProductPersonas(config: UseProductPersonasConfig) {
-  const { networkClient, baseUrl, productId, token, enabled = true } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
+  const queryFn = useCallback(
+    () => client.getProductPersonas(token, productId),
+    [client, token, productId]
+  );
 
-  const query = useQuery({
-    queryKey: QUERY_KEYS.productPersonas(productId),
-    queryFn: () => client.getProductPersonas(productId, token),
-    enabled: enabled && !!productId && !!token,
-    staleTime: DEFAULT_STALE_TIME,
+  return useQuery({
+    queryKey: queryKeys.testomniac.productPersonas(productId),
+    queryFn,
+    staleTime: STALE_TIMES.PERSONA,
+    enabled: !!token && !!productId,
+    ...options,
   });
-
-  return {
-    personas: query.data?.data ?? [],
-    isLoading: query.isLoading,
-    error: query.error?.message ?? query.data?.error ?? null,
-    refetch: query.refetch,
-  };
-}
+};

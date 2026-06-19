@@ -1,30 +1,36 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMemo } from 'react';
+import { useMutation, type UseMutationResult } from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
-import type { UpdatePersonaRequest } from '@sudobility/testomniac_types';
+import type {
+  BaseResponse,
+  PersonaResponse,
+  UpdatePersonaRequest,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
 import type { FirebaseIdToken } from '../types';
 
-interface UseUpdatePersonaConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  token: FirebaseIdToken;
-}
+export const useUpdatePersona = (
+  networkClient: NetworkClient,
+  baseUrl: string
+): UseMutationResult<
+  BaseResponse<PersonaResponse>,
+  Error,
+  { token: FirebaseIdToken; personaId: number; data: UpdatePersonaRequest }
+> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useUpdatePersona(config: UseUpdatePersonaConfig) {
-  const { networkClient, baseUrl, token } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
-
-  const mutation = useMutation({
-    mutationFn: (data: { personaId: number } & UpdatePersonaRequest) => {
-      const { personaId, ...updateData } = data;
-      return client.updatePersona(personaId, updateData, token);
-    },
+  return useMutation({
+    mutationFn: ({
+      token,
+      personaId,
+      data,
+    }: {
+      token: FirebaseIdToken;
+      personaId: number;
+      data: UpdatePersonaRequest;
+    }) => client.updatePersona(token, personaId, data),
   });
-
-  return {
-    updatePersona: mutation.mutateAsync,
-    isUpdating: mutation.isPending,
-    error: mutation.error?.message ?? null,
-    reset: mutation.reset,
-  };
-}
+};

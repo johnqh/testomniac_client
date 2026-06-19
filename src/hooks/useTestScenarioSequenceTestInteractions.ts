@@ -1,45 +1,54 @@
-import { useQuery } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react';
+import {
+  useQuery,
+  type UseQueryOptions,
+  type UseQueryResult,
+} from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
+import type {
+  BaseResponse,
+  TestScenarioSequenceTestInteractionLinkResponse,
+} from '@sudobility/testomniac_types';
 import { TestomniacClient } from '../network/TestomniacClient';
-import { DEFAULT_STALE_TIME, type FirebaseIdToken, QUERY_KEYS } from '../types';
+import type { FirebaseIdToken } from '../types';
+import { queryKeys } from './query-keys';
+import { STALE_TIMES } from './query-config';
 
-interface UseTestScenarioSequenceTestInteractionsConfig {
-  networkClient: NetworkClient;
-  baseUrl: string;
-  testScenarioSequenceId: number;
-  token: FirebaseIdToken;
-  enabled?: boolean;
-}
+export const useTestScenarioSequenceTestInteractions = (
+  networkClient: NetworkClient,
+  baseUrl: string,
+  token: FirebaseIdToken,
+  testScenarioSequenceId: number,
+  options?: Omit<
+    UseQueryOptions<
+      BaseResponse<TestScenarioSequenceTestInteractionLinkResponse[]>
+    >,
+    'queryKey' | 'queryFn'
+  >
+): UseQueryResult<
+  BaseResponse<TestScenarioSequenceTestInteractionLinkResponse[]>
+> => {
+  const client = useMemo(
+    () => new TestomniacClient(networkClient, baseUrl),
+    [networkClient, baseUrl]
+  );
 
-export function useTestScenarioSequenceTestInteractions(
-  config: UseTestScenarioSequenceTestInteractionsConfig
-) {
-  const {
-    networkClient,
-    baseUrl,
-    testScenarioSequenceId,
-    token,
-    enabled = true,
-  } = config;
-  const client = new TestomniacClient({ baseUrl, networkClient });
+  const queryFn = useCallback(
+    () =>
+      client.getTestScenarioSequenceTestInteractions(
+        token,
+        testScenarioSequenceId
+      ),
+    [client, token, testScenarioSequenceId]
+  );
 
-  const query = useQuery({
-    queryKey: QUERY_KEYS.testScenarioSequenceTestInteractions(
+  return useQuery({
+    queryKey: queryKeys.testomniac.testScenarioSequenceTestInteractions(
       testScenarioSequenceId
     ),
-    queryFn: () =>
-      client.getTestScenarioSequenceTestInteractions(
-        testScenarioSequenceId,
-        token
-      ),
-    enabled: enabled && !!testScenarioSequenceId && !!token,
-    staleTime: DEFAULT_STALE_TIME,
+    queryFn,
+    staleTime: STALE_TIMES.SCENARIO,
+    enabled: !!token && !!testScenarioSequenceId,
+    ...options,
   });
-
-  return {
-    testInteractionLinks: query.data?.data ?? [],
-    isLoading: query.isLoading,
-    error: query.error?.message ?? query.data?.error ?? null,
-    refetch: query.refetch,
-  };
-}
+};

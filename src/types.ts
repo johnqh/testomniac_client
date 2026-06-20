@@ -1,4 +1,18 @@
-import type { ApiKeyResponse } from '@sudobility/testomniac_types';
+import type {
+  ApiKeyResponse,
+  ProductResponse,
+  TestEnvironmentResponse,
+} from '@sudobility/testomniac_types';
+
+/**
+ * Result of resolving a product + test environment by URL via
+ * `GET /api/v1/products/resolve-by-url`. The endpoint returns `null` (not this
+ * shape) when no environment in the entity matches the URL.
+ */
+export interface ProductUrlResolution {
+  product: ProductResponse;
+  testEnvironment: TestEnvironmentResponse;
+}
 
 /**
  * Branded type alias for Firebase ID tokens used to authenticate API requests.

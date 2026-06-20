@@ -31,6 +31,8 @@ export const queryKeys = {
       [...testomniacBase(), 'products', entitySlug] as const,
     product: (productId: number) =>
       [...testomniacBase(), 'product', productId] as const,
+    resolveProductByUrl: (entityId: string, url: string) =>
+      [...testomniacBase(), 'resolve-product-by-url', entityId, url] as const,
     productRuns: (productId: number) =>
       [...testomniacBase(), 'product', productId, 'runs'] as const,
     run: (runId: number) => [...testomniacBase(), 'run', runId] as const,

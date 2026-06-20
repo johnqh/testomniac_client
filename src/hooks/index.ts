@@ -87,6 +87,7 @@ export { useObjectScript } from './useObjectScript';
 export { useEventSource } from './useEventSource';
 export { useCreateProduct } from './useCreateProduct';
 export { useResolveTestEnvironment } from './useResolveTestEnvironment';
+export { useResolveProductByUrl } from './useResolveProductByUrl';
 export { useEnvironmentUserData } from './useEnvironmentUserData';
 export { useUpdateEnvironmentUserData } from './useUpdateEnvironmentUserData';
 export { useEndScan } from './useEndScan';

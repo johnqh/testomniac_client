@@ -12,5 +12,6 @@ export {
   type ScriptKind,
   type EntityApiKeyResponse,
   type CreateEntityApiKeyRequest,
+  type ProductUrlResolution,
   DEFAULT_GC_TIME,
 } from './types';

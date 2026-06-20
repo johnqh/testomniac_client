@@ -60,6 +60,7 @@ import type {
   CreateEntityApiKeyRequest,
   EntityApiKeyResponse,
   FirebaseIdToken,
+  ProductUrlResolution,
   RunLiveDashboard,
   RunNavigationMap,
   RunPageDetailSummary,
@@ -320,6 +321,23 @@ export class TestomniacClient {
   ): Promise<BaseResponse<RunnerResponse>> {
     return this.request<BaseResponse<RunnerResponse>>(
       `/api/v1/products/${productId}`,
+      { token }
+    );
+  }
+
+  /**
+   * Resolve a product + test environment in an entity by matching a URL
+   * against the environments' base URLs. Returns `null` when nothing matches.
+   * Backs `GET /api/v1/products/resolve-by-url`.
+   */
+  async resolveProductByUrl(
+    token: FirebaseIdToken,
+    entityId: string,
+    url: string
+  ): Promise<BaseResponse<ProductUrlResolution | null>> {
+    const query = new URLSearchParams({ entityId, url }).toString();
+    return this.request<BaseResponse<ProductUrlResolution | null>>(
+      `/api/v1/products/resolve-by-url?${query}`,
       { token }
     );
   }

@@ -1,6 +1,6 @@
 {
   "name": "@sudobility/testomniac_client",
-  "version": "0.0.103",
+  "version": "0.0.104",
   "description": "Testomniac API client library with TanStack Query hooks",
   "type": "module",
   "main": "dist/index.js",
@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@sudobility/di": "^1.5.58",
-    "@sudobility/testomniac_types": "^0.0.78",
+    "@sudobility/testomniac_types": "^0.0.79",
     "@sudobility/types": "^1.9.62",
     "@tanstack/react-query": "^5.90.5",
     "@types/react": "^19.2.2",

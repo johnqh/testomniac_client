@@ -52,6 +52,15 @@ export const queryKeys = {
       [...testomniacBase(), 'run', runId, 'page', pageId, 'summary'] as const,
     runFindings: (runId: number) =>
       [...testomniacBase(), 'run', runId, 'findings'] as const,
+    runFindingSummary: (runId: number) =>
+      [...testomniacBase(), 'run', runId, 'findings-summary'] as const,
+    runFindingExpertiseSummary: (runId: number) =>
+      [
+        ...testomniacBase(),
+        'run',
+        runId,
+        'findings-expertise-summary',
+      ] as const,
     runTestInteractions: (runId: number) =>
       [...testomniacBase(), 'run', runId, 'test-interactions'] as const,
     runTestRuns: (runId: number) =>
@@ -147,6 +156,26 @@ export const queryKeys = {
       ] as const,
     productEnvironments: (productId: number) =>
       [...testomniacBase(), 'product', productId, 'environments'] as const,
+    productScanSettings: (productId: number) =>
+      [...testomniacBase(), 'product', productId, 'scan-settings'] as const,
+    environmentScanSettings: (productId: number, envId: number) =>
+      [
+        ...testomniacBase(),
+        'product',
+        productId,
+        'environment',
+        envId,
+        'scan-settings',
+      ] as const,
+    effectiveEnvironmentScanSettings: (productId: number, envId: number) =>
+      [
+        ...testomniacBase(),
+        'product',
+        productId,
+        'environment',
+        envId,
+        'effective-scan-settings',
+      ] as const,
     environmentUserData: (envId: number) =>
       [...testomniacBase(), 'environment', envId, 'user-data'] as const,
     environmentPages: (envId: number) =>

@@ -92,6 +92,40 @@ describe('TestomniacClient', () => {
         )
       ).toBe(true);
     });
+
+    it('loads run finding summaries from the grouped endpoint', async () => {
+      mockNetworkClient.setMockResponse(
+        `${BASE_URL}/api/v1/runs/42/findings/summary`,
+        { data: { success: true, data: [] } },
+        'GET'
+      );
+
+      await client.getRunFindingSummary(TEST_TOKEN, 42);
+
+      expect(
+        mockNetworkClient.wasUrlCalled(
+          `${BASE_URL}/api/v1/runs/42/findings/summary`,
+          'GET'
+        )
+      ).toBe(true);
+    });
+
+    it('loads effective environment scan settings', async () => {
+      mockNetworkClient.setMockResponse(
+        `${BASE_URL}/api/v1/products/7/environments/11/effective-scan-settings`,
+        { data: { success: true, data: { expertiseSlugs: [] } } },
+        'GET'
+      );
+
+      await client.getEffectiveEnvironmentScanSettings(TEST_TOKEN, 7, 11);
+
+      expect(
+        mockNetworkClient.wasUrlCalled(
+          `${BASE_URL}/api/v1/products/7/environments/11/effective-scan-settings`,
+          'GET'
+        )
+      ).toBe(true);
+    });
   });
 
   describe('mutations', () => {
@@ -127,6 +161,24 @@ describe('TestomniacClient', () => {
       expect(last?.method).toBe('PUT');
       expect(last?.options?.body).toBe(
         JSON.stringify({ data: { foo: 'bar' } })
+      );
+    });
+
+    it('PUTs product scan settings as a plain JSON body', async () => {
+      mockNetworkClient.setMockResponse(
+        `${BASE_URL}/api/v1/products/7/scan-settings`,
+        { data: { success: true, data: { productId: 7 } } },
+        'PUT'
+      );
+
+      await client.updateProductScanSettings(TEST_TOKEN, 7, {
+        expertiseSlugs: ['tester', 'seo'],
+      });
+
+      const last = mockNetworkClient.getLastRequest();
+      expect(last?.method).toBe('PUT');
+      expect(last?.options?.body).toBe(
+        JSON.stringify({ expertiseSlugs: ['tester', 'seo'] })
       );
     });
 

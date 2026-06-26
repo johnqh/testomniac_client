@@ -35,11 +35,14 @@ import type {
   ScaffoldResponse,
   ScanEndRequest,
   ScanEndResponse,
+  ScanSettingsResponse,
   TestActionResponse,
   TestEnvironmentResponse,
   TestInteractionResponse,
   TestInteractionRunResponse,
+  TestRunFindingExpertiseSummary,
   TestRunFindingResponse,
+  TestRunFindingRuleSummary,
   TestRunResponse,
   TestScenarioResponse,
   TestScenarioSequenceResponse,
@@ -50,6 +53,7 @@ import type {
   TestSurfaceResponse,
   UpdateEntityCredentialRequest,
   UpdatePersonaRequest,
+  UpdateScanSettingsRequest,
   UpdateTestScenarioRequest,
   UpdateTestSurfaceBundleRequest,
   UseCaseResponse,
@@ -325,6 +329,27 @@ export class TestomniacClient {
     );
   }
 
+  async getProductScanSettings(
+    token: FirebaseIdToken,
+    productId: number
+  ): Promise<BaseResponse<ScanSettingsResponse>> {
+    return this.request<BaseResponse<ScanSettingsResponse>>(
+      `/api/v1/products/${productId}/scan-settings`,
+      { token }
+    );
+  }
+
+  async updateProductScanSettings(
+    token: FirebaseIdToken,
+    productId: number,
+    data: UpdateScanSettingsRequest
+  ): Promise<BaseResponse<ScanSettingsResponse>> {
+    return this.request<BaseResponse<ScanSettingsResponse>>(
+      `/api/v1/products/${productId}/scan-settings`,
+      { method: 'PUT', body: data, token }
+    );
+  }
+
   /**
    * Resolve a product + test environment in an entity by matching a URL
    * against the environments' base URLs. Returns `null` when nothing matches.
@@ -443,6 +468,26 @@ export class TestomniacClient {
   ): Promise<BaseResponse<TestRunFindingResponse[]>> {
     return this.request<BaseResponse<TestRunFindingResponse[]>>(
       `/api/v1/runs/${runId}/findings`,
+      { token }
+    );
+  }
+
+  async getRunFindingSummary(
+    token: FirebaseIdToken,
+    runId: number
+  ): Promise<BaseResponse<TestRunFindingRuleSummary[]>> {
+    return this.request<BaseResponse<TestRunFindingRuleSummary[]>>(
+      `/api/v1/runs/${runId}/findings/summary`,
+      { token }
+    );
+  }
+
+  async getRunFindingExpertiseSummary(
+    token: FirebaseIdToken,
+    runId: number
+  ): Promise<BaseResponse<TestRunFindingExpertiseSummary[]>> {
+    return this.request<BaseResponse<TestRunFindingExpertiseSummary[]>>(
+      `/api/v1/runs/${runId}/findings/expertise-summary`,
       { token }
     );
   }
@@ -971,6 +1016,40 @@ export class TestomniacClient {
     return this.request<BaseResponse<TestEnvironmentResponse[]>>(
       `/api/v1/products/${productId}/environments`,
       { token }
+    );
+  }
+
+  async getEnvironmentScanSettings(
+    token: FirebaseIdToken,
+    productId: number,
+    environmentId: number
+  ): Promise<BaseResponse<ScanSettingsResponse>> {
+    return this.request<BaseResponse<ScanSettingsResponse>>(
+      `/api/v1/products/${productId}/environments/${environmentId}/scan-settings`,
+      { token }
+    );
+  }
+
+  async getEffectiveEnvironmentScanSettings(
+    token: FirebaseIdToken,
+    productId: number,
+    environmentId: number
+  ): Promise<BaseResponse<ScanSettingsResponse>> {
+    return this.request<BaseResponse<ScanSettingsResponse>>(
+      `/api/v1/products/${productId}/environments/${environmentId}/effective-scan-settings`,
+      { token }
+    );
+  }
+
+  async updateEnvironmentScanSettings(
+    token: FirebaseIdToken,
+    productId: number,
+    environmentId: number,
+    data: UpdateScanSettingsRequest
+  ): Promise<BaseResponse<ScanSettingsResponse>> {
+    return this.request<BaseResponse<ScanSettingsResponse>>(
+      `/api/v1/products/${productId}/environments/${environmentId}/scan-settings`,
+      { method: 'PUT', body: data, token }
     );
   }
 

@@ -29,6 +29,23 @@ describe('queryKeys.testomniac', () => {
     expect(key).toEqual(['testomniac', 'runner', 7, 'findings']);
   });
 
+  it('runFindingSummary key includes runId', () => {
+    const key = queryKeys.testomniac.runFindingSummary(42);
+    expect(key).toEqual(['testomniac', 'run', 42, 'findings-summary']);
+  });
+
+  it('effectiveEnvironmentScanSettings key includes product and environment ids', () => {
+    const key = queryKeys.testomniac.effectiveEnvironmentScanSettings(7, 11);
+    expect(key).toEqual([
+      'testomniac',
+      'product',
+      7,
+      'environment',
+      11,
+      'effective-scan-settings',
+    ]);
+  });
+
   it('all() returns the root key', () => {
     expect(queryKeys.testomniac.all()).toEqual(['testomniac']);
   });

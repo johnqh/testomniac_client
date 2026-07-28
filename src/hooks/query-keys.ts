@@ -94,6 +94,10 @@ export const queryKeys = {
       [...testomniacBase(), 'runner', runnerId, 'test-interactions'] as const,
     runnerTestRuns: (runnerId: number) =>
       [...testomniacBase(), 'runner', runnerId, 'test-runs'] as const,
+    runnerNavigationGraph: (runnerId: number) =>
+      [...testomniacBase(), 'runner', runnerId, 'navigation-graph'] as const,
+    runnerRoute: (runnerId: number, toPageId: number) =>
+      [...testomniacBase(), 'runner', runnerId, 'route', toPageId] as const,
     runnerScaffolds: (runnerId: number) =>
       [...testomniacBase(), 'runner', runnerId, 'scaffolds'] as const,
     runnerPersonas: (runnerId: number) =>

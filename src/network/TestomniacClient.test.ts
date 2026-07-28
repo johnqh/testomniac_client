@@ -243,6 +243,33 @@ describe('TestomniacClient', () => {
       );
     });
   });
+  describe('navigation graph', () => {
+    it('requests the navigation graph for a runner', async () => {
+      const url = `${BASE_URL}/api/v1/runners/2/navigation-graph`;
+      mockNetworkClient.setMockResponse(
+        url,
+        { data: { success: true, data: { runnerId: 2, nodes: [], edges: [] } } },
+        'GET'
+      );
+      await client.getNavigationGraph(TEST_TOKEN, 2);
+      expect(mockNetworkClient.wasUrlCalled(url, 'GET')).toBe(true);
+    });
+
+    it('passes toPageId as a query parameter when requesting a route', async () => {
+      const url = `${BASE_URL}/api/v1/runners/2/route?toPageId=35`;
+      mockNetworkClient.setMockResponse(
+        url,
+        {
+          data: {
+            success: true,
+            data: { runnerId: 2, originPageId: 34, toPageId: 35, route: [] },
+          },
+        },
+        'GET'
+      );
+      await client.getRoute(TEST_TOKEN, 2, 35);
+      expect(mockNetworkClient.wasUrlCalled(url, 'GET')).toBe(true);
+    });
 });
 
 describe('createTestomniacClient', () => {
@@ -251,4 +278,6 @@ describe('createTestomniacClient', () => {
     const client = createTestomniacClient(mockNetworkClient, BASE_URL);
     expect(client).toBeInstanceOf(TestomniacClient);
   });
+  });
+
 });

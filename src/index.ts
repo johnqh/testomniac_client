@@ -13,5 +13,9 @@ export {
   type EntityApiKeyResponse,
   type CreateEntityApiKeyRequest,
   type ProductUrlResolution,
+  type NavigationGraphNode,
+  type NavigationGraphEdge,
+  type NavigationGraphResponse,
+  type RouteResponse,
   DEFAULT_GC_TIME,
 } from './types';

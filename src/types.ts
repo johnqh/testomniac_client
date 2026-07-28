@@ -215,3 +215,40 @@ export interface RunLiveDashboard {
  * remounts within the window.
  */
 export const DEFAULT_GC_TIME = 30 * 60 * 1000;
+
+/** A page in the navigation graph. `hasInboundEdge: false` means nothing links to it. */
+export interface NavigationGraphNode {
+  pageId: number;
+  relativePath: string;
+  requiresLogin: boolean;
+  hasInboundEdge: boolean;
+}
+
+/** A navigation edge. `removedAt` non-null means a re-decompose proved it gone. */
+export interface NavigationGraphEdge {
+  fromPageId: number;
+  toPageId: number;
+  toRelativePath: string;
+  kind: 'declared' | 'observed';
+  actionKind: string;
+  selector: string;
+  label: string | null;
+  viaTestInteractionId: number | null;
+  traversalCount: number;
+  isStale: boolean;
+  removedAt: string | null;
+}
+
+export interface NavigationGraphResponse {
+  runnerId: number;
+  nodes: NavigationGraphNode[];
+  edges: NavigationGraphEdge[];
+}
+
+/** `route: null` means no known path within the depth cap. */
+export interface RouteResponse {
+  runnerId: number;
+  originPageId: number;
+  toPageId: number;
+  route: NavigationGraphEdge[] | null;
+}

@@ -66,12 +66,12 @@ import type {
   FirebaseIdToken,
   NavigationGraphResponse,
   ProductUrlResolution,
+  RouteResponse,
   RunLiveDashboard,
   RunNavigationMap,
   RunPageDetailSummary,
   RunPageSummary,
   RunStructure,
-  RouteResponse,
   RunSummary,
   ScriptKind,
 } from '../types';

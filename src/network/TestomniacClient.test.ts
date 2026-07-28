@@ -248,7 +248,9 @@ describe('TestomniacClient', () => {
       const url = `${BASE_URL}/api/v1/runners/2/navigation-graph`;
       mockNetworkClient.setMockResponse(
         url,
-        { data: { success: true, data: { runnerId: 2, nodes: [], edges: [] } } },
+        {
+          data: { success: true, data: { runnerId: 2, nodes: [], edges: [] } },
+        },
         'GET'
       );
       await client.getNavigationGraph(TEST_TOKEN, 2);
@@ -270,14 +272,13 @@ describe('TestomniacClient', () => {
       await client.getRoute(TEST_TOKEN, 2, 35);
       expect(mockNetworkClient.wasUrlCalled(url, 'GET')).toBe(true);
     });
-});
-
-describe('createTestomniacClient', () => {
-  it('creates a TestomniacClient instance', () => {
-    const mockNetworkClient = new MockNetworkClient();
-    const client = createTestomniacClient(mockNetworkClient, BASE_URL);
-    expect(client).toBeInstanceOf(TestomniacClient);
-  });
   });
 
+  describe('createTestomniacClient', () => {
+    it('creates a TestomniacClient instance', () => {
+      const mockNetworkClient = new MockNetworkClient();
+      const client = createTestomniacClient(mockNetworkClient, BASE_URL);
+      expect(client).toBeInstanceOf(TestomniacClient);
+    });
+  });
 });

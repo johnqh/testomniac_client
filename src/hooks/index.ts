@@ -24,6 +24,8 @@ export { useRunScaffolds } from './useRunScaffolds';
 export { useRunPatterns } from './useRunPatterns';
 export { useRunner } from './useRunner';
 export { useRunnerPages } from './useRunnerPages';
+export { useNavigationGraph } from './useNavigationGraph';
+export { useRoute } from './useRoute';
 export { useRunnerPageStates } from './useRunnerPageStates';
 export { useRunnerScans } from './useRunnerScans';
 export { useRunnerTestInteractions } from './useRunnerTestInteractions';

@@ -64,12 +64,14 @@ import type {
   CreateEntityApiKeyRequest,
   EntityApiKeyResponse,
   FirebaseIdToken,
+  NavigationGraphResponse,
   ProductUrlResolution,
   RunLiveDashboard,
   RunNavigationMap,
   RunPageDetailSummary,
   RunPageSummary,
   RunStructure,
+  RouteResponse,
   RunSummary,
   ScriptKind,
 } from '../types';
@@ -602,6 +604,27 @@ export class TestomniacClient {
   ): Promise<BaseResponse<TestRunResponse[]>> {
     return this.request<BaseResponse<TestRunResponse[]>>(
       `/api/v1/runners/${runnerId}/test-runs`,
+      { token }
+    );
+  }
+
+  async getNavigationGraph(
+    token: FirebaseIdToken,
+    runnerId: number
+  ): Promise<BaseResponse<NavigationGraphResponse>> {
+    return this.request<BaseResponse<NavigationGraphResponse>>(
+      `/api/v1/runners/${runnerId}/navigation-graph`,
+      { token }
+    );
+  }
+
+  async getRoute(
+    token: FirebaseIdToken,
+    runnerId: number,
+    toPageId: number
+  ): Promise<BaseResponse<RouteResponse>> {
+    return this.request<BaseResponse<RouteResponse>>(
+      `/api/v1/runners/${runnerId}/route?toPageId=${toPageId}`,
       { token }
     );
   }

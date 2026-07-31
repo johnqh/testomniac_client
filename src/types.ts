@@ -216,39 +216,81 @@ export interface RunLiveDashboard {
  */
 export const DEFAULT_GC_TIME = 30 * 60 * 1000;
 
-/** A page in the navigation graph. `hasInboundEdge: false` means nothing links to it. */
-export interface NavigationGraphNode {
-  pageId: number;
-  relativePath: string;
-  requiresLogin: boolean;
-  hasInboundEdge: boolean;
+/**
+ * One view of an app: a URL path plus the control-shape signature that
+ * distinguishes states sharing that path.
+ *
+ * Two views with the same `urlPath` are genuinely different screens — a cart
+ * with items versus an empty one, a modal open versus closed. Collapsing them
+ * by path would undo the entire reason the graph moved to webgraph.
+ */
+export interface GraphView {
+  id: number;
+  urlPath: string;
+  signature: string;
+  title: string | null;
+  observationCount: number;
 }
 
-/** A navigation edge. `removedAt` non-null means a re-decompose proved it gone. */
-export interface NavigationGraphEdge {
-  fromPageId: number;
-  toPageId: number;
-  toRelativePath: string;
+/** A transition between two views. */
+export interface GraphTransition {
+  id: number;
+  fromViewId: number;
+  toViewId: number | null;
+  toUrlPath: string;
   kind: 'declared' | 'observed';
-  actionKind: string;
-  selector: string;
-  label: string | null;
-  viaTestInteractionId: number | null;
-  traversalCount: number;
-  isStale: boolean;
+  triggerKind: string;
+  triggerLabel: string | null;
+  successCount: number;
+  failureCount: number;
   removedAt: string | null;
 }
 
 export interface NavigationGraphResponse {
-  runnerId: number;
-  nodes: NavigationGraphNode[];
-  edges: NavigationGraphEdge[];
+  views: GraphView[];
+  transitions: GraphTransition[];
 }
 
 /** `route: null` means no known path within the depth cap. */
 export interface RouteResponse {
-  runnerId: number;
-  originPageId: number;
-  toPageId: number;
-  route: NavigationGraphEdge[] | null;
+  route: GraphTransition[] | null;
+  cost: number | null;
+  reason?: string;
+}
+
+export interface NextStepResponse {
+  transition: GraphTransition | null;
+  reason: string | null;
+}
+
+/**
+ * One step of a plan. A `click` may end a plan without navigating — that is
+ * the expected shape for goals like "add an item to the cart".
+ */
+export type PlanAction =
+  | {
+      kind: 'goto';
+      toUrlPath: string;
+      toViewId: number | null;
+      label: string | null;
+    }
+  | {
+      kind: 'click';
+      controlName: string;
+      onViewId: number;
+      toViewId: number | null;
+      label: string | null;
+    };
+
+/**
+ * `source: 'graph-fallback'` means the plan came from a plain graph route
+ * rather than the planner — because it was unconfigured, failed, or proposed an
+ * action the graph could not verify. A weaker plan, not an error.
+ */
+export interface PlanResponse {
+  startView: { id: number; urlPath: string; signature: string } | null;
+  actions: PlanAction[];
+  confidence: 'high' | 'medium' | 'low';
+  reason: string;
+  source: 'llm' | 'graph-fallback';
 }

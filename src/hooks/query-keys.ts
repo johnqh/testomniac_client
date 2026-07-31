@@ -94,10 +94,31 @@ export const queryKeys = {
       [...testomniacBase(), 'runner', runnerId, 'test-interactions'] as const,
     runnerTestRuns: (runnerId: number) =>
       [...testomniacBase(), 'runner', runnerId, 'test-runs'] as const,
-    runnerNavigationGraph: (runnerId: number) =>
-      [...testomniacBase(), 'runner', runnerId, 'navigation-graph'] as const,
-    runnerRoute: (runnerId: number, toPageId: number) =>
-      [...testomniacBase(), 'runner', runnerId, 'route', toPageId] as const,
+    // Graphs are environment-scoped: base_url lives on the environment and
+    // determines which deployed site a graph describes.
+    environmentNavigationGraph: (testEnvironmentId: number) =>
+      [
+        ...testomniacBase(),
+        'environment',
+        testEnvironmentId,
+        'navigation-graph',
+      ] as const,
+    environmentRoute: (testEnvironmentId: number, toUrlPath: string) =>
+      [
+        ...testomniacBase(),
+        'environment',
+        testEnvironmentId,
+        'route',
+        toUrlPath,
+      ] as const,
+    environmentPlan: (testEnvironmentId: number, goal: string) =>
+      [
+        ...testomniacBase(),
+        'environment',
+        testEnvironmentId,
+        'plan',
+        goal,
+      ] as const,
     runnerScaffolds: (runnerId: number) =>
       [...testomniacBase(), 'runner', runnerId, 'scaffolds'] as const,
     runnerPersonas: (runnerId: number) =>

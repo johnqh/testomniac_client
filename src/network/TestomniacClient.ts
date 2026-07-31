@@ -65,6 +65,8 @@ import type {
   EntityApiKeyResponse,
   FirebaseIdToken,
   NavigationGraphResponse,
+  NextStepResponse,
+  PlanResponse,
   ProductUrlResolution,
   RouteResponse,
   RunLiveDashboard,
@@ -608,24 +610,89 @@ export class TestomniacClient {
     );
   }
 
+  /**
+   * The navigation graph for one environment.
+   *
+   * These endpoints are pass-throughs onto the graph service, so the response
+   * is its shape directly rather than a `BaseResponse` envelope. Graphs are
+   * scoped to an environment, not a runner: a staging and a production
+   * deployment are different sites and must not share one.
+   */
   async getNavigationGraph(
     token: FirebaseIdToken,
-    runnerId: number
-  ): Promise<BaseResponse<NavigationGraphResponse>> {
-    return this.request<BaseResponse<NavigationGraphResponse>>(
-      `/api/v1/runners/${runnerId}/navigation-graph`,
+    testEnvironmentId: number
+  ): Promise<NavigationGraphResponse> {
+    return this.request<NavigationGraphResponse>(
+      `/api/v1/environments/${testEnvironmentId}/navigation-graph`,
       { token }
     );
   }
 
   async getRoute(
     token: FirebaseIdToken,
-    runnerId: number,
-    toPageId: number
-  ): Promise<BaseResponse<RouteResponse>> {
-    return this.request<BaseResponse<RouteResponse>>(
-      `/api/v1/runners/${runnerId}/route?toPageId=${toPageId}`,
+    testEnvironmentId: number,
+    to: { urlPath: string; signature?: string },
+    from?: { urlPath: string; signature?: string },
+    maxDepth?: number
+  ): Promise<RouteResponse> {
+    const params = new URLSearchParams({ toUrlPath: to.urlPath });
+    if (to.signature) params.set('toSignature', to.signature);
+    if (from?.urlPath) params.set('fromUrlPath', from.urlPath);
+    if (from?.signature) params.set('fromSignature', from.signature);
+    if (maxDepth != null) params.set('maxDepth', String(maxDepth));
+    return this.request<RouteResponse>(
+      `/api/v1/environments/${testEnvironmentId}/route?${params.toString()}`,
       { token }
+    );
+  }
+
+  async getNextStep(
+    token: FirebaseIdToken,
+    testEnvironmentId: number,
+    to: { urlPath: string; signature?: string },
+    from?: { urlPath: string; signature?: string }
+  ): Promise<NextStepResponse> {
+    const params = new URLSearchParams({ toUrlPath: to.urlPath });
+    if (to.signature) params.set('toSignature', to.signature);
+    if (from?.urlPath) params.set('fromUrlPath', from.urlPath);
+    if (from?.signature) params.set('fromSignature', from.signature);
+    return this.request<NextStepResponse>(
+      `/api/v1/environments/${testEnvironmentId}/next-step?${params.toString()}`,
+      { token }
+    );
+  }
+
+  /** Plan a route to a goal expressed in words. */
+  async planRoute(
+    token: FirebaseIdToken,
+    testEnvironmentId: number,
+    body: {
+      goal: string;
+      from?: { urlPath: string; signature?: string };
+      maxDepth?: number;
+      maxCandidates?: number;
+    }
+  ): Promise<PlanResponse> {
+    return this.request<PlanResponse>(
+      `/api/v1/environments/${testEnvironmentId}/plan`,
+      { token, method: 'POST', body }
+    );
+  }
+
+  /** Re-plan after a step failed, reporting what broke so the graph learns. */
+  async replanRoute(
+    token: FirebaseIdToken,
+    testEnvironmentId: number,
+    body: {
+      goal: string;
+      from: { urlPath: string; signature?: string };
+      failed?: { transitionId?: number; controlName?: string; reason: string };
+      maxDepth?: number;
+    }
+  ): Promise<PlanResponse> {
+    return this.request<PlanResponse>(
+      `/api/v1/environments/${testEnvironmentId}/replan`,
+      { token, method: 'POST', body }
     );
   }
 

@@ -244,33 +244,69 @@ describe('TestomniacClient', () => {
     });
   });
   describe('navigation graph', () => {
-    it('requests the navigation graph for a runner', async () => {
-      const url = `${BASE_URL}/api/v1/runners/2/navigation-graph`;
+    it('requests the graph for an environment, not a runner', async () => {
+      const url = `${BASE_URL}/api/v1/environments/2/navigation-graph`;
       mockNetworkClient.setMockResponse(
         url,
-        {
-          data: { success: true, data: { runnerId: 2, nodes: [], edges: [] } },
-        },
+        { data: { views: [], transitions: [] } },
         'GET'
       );
       await client.getNavigationGraph(TEST_TOKEN, 2);
       expect(mockNetworkClient.wasUrlCalled(url, 'GET')).toBe(true);
     });
 
-    it('passes toPageId as a query parameter when requesting a route', async () => {
-      const url = `${BASE_URL}/api/v1/runners/2/route?toPageId=35`;
+    it('addresses a route target by url path', async () => {
+      const url = `${BASE_URL}/api/v1/environments/2/route?toUrlPath=%2Fcart`;
       mockNetworkClient.setMockResponse(
         url,
-        {
-          data: {
-            success: true,
-            data: { runnerId: 2, originPageId: 34, toPageId: 35, route: [] },
-          },
-        },
+        { data: { route: [], cost: 0 } },
         'GET'
       );
-      await client.getRoute(TEST_TOKEN, 2, 35);
+      await client.getRoute(TEST_TOKEN, 2, { urlPath: '/cart' });
       expect(mockNetworkClient.wasUrlCalled(url, 'GET')).toBe(true);
+    });
+
+    it('sends a signature when one distinguishes the target view', async () => {
+      const sig = 'a'.repeat(64);
+      const url =
+        `${BASE_URL}/api/v1/environments/2/route` +
+        `?toUrlPath=%2Fcart&toSignature=${sig}`;
+      mockNetworkClient.setMockResponse(
+        url,
+        { data: { route: null, cost: null } },
+        'GET'
+      );
+      await client.getRoute(TEST_TOKEN, 2, {
+        urlPath: '/cart',
+        signature: sig,
+      });
+      expect(mockNetworkClient.wasUrlCalled(url, 'GET')).toBe(true);
+    });
+
+    it('posts a goal to the plan endpoint', async () => {
+      const url = `${BASE_URL}/api/v1/environments/2/plan`;
+      mockNetworkClient.setMockResponse(
+        url,
+        { data: { startView: null, actions: [], confidence: 'low' } },
+        'POST'
+      );
+      await client.planRoute(TEST_TOKEN, 2, { goal: 'add to cart' });
+      expect(mockNetworkClient.wasUrlCalled(url, 'POST')).toBe(true);
+    });
+
+    it('posts a failure report to the replan endpoint', async () => {
+      const url = `${BASE_URL}/api/v1/environments/2/replan`;
+      mockNetworkClient.setMockResponse(
+        url,
+        { data: { startView: null, actions: [], confidence: 'low' } },
+        'POST'
+      );
+      await client.replanRoute(TEST_TOKEN, 2, {
+        goal: 'add to cart',
+        from: { urlPath: '/shop' },
+        failed: { transitionId: 3, reason: 'not found' },
+      });
+      expect(mockNetworkClient.wasUrlCalled(url, 'POST')).toBe(true);
     });
   });
 

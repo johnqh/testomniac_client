@@ -2,9 +2,9 @@ import { useMemo } from 'react';
 import { useMutation, type UseMutationResult } from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
 import type { BaseResponse } from '@sudobility/testomniac_types';
-import { TestomniacClient } from '../network/TestomniacClient';
-import type { FirebaseIdToken } from '../types';
-import type { BundleItemType } from './useAddToBundle';
+import { TestomniacClient } from '../network/TestomniacClient.js';
+import type { FirebaseIdToken } from '../types.js';
+import type { BundleItemType } from './useAddToBundle.js';
 
 export const useRemoveFromBundle = (
   networkClient: NetworkClient,

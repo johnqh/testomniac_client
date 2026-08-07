@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
 import { useQueries } from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
-import type { FirebaseIdToken } from '../types';
-import { TestomniacClient } from '../network/TestomniacClient';
-import { queryKeys } from './query-keys';
-import { STALE_TIMES } from './query-config';
-import { useEntityProducts } from './useEntityProducts';
-import { useProductRuns } from './useProductRuns';
-import { useProductRunners } from './useProductRunners';
+import type { FirebaseIdToken } from '../types.js';
+import { TestomniacClient } from '../network/TestomniacClient.js';
+import { queryKeys } from './query-keys.js';
+import { STALE_TIMES } from './query-config.js';
+import { useEntityProducts } from './useEntityProducts.js';
+import { useProductRuns } from './useProductRuns.js';
+import { useProductRunners } from './useProductRunners.js';
 
 /**
  * Aggregate hook that resolves the product / runner / latest-run context for a

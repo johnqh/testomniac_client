@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildArtifactUrl, buildRunStreamUrl } from './testomniac-helpers';
+import { buildArtifactUrl, buildRunStreamUrl } from './testomniac-helpers.js';
 
 describe('buildArtifactUrl', () => {
   it('builds an artifact URL', () => {

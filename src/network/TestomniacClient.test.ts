@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { MockNetworkClient } from '@sudobility/di/mocks';
-import { createTestomniacClient, TestomniacClient } from './TestomniacClient';
+import { createTestomniacClient, TestomniacClient } from './TestomniacClient.js';
 
 const TEST_TOKEN = 'test-token-123';
 const BASE_URL = 'https://test-testomniac.example.com';

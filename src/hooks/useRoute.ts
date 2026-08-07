@@ -5,10 +5,10 @@ import {
   type UseQueryResult,
 } from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
-import { TestomniacClient } from '../network/TestomniacClient';
-import type { FirebaseIdToken, RouteResponse } from '../types';
-import { queryKeys } from './query-keys';
-import { STALE_TIMES } from './query-config';
+import { TestomniacClient } from '../network/TestomniacClient.js';
+import type { FirebaseIdToken, RouteResponse } from '../types.js';
+import { queryKeys } from './query-keys.js';
+import { STALE_TIMES } from './query-config.js';
 
 /**
  * A route between two views of one environment.

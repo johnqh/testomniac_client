@@ -1,5 +1,5 @@
-import { buildRunStreamUrl } from '../utils/testomniac-helpers';
-import { useEventSource } from './useEventSource';
+import { buildRunStreamUrl } from '../utils/testomniac-helpers.js';
+import { useEventSource } from './useEventSource.js';
 import type { TestRunStreamEvent } from '@sudobility/testomniac_types';
 
 interface UseRunProgressStreamConfig {

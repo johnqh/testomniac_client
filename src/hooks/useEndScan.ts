@@ -6,8 +6,8 @@ import type {
   ScanEndRequest,
   ScanEndResponse,
 } from '@sudobility/testomniac_types';
-import { TestomniacClient } from '../network/TestomniacClient';
-import type { FirebaseIdToken } from '../types';
+import { TestomniacClient } from '../network/TestomniacClient.js';
+import type { FirebaseIdToken } from '../types.js';
 
 /**
  * Ends a scan and detects personas + scenarios for a product

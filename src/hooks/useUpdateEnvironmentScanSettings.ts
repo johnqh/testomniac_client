@@ -10,9 +10,9 @@ import type {
   ScanSettingsResponse,
   UpdateScanSettingsRequest,
 } from '@sudobility/testomniac_types';
-import { TestomniacClient } from '../network/TestomniacClient';
-import type { FirebaseIdToken } from '../types';
-import { queryKeys } from './query-keys';
+import { TestomniacClient } from '../network/TestomniacClient.js';
+import type { FirebaseIdToken } from '../types.js';
+import { queryKeys } from './query-keys.js';
 
 export const useUpdateEnvironmentScanSettings = (
   networkClient: NetworkClient,

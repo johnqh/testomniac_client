@@ -1,5 +1,5 @@
 import type { NetworkClient } from '@sudobility/types';
-import type { FirebaseIdToken } from '../types';
+import type { FirebaseIdToken } from '../types.js';
 
 interface UseTestSurfaceChildSurfacesConfig {
   networkClient: NetworkClient;

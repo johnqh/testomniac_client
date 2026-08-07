@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { NetworkClient } from '@sudobility/types';
-import { useSubmitScan } from './useSubmitScan';
+import { useSubmitScan } from './useSubmitScan.js';
 
 interface SubmitPublicScanInput {
   url: string;

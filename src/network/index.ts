@@ -1,1 +1,4 @@
-export { TestomniacClient, createTestomniacClient } from './TestomniacClient';
+export {
+  TestomniacClient,
+  createTestomniacClient,
+} from './TestomniacClient.js';

@@ -6,8 +6,8 @@ import type {
   PersonaResponse,
   UpdatePersonaRequest,
 } from '@sudobility/testomniac_types';
-import { TestomniacClient } from '../network/TestomniacClient';
-import type { FirebaseIdToken } from '../types';
+import { TestomniacClient } from '../network/TestomniacClient.js';
+import type { FirebaseIdToken } from '../types.js';
 
 export const useUpdatePersona = (
   networkClient: NetworkClient,

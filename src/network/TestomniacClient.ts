@@ -76,7 +76,7 @@ import type {
   RunStructure,
   RunSummary,
   ScriptKind,
-} from '../types';
+} from '../types.js';
 
 /**
  * Maps each {@link ScriptKind} to its API path for the generated Playwright

@@ -1,4 +1,4 @@
-import { buildUrl } from './starter-helpers';
+import { buildUrl } from './starter-helpers.js';
 
 /**
  * Builds the URL for a stored artifact (screenshot, raw HTML, etc.) served by

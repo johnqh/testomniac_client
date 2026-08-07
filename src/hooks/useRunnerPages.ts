@@ -6,10 +6,10 @@ import {
 } from '@tanstack/react-query';
 import type { NetworkClient } from '@sudobility/types';
 import type { BaseResponse, PageResponse } from '@sudobility/testomniac_types';
-import { TestomniacClient } from '../network/TestomniacClient';
-import type { FirebaseIdToken } from '../types';
-import { queryKeys } from './query-keys';
-import { STALE_TIMES } from './query-config';
+import { TestomniacClient } from '../network/TestomniacClient.js';
+import type { FirebaseIdToken } from '../types.js';
+import { queryKeys } from './query-keys.js';
+import { STALE_TIMES } from './query-config.js';
 
 export const useRunnerPages = (
   networkClient: NetworkClient,

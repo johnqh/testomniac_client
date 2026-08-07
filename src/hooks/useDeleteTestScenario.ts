@@ -5,8 +5,8 @@ import type {
   BaseResponse,
   TestScenarioResponse,
 } from '@sudobility/testomniac_types';
-import { TestomniacClient } from '../network/TestomniacClient';
-import type { FirebaseIdToken } from '../types';
+import { TestomniacClient } from '../network/TestomniacClient.js';
+import type { FirebaseIdToken } from '../types.js';
 
 export const useDeleteTestScenario = (
   networkClient: NetworkClient,

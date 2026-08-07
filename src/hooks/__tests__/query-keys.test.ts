@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createQueryKey, getServiceKeys, queryKeys } from '../query-keys';
+import { createQueryKey, getServiceKeys, queryKeys } from '../query-keys.js';
 
 describe('queryKeys.testomniac', () => {
   describe('user', () => {

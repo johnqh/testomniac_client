@@ -6,7 +6,7 @@ import type {
   CreateDiscoveryRunRequest,
   CreateDiscoveryRunResponse,
 } from '@sudobility/testomniac_types';
-import { TestomniacClient } from '../network/TestomniacClient';
+import { TestomniacClient } from '../network/TestomniacClient.js';
 
 export const useSubmitScan = (
   networkClient: NetworkClient,

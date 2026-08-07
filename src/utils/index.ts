@@ -3,5 +3,5 @@ export {
   createHeaders,
   buildUrl,
   handleApiError,
-} from './starter-helpers';
-export { buildArtifactUrl, buildRunStreamUrl } from './testomniac-helpers';
+} from './starter-helpers.js';
+export { buildArtifactUrl, buildRunStreamUrl } from './testomniac-helpers.js';

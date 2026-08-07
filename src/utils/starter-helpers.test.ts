@@ -4,7 +4,7 @@ import {
   createHeaders,
   buildUrl,
   handleApiError,
-} from './starter-helpers';
+} from './starter-helpers.js';
 
 describe('starter-helpers', () => {
   describe('createAuthHeaders', () => {

@@ -70,6 +70,7 @@ export { useCreateTestSchedule } from './useCreateTestSchedule.js';
 export { useTestScenarioSequences } from './useTestScenarioSequences.js';
 export { useTestScenarioSequenceTestInteractions } from './useTestScenarioSequenceTestInteractions.js';
 export { useCreateTestScenario } from './useCreateTestScenario.js';
+export { usePlanNavigation, useReplanNavigation } from './usePlanNavigation.js';
 export { useUpdateTestScenario } from './useUpdateTestScenario.js';
 export { useDeleteTestScenario } from './useDeleteTestScenario.js';
 export { useTestScenarioSequenceRuns } from './useTestScenarioSequenceRuns.js';

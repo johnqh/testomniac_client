@@ -22,6 +22,9 @@ import type {
   GenerateSequenceResponse,
   HtmlElementResponse,
   InputValueResponse,
+  NavigationPlanRequest,
+  NavigationPlanResponse,
+  NavigationReplanRequest,
   PageResponse,
   PageStatePatternResponse,
   PageStateResponse,
@@ -264,6 +267,48 @@ export class TestomniacClient {
   ): Promise<BaseResponse<ResolveEnvironmentResponse>> {
     return this.request<BaseResponse<ResolveEnvironmentResponse>>(
       '/api/v1/test-environments/resolve',
+      { method: 'POST', body: data, token }
+    );
+  }
+
+  /**
+   * Plan how to accomplish a goal in an environment's app.
+   *
+   * Backs `POST /api/v1/environments/:envId/plan`, which proxies the graph
+   * service. Callers go through the proxy rather than the graph service
+   * directly: the graph API key lives on the server and must never reach a
+   * browser.
+   *
+   * The reply is the graph service's own response, NOT wrapped in
+   * `BaseResponse` — the proxy forwards it verbatim so there is one definition
+   * of the shape.
+   */
+  async planNavigation(
+    token: FirebaseIdToken,
+    environmentId: number,
+    data: NavigationPlanRequest
+  ): Promise<NavigationPlanResponse> {
+    return this.request<NavigationPlanResponse>(
+      `/api/v1/environments/${environmentId}/plan`,
+      { method: 'POST', body: data, token }
+    );
+  }
+
+  /**
+   * Re-plan after an action failed, so the graph routes around that edge.
+   *
+   * Backs `POST /api/v1/environments/:envId/replan`. A reported failure is
+   * recorded against the transition, which demotes it without deleting it: an
+   * edge that fails for one caller may work for another with a different
+   * session.
+   */
+  async replanNavigation(
+    token: FirebaseIdToken,
+    environmentId: number,
+    data: NavigationReplanRequest
+  ): Promise<NavigationPlanResponse> {
+    return this.request<NavigationPlanResponse>(
+      `/api/v1/environments/${environmentId}/replan`,
       { method: 'POST', body: data, token }
     );
   }

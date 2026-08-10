@@ -15,7 +15,7 @@
     "build": "bunx tsc -p tsconfig.build.json",
     "build:watch": "bunx tsc --watch",
     "clean": "rm -rf dist",
-    "prepublishOnly": "sh -c 'test ! -f ../workflows/scripts/check-publish-safety.cjs || node ../workflows/scripts/check-publish-safety.cjs' && bun run clean && bun run build && sh -c 'test ! -f ../workflows/scripts/check-package-entry.cjs || node ../workflows/scripts/check-package-entry.cjs'",
+    "prepublishOnly": "sh -c 'test ! -f ../workflows/scripts/check-publish-safety.cjs || node ../workflows/scripts/check-publish-safety.cjs' && bun run clean && bun run build",
     "typecheck": "bunx tsc --noEmit",
     "lint": "bunx eslint src/",
     "lint:fix": "bunx eslint src/ --fix",

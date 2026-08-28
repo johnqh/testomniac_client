@@ -1,5 +1,10 @@
 # Testomniac Client
 
+> **Git policy — never auto-commit or auto-push.** Leave your work in the working tree.
+> Run `git commit`, `git push`, `gh pr create`, or `scripts/push_all.sh` **only when the user
+> explicitly asks in that turn**. Approval for an earlier change does not carry forward, and
+> finishing a task is not permission to commit it.
+
 API client SDK for Testomniac with TanStack Query hooks.
 
 **npm**: `@sudobility/testomniac_client` (public, BUSL-1.1)
@@ -109,3 +114,7 @@ Dependency injection is central: `NetworkClient` interface is provided by the co
 - The `QUERY_KEYS` factory must be kept in sync with API route changes
 - `useSubmitScan` hits a public endpoint (no auth) — all other hooks require Firebase auth
 - This is a published npm package — breaking changes require version bumps and coordination with consumers
+
+## Git Workflow
+
+- Do not use feature branches for code changes. Always stay on the current branch.

@@ -1,6 +1,6 @@
 {
   "name": "@sudobility/testomniac_client",
-  "version": "0.0.123",
+  "version": "0.0.124",
   "description": "Testomniac API client library with TanStack Query hooks",
   "type": "module",
   "main": "dist/index.js",
@@ -21,9 +21,9 @@
     "lint:fix": "bunx eslint src/ --fix",
     "format": "bunx prettier --write \"src/**/*.ts\"",
     "format:check": "bunx prettier --check \"src/**/*.ts\"",
-    "test": "vitest run",
+    "test:unit": "vitest run",
     "test:watch": "vitest",
-    "verify": "bun run typecheck && bun run lint && bun run test && bun run build"
+    "verify": "bun run typecheck && bun run lint && bun run test:unit && bun run build"
   },
   "keywords": [
     "testomniac",
@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@sudobility/di": "^1.5.65",
-    "@sudobility/testomniac_types": "^0.0.107",
+    "@sudobility/testomniac_types": "^0.0.108",
     "@sudobility/types": "^1.9.67",
     "@tanstack/react-query": "^5.90.5",
     "@types/react": "^19.2.2",
